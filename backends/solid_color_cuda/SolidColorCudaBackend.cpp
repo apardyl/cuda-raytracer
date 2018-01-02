@@ -1,4 +1,3 @@
 #include "SolidColorCudaBackend.h"
 
-SolidColorCudaBackend::SolidColorCudaBackend() {
-}
+SolidColorCudaBackend::SolidColorCudaBackend() = default;

@@ -9,8 +9,7 @@ const byte COLOR_RED = 255;
 const byte COLOR_GREEN = 0;
 const byte COLOR_BLUE = 0;
 
-__global__ void deviceRenderRandomCuda(
-        byte *data, unsigned width, unsigned height) {
+__global__ void renderSolidColor(byte *data, unsigned width, unsigned height) {
     int x = blockIdx.x * blockDim.x + threadIdx.x;
     int y = blockIdx.y * blockDim.y + threadIdx.y;
     if (x >= width || y >= height) {
@@ -32,7 +31,7 @@ byte *SolidColorCudaBackend::render() {
             width + (BLOCK_SIZE - 1) / BLOCK_SIZE,
             height + (BLOCK_SIZE - 1) / BLOCK_SIZE,
             1);
-    deviceRenderRandomCuda << < gridSize, blockSize >> > (data, width, height);
+    renderSolidColor<<<gridSize, blockSize>>>(data, width, height);
     cudaDeviceSynchronize();
     return data;
 }

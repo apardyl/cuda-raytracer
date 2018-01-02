@@ -1,5 +1,5 @@
-#ifndef RAY_TRACER_RANDOMCUDABACKEND_H
-#define RAY_TRACER_RANDOMCUDABACKEND_H
+#ifndef RAY_TRACER_SOLIDCOLORCUDABACKEND_H
+#define RAY_TRACER_SOLIDCOLORCUDABACKEND_H
 
 #include <cstddef>
 #include "backends/Backend.h"
@@ -24,4 +24,4 @@ public:
     void setResolution(unsigned width, unsigned height) override;
 };
 
-#endif //RAY_TRACER_RANDOMCUDABACKEND_H
+#endif //RAY_TRACER_SOLIDCOLORCUDABACKEND_H
