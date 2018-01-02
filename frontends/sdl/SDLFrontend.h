@@ -12,8 +12,12 @@ private:
 
     SDL_Window *window = nullptr;
     SDL_Surface *screenSurface = nullptr;
+    SDL_Surface *renderedImage = nullptr;
 
     void render();
+
+    void createRenderedImageSurface();
+
 public:
     SDLFrontend();
 

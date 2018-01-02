@@ -3,13 +3,21 @@ project(ray_tracer)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(
+# CUDA
+find_package(CUDA REQUIRED)
+
+# Project files
+include_directories(${ray_tracer_SOURCE_DIR})
+
+cuda_add_executable(
         ray_tracer
         main.cpp
         frontends/sdl/SDLFrontend.cpp frontends/sdl/SDLFrontend.h
         frontends/sdl/SDLError.cpp frontends/sdl/SDLError.h
-)
+        backends/Backend.cpp backends/Backend.h
+        backends/solid_color_cuda/SolidColorCudaBackend.cpp backends/solid_color_cuda/SolidColorCudaBackend.cu backends/solid_color_cuda/SolidColorCudaBackend.h)
 
+# SDL2
 include(FindPkgConfig)
 
 pkg_search_module(SDL2 REQUIRED sdl2)
