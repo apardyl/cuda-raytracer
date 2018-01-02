@@ -29,16 +29,26 @@ void SDLFrontend::run() {
     SDL_Event e{};
 
     while (!quit) {
+        Uint32 startTicks = SDL_GetTicks();
+
         while (SDL_PollEvent(&e) != 0) {
             if (e.type == SDL_QUIT) {
                 quit = true;
             }
         }
 
-        SDL_FillRect(
-                screenSurface, nullptr,
-                SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
-        SDL_UpdateWindowSurface(window);
+        render();
+
+        Uint32 frameTicks = SDL_GetTicks() - startTicks;
+        if (frameTicks < SCREEN_TICKS_PER_FRAME) {
+            SDL_Delay(SCREEN_TICKS_PER_FRAME - frameTicks);
+        }
     }
 }
 
+void SDLFrontend::render() {
+    SDL_FillRect(
+            screenSurface, nullptr,
+            SDL_MapRGB(screenSurface->format, 0xFF, 0xFF, 0xFF));
+    SDL_UpdateWindowSurface(window);
+}
