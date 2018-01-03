@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.9)
 project(ray_tracer)
 
 set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ray_tracer_SOURCE_DIR}/cmake")
 
 # CUDA
 find_package(CUDA REQUIRED)
@@ -9,6 +10,7 @@ find_package(CUDA REQUIRED)
 # Project files
 include_directories(${ray_tracer_SOURCE_DIR})
 
+set(CUDA_ATTACH_VS_BUILD_RULE_TO_CUDA_FILE ON)
 cuda_add_executable(
         ray_tracer
         main.cpp
@@ -18,10 +20,13 @@ cuda_add_executable(
         backends/solid_color_cuda/SolidColorCudaBackend.cpp backends/solid_color_cuda/SolidColorCudaBackend.cu backends/solid_color_cuda/SolidColorCudaBackend.h)
 
 # SDL2
-include(FindPkgConfig)
+find_package(SDL2 REQUIRED)
+find_package(SDL2_image REQUIRED)
 
-pkg_search_module(SDL2 REQUIRED sdl2)
-pkg_search_module(SDL2IMAGE REQUIRED SDL2_image>=2.0.0)
-
-include_directories(${SDL2_INCLUDE_DIRS} ${SDL2IMAGE_INCLUDE_DIRS})
-target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES} ${SDL2IMAGE_LIBRARIES})
+include_directories(
+		${SDL2_INCLUDE_DIR}
+        ${SDL2_IMAGE_INCLUDE_DIR})
+target_link_libraries(
+		ray_tracer
+		${SDL2_LIBRARY}
+		${SDL2_IMAGE_LIBRARIES})
