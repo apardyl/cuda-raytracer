@@ -5,7 +5,7 @@
 #include "backends/Backend.h"
 
 /**
- * Very simple renderick backend that just fills the surface with a solid color
+ * Very simple rendering backend that just fills the surface with a solid color
  * using CUDA.
  */
 class SolidColorCudaBackend : public Backend {
