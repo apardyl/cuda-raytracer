@@ -2,8 +2,10 @@
 #define RAY_TRACER_SDLFRONTEND_H
 
 #include <SDL.h>
+#include <atomic>
+#include "frontends/Frontend.h"
 
-class SDLFrontend {
+class SDLFrontend : public Frontend {
 private:
     const int SCREEN_WIDTH = 800;
     const int SCREEN_HEIGHT = 600;
@@ -12,18 +14,18 @@ private:
 
     SDL_Window *window = nullptr;
     SDL_Surface *screenSurface = nullptr;
-    SDL_Surface *renderedImage = nullptr;
+    std::atomic<SDL_Surface *> renderedImage = nullptr;
 
     void render();
-
-    void createRenderedImageSurface();
 
 public:
     SDLFrontend();
 
-    ~SDLFrontend();
+    ~SDLFrontend() override;
 
-    void run();
+    void run() override;
+
+    void setImage(Image image) override;
 };
 
 #endif //RAY_TRACER_SDLFRONTEND_H

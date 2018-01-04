@@ -26,8 +26,6 @@ SDLFrontend::~SDLFrontend() {
 }
 
 void SDLFrontend::run() {
-    createRenderedImageSurface();
-
     bool quit = false;
     SDL_Event e{};
 
@@ -49,12 +47,18 @@ void SDLFrontend::run() {
     }
 }
 
-void SDLFrontend::createRenderedImageSurface() {
-    SolidColorCudaBackend backend;
-    backend.setResolution(SCREEN_WIDTH, SCREEN_HEIGHT);
+void SDLFrontend::render() {
+    SDL_FillRect(screenSurface, nullptr, 0);
+    if (renderedImage != nullptr) {
+        SDL_BlitSurface(renderedImage, nullptr, screenSurface, nullptr);
+    }
+    SDL_UpdateWindowSurface(window);
+}
+
+void SDLFrontend::setImage(Image image) {
     SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormatFrom(
-            backend.render(), SCREEN_WIDTH, SCREEN_HEIGHT, 24,
-            SCREEN_WIDTH * 3, SDL_PIXELFORMAT_RGB24);
+            image.pixelData, image.width, image.height, 24,
+            image.height * 3, SDL_PIXELFORMAT_RGB24);
     if (surface == nullptr) {
         throw SDLError("Could not create rendered image surface");
     }
@@ -63,10 +67,4 @@ void SDLFrontend::createRenderedImageSurface() {
     if (renderedImage == nullptr) {
         throw SDLError("Could not convert rendered image surface");
     }
-}
-
-void SDLFrontend::render() {
-    SDL_FillRect(screenSurface, nullptr, 0);
-    SDL_BlitSurface(renderedImage, nullptr, screenSurface, nullptr);
-    SDL_UpdateWindowSurface(window);
 }

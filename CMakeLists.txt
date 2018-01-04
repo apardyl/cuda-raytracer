@@ -14,6 +14,10 @@ set(CUDA_ATTACH_VS_BUILD_RULE_TO_CUDA_FILE ON)
 cuda_add_executable(
         ray_tracer
         main.cpp
+        backends/Image.h
+        frontends/Frontend.cpp frontends/Frontend.h
+        frontends/frontend_controller/CountDownLatch.cpp frontends/frontend_controller/CountDownLatch.h
+        frontends/frontend_controller/FrontendController.cpp frontends/frontend_controller/FrontendController.h
         frontends/sdl/SDLFrontend.cpp frontends/sdl/SDLFrontend.h
         frontends/sdl/SDLError.cpp frontends/sdl/SDLError.h
         backends/Backend.cpp backends/Backend.h

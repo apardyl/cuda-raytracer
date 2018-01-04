@@ -25,7 +25,7 @@ SolidColorCudaBackend::~SolidColorCudaBackend() {
     cudaFree(data);
 }
 
-byte *SolidColorCudaBackend::render() {
+Image SolidColorCudaBackend::render() {
     const dim3 blockSize(BLOCK_SIZE, BLOCK_SIZE, 1);
     const dim3 gridSize(
             width + (BLOCK_SIZE - 1) / BLOCK_SIZE,
@@ -33,7 +33,7 @@ byte *SolidColorCudaBackend::render() {
             1);
     renderSolidColor<<<gridSize, blockSize>>>(data, width, height);
     cudaDeviceSynchronize();
-    return data;
+    return Image(width, height, data);
 }
 
 void SolidColorCudaBackend::setResolution(unsigned width, unsigned height) {

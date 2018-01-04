@@ -4,8 +4,6 @@
 #include <cstddef>
 #include "backends/Backend.h"
 
-typedef unsigned char byte;
-
 /**
  * Very simple renderick backend that just fills the surface with a solid color
  * using CUDA.
@@ -17,9 +15,9 @@ private:
 public:
     SolidColorCudaBackend();
 
-    ~SolidColorCudaBackend();
+    ~SolidColorCudaBackend() override;
 
-    byte *render() override;
+    Image render() override;
 
     void setResolution(unsigned width, unsigned height) override;
 };
