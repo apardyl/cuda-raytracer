@@ -11,11 +11,11 @@ FrontendController::FrontendController(
     for (size_t i = 0; i < constructors.size(); ++i) {
         const auto &constructor = constructors[i];
         frontendThreads.emplace_back([&](int i, auto constructor) {
-            Frontend *frontend;
+            std::unique_ptr<Frontend> frontend;
             {
                 std::unique_lock<std::mutex> localLock(frontendsLock);
-                frontend = constructor();
-                frontends[i] = frontend;
+                frontend.reset(constructor());
+                frontends[i] = frontend.get();
             }
             initLatch.countDown();
 
@@ -25,8 +25,6 @@ FrontendController::FrontendController(
                 std::unique_lock<std::mutex> localLock(frontendsLock);
                 frontends[i] = nullptr;
             }
-
-            delete frontend;
         }, i, constructor);
     }
 }
