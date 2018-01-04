@@ -18,5 +18,4 @@ public:
     void countDown();
 };
 
-
 #endif //RAY_TRACER_COUNTDOWNLATCH_H
