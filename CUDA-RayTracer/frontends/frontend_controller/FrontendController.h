@@ -4,8 +4,9 @@
 #include <vector>
 #include <functional>
 #include <thread>
-#include "frontends/Frontend.h"
+#include <frontends/Frontend.h>
 #include "CountDownLatch.h"
+#include <backends/Image.h>
 
 class FrontendController {
 private:

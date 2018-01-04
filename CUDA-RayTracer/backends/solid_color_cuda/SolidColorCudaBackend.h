@@ -1,8 +1,7 @@
 #ifndef RAY_TRACER_SOLIDCOLORCUDABACKEND_H
 #define RAY_TRACER_SOLIDCOLORCUDABACKEND_H
 
-#include <cstddef>
-#include "backends/Backend.h"
+#include <backends/Backend.h>
 
 /**
  * Very simple rendering backend that just fills the surface with a solid color

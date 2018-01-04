@@ -3,7 +3,8 @@
 
 #include <SDL.h>
 #include <atomic>
-#include "frontends/Frontend.h"
+#include <frontends/Frontend.h>
+#include <backends/Image.h>
 
 class SDLFrontend : public Frontend {
 private:

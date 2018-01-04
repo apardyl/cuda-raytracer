@@ -1,8 +1,8 @@
 #include <memory>
-#include "backends/Backend.h"
-#include "backends/solid_color_cuda/SolidColorCudaBackend.h"
-#include "frontends/frontend_controller/FrontendController.h"
-#include "frontends/sdl/SDLFrontend.h"
+#include <backends/Backend.h>
+#include <backends/solid_color_cuda/SolidColorCudaBackend.h>
+#include <frontends/frontend_controller/FrontendController.h>
+#include <frontends/sdl/SDLFrontend.h>
 
 int main(int argc, char *argv[]) {
     std::vector<std::function<Frontend *()>> frontendConstructors;

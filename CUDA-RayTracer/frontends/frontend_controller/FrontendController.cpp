@@ -1,5 +1,4 @@
 #include <thread>
-#include "frontends/sdl/SDLFrontend.h"
 #include "FrontendController.h"
 
 FrontendController::FrontendController(
