@@ -15,7 +15,7 @@ cuda_add_executable(
         ray_tracer
         main.cpp
         backends/Image.h
-        frontends/Frontend.cpp frontends/Frontend.h
+        frontends/Frontend.h
         frontends/frontend_controller/CountDownLatch.cpp frontends/frontend_controller/CountDownLatch.h
         frontends/frontend_controller/FrontendController.cpp frontends/frontend_controller/FrontendController.h
         frontends/sdl/SDLFrontend.cpp frontends/sdl/SDLFrontend.h
