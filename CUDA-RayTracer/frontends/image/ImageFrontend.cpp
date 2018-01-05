@@ -35,8 +35,8 @@ void ImageFrontend::terminate() {
 }
 
 void ImageFrontend::savePNG(Image const &image) {
-    FILE *fp = fopen("output.png", "wb");
-    if (fp == nullptr) {
+    FILE *fp = nullptr;
+    if (fopen_s(&fp, "output.png", "wb") || fp == nullptr) {
         throw ImageError("Could not open file for writing");
     }
 
@@ -67,8 +67,8 @@ void ImageFrontend::savePNG(Image const &image) {
     auto row = new png_byte[image.width * image.bytesPerPixel];
     for (unsigned y = 0; y < image.height; ++y) {
         for (unsigned x = 0; x < image.width; ++x) {
-            unsigned int n = image.bytesPerPixel;
-            for (int i = 0; i < n; ++i) {
+            unsigned n = image.bytesPerPixel;
+            for (unsigned i = 0; i < n; ++i) {
                 row[x * n + i] = image.pixelData[(y * image.width + x) * n + i];
             }
         }
@@ -79,7 +79,7 @@ void ImageFrontend::savePNG(Image const &image) {
     png_write_end(pngStruct, nullptr);
 
     fclose(fp);
-    free(row);
+    delete[] row;
     png_free_data(pngStruct, pngInfo, PNG_FREE_ALL, -1);
     png_destroy_write_struct(&pngStruct, nullptr);
 }
