@@ -21,6 +21,7 @@ void ImageFrontend::run() {
 void ImageFrontend::setImage(Image image) {
     std::unique_lock<std::mutex> localLock(lock);
     this->image = std::make_unique<Image>(std::move(image));
+    condition.notify_all();
 }
 
 bool ImageFrontend::isDaemon() {
