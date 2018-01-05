@@ -1,4 +1,12 @@
+#ifdef __STDC_LIB_EXT1__
+#define __STDC_WANT_LIB_EXT1__ 1
+#else
+#define fopen_s(pFile, filename, mode) \
+    ((*(pFile)) = fopen((filename), (mode))) == NULL
+#endif
+
 #include <png.h>
+#include <cstdio>
 #include "ImageFrontend.h"
 #include "ImageError.h"
 
