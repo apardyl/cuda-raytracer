@@ -9,8 +9,6 @@ struct FrontendInstance {
     std::unique_ptr<std::thread> thread;
     bool isDaemon;
 
-    explicit FrontendInstance(std::unique_ptr<std::thread> thread);
-
     void setFrontend(std::shared_ptr<Frontend> const &frontend);
 };
 

@@ -5,18 +5,17 @@
 FrontendController::FrontendController(
         std::vector<std::function<Frontend *()>> const &constructors) :
         initLatch(static_cast<unsigned int>(constructors.size())) {
-    frontends.reserve(constructors.size());
+    frontends.resize(constructors.size());
 
     for (size_t i = 0; i < constructors.size(); ++i) {
-        const auto &constructor = constructors[i];
-        frontends.emplace_back(std::make_unique<std::thread>(
+        frontends[i].thread = std::make_unique<std::thread>(
                 std::thread([&](int i, auto constructor) {
                     std::shared_ptr<Frontend> frontend(constructor());
                     frontends[i].setFrontend(frontend);
                     initLatch.countDown();
 
                     frontend->run();
-                }, i, constructor)));
+                }, i, constructors[i]));
     }
 }
 
