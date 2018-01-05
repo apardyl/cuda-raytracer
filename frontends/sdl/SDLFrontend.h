@@ -7,10 +7,10 @@
 
 class SDLFrontend : public Frontend {
 private:
-    const int SCREEN_WIDTH = 800;
-    const int SCREEN_HEIGHT = 600;
-    const int FPS_CAP = 30;
-    const int SCREEN_TICKS_PER_FRAME = 1000 / FPS_CAP;
+    const unsigned SCREEN_WIDTH = 800;
+    const unsigned SCREEN_HEIGHT = 600;
+    const unsigned FPS_CAP = 30;
+    const unsigned SCREEN_TICKS_PER_FRAME = 1000 / FPS_CAP;
 
     SDL_Window *window = nullptr;
     SDL_Surface *screenSurface = nullptr;

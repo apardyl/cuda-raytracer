@@ -1,6 +1,5 @@
 #include "SDLFrontend.h"
 #include "SDLError.h"
-#include "backends/solid_color_cuda/SolidColorCudaBackend.h"
 
 SDLFrontend::SDLFrontend() {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
