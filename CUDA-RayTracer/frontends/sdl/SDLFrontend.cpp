@@ -58,7 +58,9 @@ void SDLFrontend::render() {
 
 void SDLFrontend::setImage(Image image) {
     SDL_Surface * surface = SDL_CreateRGBSurfaceFrom(
-		image.pixelData, image.width, image.height, 24, image.height * 3, 0x0000ff, 0x00ff00, 0xff00000, 0);
+            image.pixelData, image.width, image.height, 24,
+            image.width * image.bytesPerPixel,
+            0x0000ff, 0x00ff00, 0xff00000, 0);
 
     if (surface == nullptr) {
         throw SDLError("Could not create rendered image surface");

@@ -12,7 +12,7 @@ public:
     virtual void setImage(Image image) = 0;
 
     /**
-     * @return whether the frontend is a daemon (i.e. should be terminated
+     * Return whether the frontend is a daemon (i.e. should be terminated
      * after all other frontends have been terminated).
      */
     virtual bool isDaemon();
