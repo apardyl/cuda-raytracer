@@ -14,7 +14,7 @@ private:
 
     SDL_Window *window = nullptr;
     SDL_Surface *screenSurface = nullptr;
-    std::atomic<SDL_Surface *> renderedImage = nullptr;
+    std::atomic<SDL_Surface *> renderedImage;
 
     void render();
 
