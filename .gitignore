@@ -5,3 +5,7 @@
 *.cubin
 *.fatbin
 cmake-build-debug/
+packages/
+*x64/
+.vs/
+*.pdb

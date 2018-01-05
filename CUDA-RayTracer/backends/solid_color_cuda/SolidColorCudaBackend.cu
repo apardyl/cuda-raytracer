@@ -1,4 +1,5 @@
 #include "SolidColorCudaBackend.h"
+#include <cuda_runtime.h>
 
 const int BLOCK_SIZE = 32;
 const int BYTES_PER_PIXEL = 3;

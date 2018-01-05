@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="frontends">
+      <UniqueIdentifier>{328775f0-ba07-425e-b9c6-e99e132d17cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backends">
+      <UniqueIdentifier>{ab44a4b3-3d8f-4e1a-87a7-254e753e1587}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backends\solid_color_cuda">
+      <UniqueIdentifier>{17474560-c10f-41e9-a89c-7d681d5aa975}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="frontends\frontend_controller">
+      <UniqueIdentifier>{e9dcff1f-d8d7-452f-bf67-003875d9675c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="frontends\sdl">
+      <UniqueIdentifier>{cb3e24fd-ed2d-4844-9526-58e509ed1b4f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="backends\Backend.cpp">
+      <Filter>backends</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\solid_color_cuda\SolidColorCudaBackend.cpp">
+      <Filter>backends\solid_color_cuda</Filter>
+    </ClCompile>
+    <ClCompile Include="frontends\frontend_controller\CountDownLatch.cpp">
+      <Filter>frontends\frontend_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="frontends\frontend_controller\FrontendController.cpp">
+      <Filter>frontends\frontend_controller</Filter>
+    </ClCompile>
+    <ClCompile Include="frontends\sdl\SDLError.cpp">
+      <Filter>frontends\sdl</Filter>
+    </ClCompile>
+    <ClCompile Include="frontends\sdl\SDLFrontend.cpp">
+      <Filter>frontends\sdl</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="backends\Backend.h">
+      <Filter>backends</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\Image.h">
+      <Filter>backends</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\solid_color_cuda\SolidColorCudaBackend.h">
+      <Filter>backends\solid_color_cuda</Filter>
+    </ClInclude>
+    <ClInclude Include="frontends\Frontend.h">
+      <Filter>frontends</Filter>
+    </ClInclude>
+    <ClInclude Include="frontends\frontend_controller\CountDownLatch.h">
+      <Filter>frontends\frontend_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="frontends\frontend_controller\FrontendController.h">
+      <Filter>frontends\frontend_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="frontends\sdl\SDLError.h">
+      <Filter>frontends\sdl</Filter>
+    </ClInclude>
+    <ClInclude Include="frontends\sdl\SDLFrontend.h">
+      <Filter>frontends\sdl</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <CudaCompile Include="backends\solid_color_cuda\SolidColorCudaBackend.cu">
+      <Filter>backends\solid_color_cuda</Filter>
+    </CudaCompile>
+  </ItemGroup>
+</Project>

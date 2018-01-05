@@ -1,7 +1,6 @@
 #ifndef RAY_TRACER_SOLIDCOLORCUDABACKEND_H
 #define RAY_TRACER_SOLIDCOLORCUDABACKEND_H
 
-#include <cstddef>
 #include "backends/Backend.h"
 
 /**
