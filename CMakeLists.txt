@@ -21,12 +21,9 @@ cuda_add_executable(ray_tracer ${SOURCES})
 
 # SDL2
 find_package(SDL2 REQUIRED)
-
-include_directories(
-        ${SDL2_INCLUDE_DIRS})
-target_link_libraries(
-        ray_tracer
-        ${SDL2_LIBRARY})
+include_directories(${SDL2_INCLUDE_DIRS})
+link_libraries(${SDL2_LIBDIR})
+target_link_libraries(ray_tracer SDL2)
 
 # libpng
 find_package(PNG REQUIRED)
