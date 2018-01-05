@@ -11,7 +11,11 @@ find_package(CUDA REQUIRED)
 set(ray_tracer_SOURCE_DIR ${ray_tracer_SOURCE_DIR}/CUDA-RayTracer)
 include_directories(${ray_tracer_SOURCE_DIR})
 
-FILE(GLOB_RECURSE SOURCES *.cpp *.cu *.h *.hpp)
+FILE(GLOB_RECURSE SOURCES
+        ${ray_tracer_SOURCE_DIR}/*.cpp
+        ${ray_tracer_SOURCE_DIR}/*.cu
+        ${ray_tracer_SOURCE_DIR}/*.h
+        ${ray_tracer_SOURCE_DIR}/*.hpp)
 
 cuda_add_executable(ray_tracer ${SOURCES})
 
