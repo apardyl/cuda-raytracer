@@ -50,14 +50,24 @@ void SDLFrontend::run() {
 
 void SDLFrontend::render() {
     SDL_FillRect(screenSurface, nullptr, 0);
-    if (static_cast<SDL_Surface*>(renderedImage) != nullptr) {
+
+    auto *imageSurface = static_cast<SDL_Surface *>(renderedImage);
+    if (imageSurface != nullptr) {
+        // Check if the image size has been changed
+        int w, h;
+        SDL_GetWindowSize(window, &w, &h);
+        if (w != imageSurface->w || h != imageSurface->h) {
+            SDL_SetWindowSize(window, imageSurface->w, imageSurface->h);
+            screenSurface = SDL_GetWindowSurface(window);
+        }
+
         SDL_BlitSurface(renderedImage, nullptr, screenSurface, nullptr);
         SDL_UpdateWindowSurface(window);
     }
 }
 
 void SDLFrontend::setImage(Image image) {
-    SDL_Surface * surface = SDL_CreateRGBSurfaceFrom(
+    SDL_Surface *surface = SDL_CreateRGBSurfaceFrom(
             image.pixelData, image.width, image.height, 24,
             image.width * image.bytesPerPixel,
             0x0000ff, 0x00ff00, 0xff00000, 0);
@@ -67,7 +77,7 @@ void SDLFrontend::setImage(Image image) {
     }
 
     renderedImage = SDL_ConvertSurface(surface, screenSurface->format, 0);
-    if (static_cast<SDL_Surface*>(renderedImage) == nullptr) {
+    if (static_cast<SDL_Surface *>(renderedImage) == nullptr) {
         throw SDLError("Could not convert rendered image surface");
     }
 }
