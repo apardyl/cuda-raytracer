@@ -16,6 +16,9 @@
     <Filter Include="frontends\sdl">
       <UniqueIdentifier>{cb3e24fd-ed2d-4844-9526-58e509ed1b4f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="frontends\image">
+      <UniqueIdentifier>{ad14b7a4-55d5-40e5-a0f9-2e571a007a54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="backends\Backend.cpp">
@@ -37,6 +40,21 @@
       <Filter>frontends\sdl</Filter>
     </ClCompile>
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="backends\Image.cpp">
+      <Filter>backends</Filter>
+    </ClCompile>
+    <ClCompile Include="frontends\Frontend.cpp">
+      <Filter>frontends</Filter>
+    </ClCompile>
+    <ClCompile Include="frontends\image\ImageError.cpp">
+      <Filter>frontends\image</Filter>
+    </ClCompile>
+    <ClCompile Include="frontends\image\ImageFrontend.cpp">
+      <Filter>frontends\image</Filter>
+    </ClCompile>
+    <ClCompile Include="frontends\frontend_controller\FrontendInstance.cpp">
+      <Filter>frontends\frontend_controller</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backends\Backend.h">
@@ -62,6 +80,15 @@
     </ClInclude>
     <ClInclude Include="frontends\sdl\SDLFrontend.h">
       <Filter>frontends\sdl</Filter>
+    </ClInclude>
+    <ClInclude Include="frontends\image\ImageError.h">
+      <Filter>frontends\image</Filter>
+    </ClInclude>
+    <ClInclude Include="frontends\image\ImageFrontend.h">
+      <Filter>frontends\image</Filter>
+    </ClInclude>
+    <ClInclude Include="frontends\frontend_controller\FrontendInstance.h">
+      <Filter>frontends\frontend_controller</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

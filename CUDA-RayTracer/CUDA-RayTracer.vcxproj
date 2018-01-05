@@ -93,9 +93,14 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="backends\Backend.cpp" />
+    <ClCompile Include="backends\Image.cpp" />
     <ClCompile Include="backends\solid_color_cuda\SolidColorCudaBackend.cpp" />
+    <ClCompile Include="frontends\Frontend.cpp" />
     <ClCompile Include="frontends\frontend_controller\CountDownLatch.cpp" />
     <ClCompile Include="frontends\frontend_controller\FrontendController.cpp" />
+    <ClCompile Include="frontends\frontend_controller\FrontendInstance.cpp" />
+    <ClCompile Include="frontends\image\ImageError.cpp" />
+    <ClCompile Include="frontends\image\ImageFrontend.cpp" />
     <ClCompile Include="frontends\sdl\SDLError.cpp" />
     <ClCompile Include="frontends\sdl\SDLFrontend.cpp" />
     <ClCompile Include="main.cpp" />
@@ -107,6 +112,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="frontends\Frontend.h" />
     <ClInclude Include="frontends\frontend_controller\CountDownLatch.h" />
     <ClInclude Include="frontends\frontend_controller\FrontendController.h" />
+    <ClInclude Include="frontends\frontend_controller\FrontendInstance.h" />
+    <ClInclude Include="frontends\image\ImageError.h" />
+    <ClInclude Include="frontends\image\ImageFrontend.h" />
     <ClInclude Include="frontends\sdl\SDLError.h" />
     <ClInclude Include="frontends\sdl\SDLFrontend.h" />
   </ItemGroup>
