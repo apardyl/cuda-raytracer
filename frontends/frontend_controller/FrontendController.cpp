@@ -4,28 +4,34 @@
 
 FrontendController::FrontendController(
         std::vector<std::function<Frontend *()>> const &constructors) :
-        initLatch(static_cast<unsigned int>(constructors.size())),
-        frontends(constructors.size(), nullptr) {
-    frontendThreads.reserve(constructors.size());
+        initLatch(static_cast<unsigned int>(constructors.size())) {
+    frontends.reserve(constructors.size());
 
     for (size_t i = 0; i < constructors.size(); ++i) {
         const auto &constructor = constructors[i];
-        frontendThreads.emplace_back([&](int i, auto constructor) {
-            std::unique_ptr<Frontend> frontend;
-            {
-                std::unique_lock<std::mutex> localLock(frontendsLock);
-                frontend.reset(constructor());
-                frontends[i] = frontend.get();
-            }
-            initLatch.countDown();
+        frontends.emplace_back(std::make_unique<std::thread>(
+                std::thread([&](int i, auto constructor) {
+                    std::shared_ptr<Frontend> frontend(constructor());
+                    frontends[i].setFrontend(frontend);
+                    initLatch.countDown();
 
-            frontend->run();
+                    frontend->run();
+                }, i, constructor)));
+    }
+}
 
-            {
-                std::unique_lock<std::mutex> localLock(frontendsLock);
-                frontends[i] = nullptr;
-            }
-        }, i, constructor);
+FrontendController::~FrontendController() {
+    for (auto &frontend : frontends) {
+        const std::shared_ptr<Frontend> &frontendPtr = frontend.frontend.lock();
+        if (frontendPtr) {
+            frontendPtr->terminate();
+        }
+    }
+
+    for (auto &frontend : frontends) {
+        if (frontend.thread->joinable()) {
+            frontend.thread->join();
+        }
     }
 }
 
@@ -34,17 +40,18 @@ void FrontendController::waitForInit() {
 }
 
 void FrontendController::setImage(Image image) {
-    std::unique_lock<std::mutex> localLock(frontendsLock);
-
     for (auto const &frontend : frontends) {
-        if (frontend != nullptr) {
-            frontend->setImage(image);
+        const std::shared_ptr<Frontend> &frontendPtr = frontend.frontend.lock();
+        if (frontendPtr) {
+            frontendPtr->setImage(image);
         }
     }
 }
 
 void FrontendController::waitForTermination() {
-    for (std::thread &thread : frontendThreads) {
-        thread.join();
+    for (auto &frontend : frontends) {
+        if (!frontend.isDaemon && frontend.thread->joinable()) {
+            frontend.thread->join();
+        }
     }
 }

@@ -6,17 +6,18 @@
 #include <thread>
 #include "frontends/Frontend.h"
 #include "CountDownLatch.h"
+#include "FrontendInstance.h"
 
 class FrontendController {
 private:
     CountDownLatch initLatch;
-    std::vector<Frontend *> frontends;
-    std::vector<std::thread> frontendThreads;
-    std::mutex frontendsLock;
+    std::vector<FrontendInstance> frontends;
 
 public:
     explicit FrontendController(
             std::vector<std::function<Frontend *()>> const &constructors);
+
+    ~FrontendController();
 
     void waitForInit();
 
