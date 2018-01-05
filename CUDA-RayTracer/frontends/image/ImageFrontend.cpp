@@ -15,11 +15,15 @@ ImageFrontend::ImageFrontend() = default;
 ImageFrontend::~ImageFrontend() = default;
 
 void ImageFrontend::run() {
-    while (!shouldTerminate) {
+    while (!shouldTerminate || image != nullptr) {
         std::unique_lock<std::mutex> localLock(lock);
         if (image != nullptr) {
             savePNG(*image);
             image = nullptr;
+        }
+
+        if (shouldTerminate) {
+            break;
         }
 
         condition.wait(localLock);
