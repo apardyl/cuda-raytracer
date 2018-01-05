@@ -1,4 +1,4 @@
-#ifdef __STDC_LIB_EXT1__
+#if defined(__STDC_LIB_EXT1__) || defined(_MSC_VER)
 #define __STDC_WANT_LIB_EXT1__ 1
 #else
 #define fopen_s(pFile, filename, mode) \
