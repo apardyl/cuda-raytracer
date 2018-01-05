@@ -2,6 +2,8 @@
 #include "SDLError.h"
 
 SDLFrontend::SDLFrontend() {
+    renderedImage = nullptr;
+
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         throw SDLError("SDL could not initialize");
     }
@@ -48,25 +50,22 @@ void SDLFrontend::run() {
 
 void SDLFrontend::render() {
     SDL_FillRect(screenSurface, nullptr, 0);
-    if (renderedImage != nullptr) {
+    if (static_cast<SDL_Surface*>(renderedImage) != nullptr) {
         SDL_BlitSurface(renderedImage, nullptr, screenSurface, nullptr);
+        SDL_UpdateWindowSurface(window);
     }
-    SDL_UpdateWindowSurface(window);
 }
 
 void SDLFrontend::setImage(Image image) {
-//	SDL_Surface *surface = SDL_CreateRGBSurfaceWithFormatFrom(
-//		image.pixelData, image.width, image.height, 24,
-//		image.height * 3, SDL_PIXELFORMAT_RGB24);
-
-    SDL_Surface * surface = SDL_CreateRGBSurfaceFrom(image.pixelData, image.width, image.height, 24, image.height * 3, 0x0000ff, 0x00ff00, 0xff00000, 0);
+    SDL_Surface * surface = SDL_CreateRGBSurfaceFrom(
+		image.pixelData, image.width, image.height, 24, image.height * 3, 0x0000ff, 0x00ff00, 0xff00000, 0);
 
     if (surface == nullptr) {
         throw SDLError("Could not create rendered image surface");
     }
 
     renderedImage = SDL_ConvertSurface(surface, screenSurface->format, 0);
-    if (renderedImage == nullptr) {
+    if (static_cast<SDL_Surface*>(renderedImage) == nullptr) {
         throw SDLError("Could not convert rendered image surface");
     }
 }
