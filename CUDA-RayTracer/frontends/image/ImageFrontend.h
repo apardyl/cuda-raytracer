@@ -10,12 +10,13 @@ private:
     std::condition_variable condition;
     std::mutex lock;
 
+    const std::string filename;
     std::unique_ptr<Image> image = nullptr;
     bool shouldTerminate = false;
 
     void savePNG(Image const &image);
 public:
-    ImageFrontend();
+    explicit ImageFrontend(std::string const &filename);
 
     ~ImageFrontend() override;
 

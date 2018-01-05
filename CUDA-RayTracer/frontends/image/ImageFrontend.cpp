@@ -10,7 +10,9 @@
 #include "ImageFrontend.h"
 #include "ImageError.h"
 
-ImageFrontend::ImageFrontend() = default;
+ImageFrontend::ImageFrontend(std::string const &filename) :
+        filename(filename) {
+}
 
 ImageFrontend::~ImageFrontend() = default;
 
@@ -48,7 +50,7 @@ void ImageFrontend::terminate() {
 
 void ImageFrontend::savePNG(Image const &image) {
     FILE *fp = nullptr;
-    if (fopen_s(&fp, "output.png", "wb") || fp == nullptr) {
+    if (fopen_s(&fp, filename.c_str(), "wb") || fp == nullptr) {
         throw ImageError("Could not open file for writing");
     }
 
