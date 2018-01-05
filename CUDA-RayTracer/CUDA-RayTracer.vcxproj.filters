@@ -19,6 +19,9 @@
     <Filter Include="frontends\image">
       <UniqueIdentifier>{ad14b7a4-55d5-40e5-a0f9-2e571a007a54}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scene">
+      <UniqueIdentifier>{c195ca05-1841-4b76-8160-2c438b803a2c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="backends\Backend.cpp">
@@ -55,6 +58,15 @@
     <ClCompile Include="frontends\frontend_controller\FrontendInstance.cpp">
       <Filter>frontends\frontend_controller</Filter>
     </ClCompile>
+    <ClCompile Include="scene\Triangle.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\Vector.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\Point.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backends\Backend.h">
@@ -89,6 +101,18 @@
     </ClInclude>
     <ClInclude Include="frontends\frontend_controller\FrontendInstance.h">
       <Filter>frontends\frontend_controller</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\Models.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\Point.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\Triangle.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\Vector.h">
+      <Filter>scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
