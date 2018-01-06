@@ -1,0 +1,26 @@
+#ifndef RAY_TRACER_OPENMP_H
+#define RAY_TRACER_OPENMP_H
+
+#include "../Backend.h"
+
+/**
+ * Very simple rendering backend that just fills the surface with a solid color
+ * using CUDA.
+ */
+class RayTracingCuda : public Backend {
+private:
+    byte *data = nullptr;
+
+public:
+	RayTracingCuda();
+
+    ~RayTracingCuda() override;
+
+    Image render() override;
+
+    void setResolution(unsigned width, unsigned height) override;
+
+	void setSoftShadows(bool var);
+};
+
+#endif //RAY_TRACER_OPENMP_H
