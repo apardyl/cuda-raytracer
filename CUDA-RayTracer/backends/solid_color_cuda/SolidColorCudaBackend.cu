@@ -1,8 +1,8 @@
-#include <cuda_runtime.h>
 #include "SolidColorCudaBackend.h"
+#include <cuda_runtime.h>
 
 const int BLOCK_SIZE = 32;
-const int BYTES_PER_PIXEL = 3;
+const int BYTES_PER_PIXEL = SolidColorCudaBackend::BYTES_PER_PIXEL;
 
 // Rendering red to make sure the subpixel values are interpreted in the
 // correct order
@@ -22,24 +22,11 @@ __global__ void renderSolidColor(byte *data, unsigned width, unsigned height) {
     data[(width * y + x) * BYTES_PER_PIXEL + 2] = COLOR_BLUE;
 }
 
-SolidColorCudaBackend::~SolidColorCudaBackend() {
-    cudaFree(data);
-}
-
-Image SolidColorCudaBackend::render() {
+void SolidColorCudaBackend::doRender() {
     const dim3 blockSize(BLOCK_SIZE, BLOCK_SIZE, 1);
     const dim3 gridSize(
             width + (BLOCK_SIZE - 1) / BLOCK_SIZE,
             height + (BLOCK_SIZE - 1) / BLOCK_SIZE,
             1);
     renderSolidColor<<<gridSize, blockSize>>>(data, width, height);
-    cudaDeviceSynchronize();
-    return Image(width, height, data);
-}
-
-void SolidColorCudaBackend::setResolution(unsigned width, unsigned height) {
-    Backend::setResolution(width, height);
-
-    cudaFree(data);
-    cudaMallocHost(&data, sizeof(byte) * width * height * BYTES_PER_PIXEL);
 }
