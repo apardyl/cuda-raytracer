@@ -22,6 +22,9 @@
     <Filter Include="scene">
       <UniqueIdentifier>{c195ca05-1841-4b76-8160-2c438b803a2c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="application">
+      <UniqueIdentifier>{ec8a798c-ff98-4cc7-a4f3-5041d17b4bca}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="backends\Backend.cpp">
@@ -42,7 +45,6 @@
     <ClCompile Include="frontends\sdl\SDLFrontend.cpp">
       <Filter>frontends\sdl</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp" />
     <ClCompile Include="backends\Image.cpp">
       <Filter>backends</Filter>
     </ClCompile>
@@ -66,6 +68,15 @@
     </ClCompile>
     <ClCompile Include="scene\Point.cpp">
       <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="application\Application.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
+    <ClCompile Include="application\BackendInitializer.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
+    <ClCompile Include="application\main.cpp">
+      <Filter>application</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -113,6 +124,15 @@
     </ClInclude>
     <ClInclude Include="scene\Vector.h">
       <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="application\Application.h">
+      <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="application\ApplicationOptions.h">
+      <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="application\BackendInitializer.h">
+      <Filter>application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
