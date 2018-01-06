@@ -1,6 +1,7 @@
 ﻿#include "Shape.h"
+#include <utility>
 
-Shape::Shape(int triangleCount): material(), triangleCount(triangleCount) {
+Shape::Shape(int triangleCount) : triangleCount(triangleCount) {
     this->triangles = new Triangle[triangleCount];
 }
 
@@ -16,7 +17,7 @@ Shape::Shape(const Shape &shape): material(shape.material), triangleCount(shape.
 }
 
 Shape::Shape(Shape &&shape) noexcept: material(shape.material), triangleCount(shape.triangleCount) {
-    triangles = shape.triangles;
+    std::swap(triangles, shape.triangles);
 }
 
 Shape::~Shape() {
@@ -24,11 +25,13 @@ Shape::~Shape() {
 }
 
 Shape& Shape::operator=(const Shape &shape) {
-    material = shape.material;
-    triangleCount = shape.triangleCount;
-    triangles = new Triangle[triangleCount];
-    for (int i = 0; i < triangleCount; i++) {
-        triangles[i] = shape.triangles[i];
-    }
+    *this = Shape(shape);
+    return *this;
+}
+
+Shape& Shape::operator=(Shape &&shape) noexcept {
+    std::swap(material, shape.material);
+    std::swap(triangleCount, shape.triangleCount);
+    std::swap(triangles, shape.triangles);
     return *this;
 }

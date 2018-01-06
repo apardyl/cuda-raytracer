@@ -4,7 +4,7 @@
 struct Color {
     float red, green, blue;
 
-    Color() = default;
+    Color();
     Color(float red, float green, float blue);
 };
 

@@ -6,7 +6,7 @@
 
 struct Shape {
 private:
-    Triangle *triangles;
+    Triangle *triangles = nullptr;
 
 public:
     Material material;
@@ -22,6 +22,7 @@ public:
     ~Shape();
 
     Shape& operator=(const Shape &shape);
+    Shape& operator=(Shape &&shape) noexcept;
 };
 
 #endif // RAY_TRACER_SHAPE_H

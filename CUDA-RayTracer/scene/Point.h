@@ -6,7 +6,7 @@
 struct Point {
     float x, y, z;
 
-    Point() = default;
+    Point();
     Point(float x, float y, float z);
 
     float getDist(const Point &a) const;

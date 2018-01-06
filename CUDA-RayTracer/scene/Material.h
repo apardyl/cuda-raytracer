@@ -7,7 +7,7 @@ struct Material {
     Color ambient, diffuse, specular;
     float specularExponent, dissolve;
 
-    Material() = default;
+    Material();
     Material(Color ambient, Color diffuse, Color specular, float specularExponent, float dissolve);
 };
 
