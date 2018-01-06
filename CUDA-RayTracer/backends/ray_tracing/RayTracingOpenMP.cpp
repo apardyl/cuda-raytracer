@@ -9,16 +9,21 @@
 const int N = (int)1e6 + 5;
 const float inf = 1e9;
 const float eps = 1e-6;
+const float Ia = 0.2; // ambient intensities 
 
 int num_of_triangles = 0;
 int num_of_nodes = 0;
+int num_of_lights = 0;
 
 struct Triangle;
 struct Node;
 struct Vector;
+struct Light;
+
 
 Triangle * global_triangles = NULL;
 Node * nodes = NULL;
+Light * lights = NULL;
 
 struct Point {
 	float x, y, z;
@@ -106,15 +111,73 @@ struct Vector {
 	}
 };
 
+
+struct Color {
+	float r, g, b;
+	Color() {}
+	Color(float r, float g, float  b) {
+		this->r = r;
+		this->g = g;
+		this->b = b;
+	}
+
+	Color& operator+=(const Color& color) {
+		this->r += color.r;
+		this->g += color.g;
+		this->b += color.b;
+		return *this;
+	}
+
+	Color& operator/=(const float& div) {
+		this->r /= div;
+		this->g /= div;
+		this->b /= div;
+		return *this;
+	}
+
+	Color operator*(const float& mul) {
+		Color res = Color(r*mul, g*mul, b*mul);
+		return res;
+	}
+};
+
+struct Light {
+	Point point;
+	Color Is, Id;
+
+	Light() {}
+
+	Light(Point point, Color Is, Color Id) {
+		this->point = point;
+		this->Is = Is;
+		this->Id = Id;
+	}
+};
+
+struct Material {
+	float Ks, Kd, Ka, alfa;
+
+	Material() {}
+
+	Material(float Ks, float Kd, float Ka, float alfa) {
+		this->Ks = Ks;
+		this->Kd = Kd;
+		this->Ka = Ka;
+		this->afla = alfa;
+	}
+};
+
 struct Triangle {
 	Point x, y, z;
+	Material material;
 
 	Triangle() {}
 
-	Triangle(Point a, Point b, Point c) {
+	Triangle(Point a, Point b, Point c, Material material) {
 		x = a;
 		y = b;
 		z = c;
+		this->material = material;
 	}
 
 	Point get_midpoint() const {
@@ -166,6 +229,13 @@ struct Triangle {
 		Vector res = vector.add(normal.mul((-2)*vector.dot(normal)));
 		res.normalize();
 		return res;
+	}
+
+	Vector get_normal() {
+		Vector a_b(x, y);
+		Vector a_c(x, z);
+		Vector normal = a_b.cross_product(a_c);
+		return normal;
 	}
 
 	Point get_intersection_point(Vector vector) // not implemented
@@ -432,30 +502,6 @@ Box get_bounding_box(std::vector<int> &triangles_) {
 	return Box(min_point, x, y, z);
 }
 
-struct Color {
-	float r, g, b;
-	Color() {}
-	Color(float r, float g, float  b) {
-		this->r = r;
-		this->g = g;
-		this->b = b;
-	}
-
-	Color& operator+=(const Color& color) {
-		this->r += color.r;
-		this->g += color.g;
-		this->b += color.b;
-		return *this;
-	}
-
-	Color& operator/=(const float& div) {
-		this->r /= div;
-		this->g /= div;
-		this->b /= div;
-		return *this;
-	}
-};
-
 struct Resolution {
 	int width, height;
 
@@ -517,32 +563,6 @@ struct Camera {
 		return active_pixel_sensor;
 	}
 };
-
-Color trace(Vector vector, int depth) {
-	Vector * vectors = new Vector[depth];
-	vectors[0] = vector;
-	int num = 1;
-	for (; num < depth; ++num)
-	{
-		int triangle_index = get_triangle(vector);
-		if (triangle_index == -1 || num == depth-1)
-		{
-			num--;
-			break;
-		}
-		vectors[1] = global_triangles[triangle_index].get_reflected_vector(vectors[num - 1]);
-	}
-	Color res(0, 0, 0);
-	for (int i = num - 1; num >= 0; num--)
-	{
-		Point reflection_point = vectors[i].point;
-		// in res variable is color from next reflection point
-
-		// compute color and assign result to res variable
-	}
-	delete[] vectors;
-	return res;
-}
 
 int build_tree(std::vector<int> triangles, int parent, int axis, int depth) {
 	int node_index = num_of_nodes++;
@@ -610,14 +630,70 @@ int get_triangle(Vector &vector) // get triangle which have collison with vector
 	return ans;
 }
 
-Image RayTracingCuda::render() {
+Color trace(Vector vector, int depth) {
+	Vector * vectors = new Vector[depth];
+	int * triangles = new int[depth];
+	vectors[0] = vector;
+	triangles[0] = -1; // there is no triangle for primary vector
+	int num = 1;
+	for (; num < depth; ++num)
+	{
+		int triangle_index = get_triangle(vector);
+		if (triangle_index == -1 || num == depth - 1)
+		{
+			num--;
+			break;
+		}
+		vectors[num] = global_triangles[triangle_index].get_reflected_vector(vectors[num - 1]);
+		triangles[num] = triangle_index;
+	}
+	Color res(0, 0, 0);
+	for (int i = num - 1; i >= 1; i--)
+	{
+		Point reflection_point = vectors[i].point;
+		Vector normal = global_triangles[triangles[i]].get_normal();
+		normal.normalize();
+		Vector to_light = Vector(reflection_point, lights[light].point);
+		to_light.normalize();
+		Vector to_viewer = vectors[i - 1].mul(-1);
+		to_viewer.normalize();
+		Vector from_light(lights[light].point, reflection_point);
+		Vector from_light_reflected = global_triangles[triangles[i]].get_reflected_vector(from_light);
+		from_light_reflected.noramalize();
+		Material material = global_triangles[triangles[i]].material;
+		Color triangle_ilumination = Ia * material.Ka;
+		for (int light = 0; light < num_of_lights; ++light)
+		{
+			triangle_ilumination += material.Kd*lights[light].Id*(normal.dot(to_light));
+			triangle_ilumination += material.Ks*lights[light].Is*powf(to_viewer.dot(from_light_reflected), material.alfa);
+		}
+
+		if (i < num - 1)
+		{
+			triangle_ilumiantion += material.Ks*res*powf(to_viewer.dot(to_viewer), material.alfa);
+		}
+
+		res = triangle_ilumination;
+	}
+	delete[] vectors;
+	delete[] triangles;
+	return res;
+}
+
+Image RayTracingOpenMP::render() {
 	nodes = new Node[N];
+	lights = new Light[10];
+	Light light(7, -7, 7, Color(5,5,5), Color(8,8,8), Color(1,1,1));
+	lights[0] = light;
+	num_of_lights++;
+	Material A(0.2, 0.5, 0.6);
+	Material B(0.8, 0.3, 0.1);
 	global_triangles = new Triangle[N];
-	global_triangles[0] = Triangle(Point(-1.25, -0.81, 0), Point(0.79, -0.81, 0), Point(0, 0, 1.5));
+	global_triangles[0] = Triangle(Point(-1.25, -0.81, 0), Point(0.79, -0.81, 0), Point(0, 0, 1.5), A);
 	global_triangles[1] = Triangle(Point(-0.376859, 0.353287, -0.324435)
-		, Point(1.623141, 0.353287, -0.324435), Point(-0.376859, 0.353287, 1.675565));
+		, Point(1.623141, 0.353287, -0.324435), Point(-0.376859, 0.353287, 1.675565), A);
 	global_triangles[2] = Triangle(Point(1.22, 1.15, 0)
-		, Point(0, 0, 1), Point(-1.35, 1.28, 0));
+		, Point(0, 0, 1), Point(-1.35, 1.28, 0), B);
 	num_of_triangles = 3;
 	std::vector<int> triangles = { 0,1,2 };
 	build_tree(triangles, -1, 0, 10);
@@ -631,6 +707,7 @@ Image RayTracingCuda::render() {
 	}
 	delete[] nodes;
 	delete[] global_triangles;
+	delete[] lights;
 	auto pixels = camera.get_pixels();
 
 }

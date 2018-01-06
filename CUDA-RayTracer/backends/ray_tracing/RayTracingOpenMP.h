@@ -7,14 +7,14 @@
  * Very simple rendering backend that just fills the surface with a solid color
  * using CUDA.
  */
-class RayTracingCuda : public Backend {
+class RayTracingOpenMP : public Backend {
 private:
     byte *data = nullptr;
 
 public:
-	RayTracingCuda();
+	RayTracingOpenMP();
 
-    ~RayTracingCuda() override;
+    ~RayTracingOpenMP() override;
 
     Image render() override;
 
