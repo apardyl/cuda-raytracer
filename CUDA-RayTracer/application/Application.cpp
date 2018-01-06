@@ -116,7 +116,10 @@ po::options_description Application::createFrontendsOptions() {
 void Application::run() {
     parseCommandLine();
 
-    FrontendController frontendController(createFrontendList());
+    BackendController backendController(
+            &executionLock, &executionCondition);
+    FrontendController frontendController(
+            createFrontendList(), backendController);
     frontendController.waitForInit();
 
     std::unique_ptr<Backend> backend(
@@ -124,7 +127,29 @@ void Application::run() {
     backend->setResolution(options.width, options.height);
     frontendController.setImage(backend->render());
 
-    frontendController.waitForTermination();
+    std::thread frontendControllerThread([&]() {
+        frontendController.waitForTermination();
+        {
+            std::unique_lock<std::recursive_mutex> localLock(executionLock);
+            executionCondition.notify_all();
+        }
+    });
+
+    while (!frontendController.areFrontendsTerminated()) {
+        // Wait either for frontends termination, or re-render request
+
+        std::unique_lock<std::recursive_mutex> localLock(executionLock);
+        if (backendController.isRefreshRequested()) {
+            backendController.applyBackendSettings(backend.get());
+            frontendController.setImage(backend->render());
+        }
+
+        executionCondition.wait(localLock);
+    }
+
+    if (frontendControllerThread.joinable()) {
+        frontendControllerThread.join();
+    }
 }
 
 std::vector<std::function<Frontend *()>>

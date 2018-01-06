@@ -12,10 +12,12 @@ class FrontendController {
 private:
     CountDownLatch initLatch;
     std::vector<FrontendInstance> frontends;
+    std::atomic<bool> frontendsTerminated;
 
 public:
     explicit FrontendController(
-            std::vector<std::function<Frontend *()>> const &constructors);
+            std::vector<std::function<Frontend *()>> const &constructors,
+            BackendController &backendController);
 
     ~FrontendController();
 
@@ -24,6 +26,8 @@ public:
     void setImage(Image image);
 
     void waitForTermination();
+
+    bool areFrontendsTerminated() const;
 };
 
 #endif //RAY_TRACER_FRONTENDCONTROLLER_H

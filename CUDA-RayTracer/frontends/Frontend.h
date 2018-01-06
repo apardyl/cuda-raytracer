@@ -1,15 +1,21 @@
 #ifndef RAY_TRACER_FRONTEND_H
 #define RAY_TRACER_FRONTEND_H
 
-#include <backends/Image.h>
+#include "backends/Image.h"
+#include "frontends/frontend_controller/BackendController.h"
 
 class Frontend {
+protected:
+    BackendController *backendController = nullptr;
+
 public:
     virtual ~Frontend() = default;
 
     virtual void run() = 0;
 
     virtual void setImage(Image image) = 0;
+
+    virtual void setBackendController(BackendController *backendController);
 
     /**
      * Return whether the frontend is a daemon (i.e. should be terminated

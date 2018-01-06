@@ -15,6 +15,8 @@ private:
     char **argv;
 
     ApplicationOptions options;
+    std::recursive_mutex executionLock;
+    std::condition_variable_any executionCondition;
 
     void parseCommandLine();
 
