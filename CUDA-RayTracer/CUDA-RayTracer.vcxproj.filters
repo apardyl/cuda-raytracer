@@ -87,6 +87,9 @@
     <ClCompile Include="scene\Shape.cpp">
       <Filter>scene</Filter>
     </ClCompile>
+    <ClCompile Include="scene\Scene.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backends\Backend.h">
@@ -150,6 +153,9 @@
       <Filter>scene</Filter>
     </ClInclude>
     <ClInclude Include="scene\Shape.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\Scene.h">
       <Filter>scene</Filter>
     </ClInclude>
   </ItemGroup>

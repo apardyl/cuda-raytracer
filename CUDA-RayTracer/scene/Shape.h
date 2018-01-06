@@ -7,14 +7,12 @@
 struct Shape {
 private:
     Triangle *triangles = nullptr;
-
-public:
-    Material material;
+    int materialCode;
     int triangleCount;
 
-    explicit Shape(int triangleCount);
-
-    Shape(int triangleCount, const Material &material);
+public:
+    Shape();
+    Shape(int triangleCount, int materialCode);
 
     Shape(const Shape &shape);
     Shape(Shape &&shape) noexcept;
@@ -23,6 +21,10 @@ public:
 
     Shape& operator=(const Shape &shape);
     Shape& operator=(Shape &&shape) noexcept;
+
+    Triangle* getTriangles() const;
+    int getTriangleCount() const;
+    int getMaterialCode() const;
 };
 
 #endif // RAY_TRACER_SHAPE_H

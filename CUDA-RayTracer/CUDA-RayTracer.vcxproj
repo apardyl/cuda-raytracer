@@ -111,6 +111,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="scene\Color.cpp" />
     <ClCompile Include="scene\Material.cpp" />
     <ClCompile Include="scene\Point.cpp" />
+    <ClCompile Include="scene\Scene.cpp" />
     <ClCompile Include="scene\Shape.cpp" />
     <ClCompile Include="scene\Triangle.cpp" />
     <ClCompile Include="scene\Vector.cpp" />
@@ -134,6 +135,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="scene\Material.h" />
     <ClInclude Include="scene\Models.h" />
     <ClInclude Include="scene\Point.h" />
+    <ClInclude Include="scene\Scene.h" />
     <ClInclude Include="scene\Shape.h" />
     <ClInclude Include="scene\Triangle.h" />
     <ClInclude Include="scene\Vector.h" />
