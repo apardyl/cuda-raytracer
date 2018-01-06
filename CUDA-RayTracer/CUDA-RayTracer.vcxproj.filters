@@ -25,13 +25,16 @@
     <Filter Include="application">
       <UniqueIdentifier>{ec8a798c-ff98-4cc7-a4f3-5041d17b4bca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scene\scene_loaders">
+      <UniqueIdentifier>{b6400b15-70a4-4ec4-a7d9-a33fd6521818}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="backends\cuda_backend">
+      <UniqueIdentifier>{212ee0e3-1084-4fd7-8898-245474dc969d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="backends\Backend.cpp">
       <Filter>backends</Filter>
-    </ClCompile>
-    <ClCompile Include="backends\solid_color_cuda\SolidColorCudaBackend.cpp">
-      <Filter>backends\solid_color_cuda</Filter>
     </ClCompile>
     <ClCompile Include="frontends\frontend_controller\CountDownLatch.cpp">
       <Filter>frontends\frontend_controller</Filter>
@@ -164,6 +167,9 @@
     <ClInclude Include="frontends\frontend_controller\BackendController.h">
       <Filter>frontends\frontend_controller</Filter>
     </ClInclude>
+    <ClInclude Include="backends\cuda_backend\CudaBackend.h">
+      <Filter>backends\cuda_backend</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -171,6 +177,9 @@
   <ItemGroup>
     <CudaCompile Include="backends\solid_color_cuda\SolidColorCudaBackend.cu">
       <Filter>backends\solid_color_cuda</Filter>
+    </CudaCompile>
+    <CudaCompile Include="backends\cuda_backend\CudaBackend.cu">
+      <Filter>backends\cuda_backend</Filter>
     </CudaCompile>
   </ItemGroup>
 </Project>
