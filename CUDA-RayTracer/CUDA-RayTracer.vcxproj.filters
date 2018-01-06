@@ -32,7 +32,7 @@
       <UniqueIdentifier>{212ee0e3-1084-4fd7-8898-245474dc969d}</UniqueIdentifier>
     </Filter>
     <Filter Include="backends\random_cuda">
-      <UniqueIdentifier>{46f5042b-ebee-4f3e-b1ef-6446f1d66782}</UniqueIdentifier>
+      <UniqueIdentifier>{9b71263a-9af6-410d-98d6-5fa56a9ac536}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +95,24 @@
     </ClCompile>
     <ClCompile Include="scene\Scene.cpp">
       <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\SceneLoader.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\scene_loaders\ObjLoader.cpp">
+      <Filter>scene\scene_loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\scene_loaders\MtlParser.cpp">
+      <Filter>scene\scene_loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\scene_loaders\UnknownFormatException.cpp">
+      <Filter>scene\scene_loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\scene_loaders\IOException.cpp">
+      <Filter>scene\scene_loaders</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\scene_loaders\ParseError.cpp">
+      <Filter>scene\scene_loaders</Filter>
     </ClCompile>
     <ClCompile Include="frontends\frontend_controller\BackendController.cpp">
       <Filter>frontends\frontend_controller</Filter>
@@ -166,6 +184,24 @@
     </ClInclude>
     <ClInclude Include="scene\Scene.h">
       <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\SceneLoader.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\scene_loaders\ObjLoader.h">
+      <Filter>scene\scene_loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\scene_loaders\MtlParser.h">
+      <Filter>scene\scene_loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\scene_loaders\UnknownFormatException.h">
+      <Filter>scene\scene_loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\scene_loaders\IOException.h">
+      <Filter>scene\scene_loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\scene_loaders\ParseError.h">
+      <Filter>scene\scene_loaders</Filter>
     </ClInclude>
     <ClInclude Include="frontends\frontend_controller\BackendController.h">
       <Filter>frontends\frontend_controller</Filter>
