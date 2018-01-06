@@ -123,6 +123,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="backends\Backend.h" />
     <ClInclude Include="backends\cuda_backend\CudaBackend.h" />
     <ClInclude Include="backends\Image.h" />
+    <ClInclude Include="backends\random_cuda\RandomCudaBackend.h" />
     <ClInclude Include="backends\solid_color_cuda\SolidColorCudaBackend.h" />
     <ClInclude Include="frontends\Frontend.h" />
     <ClInclude Include="frontends\frontend_controller\BackendController.h" />
@@ -144,6 +145,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
   </ItemGroup>
   <ItemGroup>
     <CudaCompile Include="backends\cuda_backend\CudaBackend.cu" />
+    <CudaCompile Include="backends\random_cuda\RandomCudaBackend.cu" />
     <CudaCompile Include="backends\solid_color_cuda\SolidColorCudaBackend.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

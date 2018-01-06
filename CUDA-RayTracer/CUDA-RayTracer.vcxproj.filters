@@ -31,6 +31,9 @@
     <Filter Include="backends\cuda_backend">
       <UniqueIdentifier>{212ee0e3-1084-4fd7-8898-245474dc969d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="backends\random_cuda">
+      <UniqueIdentifier>{46f5042b-ebee-4f3e-b1ef-6446f1d66782}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="backends\Backend.cpp">
@@ -170,6 +173,9 @@
     <ClInclude Include="backends\cuda_backend\CudaBackend.h">
       <Filter>backends\cuda_backend</Filter>
     </ClInclude>
+    <ClInclude Include="backends\random_cuda\RandomCudaBackend.h">
+      <Filter>backends\random_cuda</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -180,6 +186,9 @@
     </CudaCompile>
     <CudaCompile Include="backends\cuda_backend\CudaBackend.cu">
       <Filter>backends\cuda_backend</Filter>
+    </CudaCompile>
+    <CudaCompile Include="backends\random_cuda\RandomCudaBackend.cu">
+      <Filter>backends\random_cuda</Filter>
     </CudaCompile>
   </ItemGroup>
 </Project>
