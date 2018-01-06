@@ -3,7 +3,6 @@
 
 #include "Material.h"
 #include "Shape.h"
-#include <sstream>
 
 class Scene {
 private:
@@ -23,6 +22,13 @@ public:
     Scene& operator=(Scene &&scene) = delete;
 
     Material* getMaterials() const;
+    Material getMaterial(int id) const {
+        if(id < 0 || id >= materialsCount) {
+            return {};
+        } else {
+            return materials[id];
+        }
+    }
 
     Shape* getShapes() const;
 };

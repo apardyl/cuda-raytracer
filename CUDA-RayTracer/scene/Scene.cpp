@@ -1,4 +1,5 @@
 ﻿#include "Scene.h"
+#include "utility"
 
 Scene::Scene(int materialsCount, int shapesCount): materialsCount(materialsCount),
                                                    shapesCount(shapesCount) {
