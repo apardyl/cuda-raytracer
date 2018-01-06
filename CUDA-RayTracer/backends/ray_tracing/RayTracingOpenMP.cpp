@@ -9,7 +9,6 @@
 const int N = (int)1e6 + 5;
 const float inf = 1e9;
 const float eps = 1e-6;
-const float Ia = 0.2; // ambient intensities 
 
 int num_of_triangles = 0;
 int num_of_nodes = 0;
@@ -19,7 +18,7 @@ struct Triangle;
 struct Node;
 struct Vector;
 struct Light;
-
+struct Color;
 
 Triangle * global_triangles = NULL;
 Node * nodes = NULL;
@@ -139,7 +138,14 @@ struct Color {
 		Color res = Color(r*mul, g*mul, b*mul);
 		return res;
 	}
+
+	Color operator/(const float& div) {
+		Color res = Color(r / div, g / div, b / div);
+		return res;
+	}
 };
+
+Color Ia(0.2, 0.2, 0.2); // ambient intensities 
 
 struct Light {
 	Point point;
@@ -163,7 +169,7 @@ struct Material {
 		this->Ks = Ks;
 		this->Kd = Kd;
 		this->Ka = Ka;
-		this->afla = alfa;
+		this->alfa = alfa;
 	}
 };
 
@@ -552,15 +558,8 @@ struct Camera {
 		active_pixel_sensor[row][column] += color;
 	}
 
-	auto get_pixels() {
-		for (int i = 0; i < resolution.height; ++i)
-		{
-			for (int j = 0; j < resolution.width; ++j)
-			{
-				active_pixel_sensor[i][j] /= (float)num_of_samples;
-			}
-		}
-		return active_pixel_sensor;
+	Color get_pixel_color(int i, int j) {
+		return active_pixel_sensor[i][j] / (float)num_of_samples;
 	}
 };
 
@@ -653,24 +652,28 @@ Color trace(Vector vector, int depth) {
 		Point reflection_point = vectors[i].point;
 		Vector normal = global_triangles[triangles[i]].get_normal();
 		normal.normalize();
-		Vector to_light = Vector(reflection_point, lights[light].point);
-		to_light.normalize();
 		Vector to_viewer = vectors[i - 1].mul(-1);
 		to_viewer.normalize();
-		Vector from_light(lights[light].point, reflection_point);
-		Vector from_light_reflected = global_triangles[triangles[i]].get_reflected_vector(from_light);
-		from_light_reflected.noramalize();
 		Material material = global_triangles[triangles[i]].material;
 		Color triangle_ilumination = Ia * material.Ka;
 		for (int light = 0; light < num_of_lights; ++light)
 		{
-			triangle_ilumination += material.Kd*lights[light].Id*(normal.dot(to_light));
-			triangle_ilumination += material.Ks*lights[light].Is*powf(to_viewer.dot(from_light_reflected), material.alfa);
+			Vector to_light = Vector(reflection_point, lights[light].point);
+			to_light.normalize();
+			// check if light is block out
+			if (get_triangle(to_light) != -1)
+				continue;
+			//
+			Vector from_light(lights[light].point, reflection_point);
+			Vector from_light_reflected = global_triangles[triangles[i]].get_reflected_vector(from_light);
+			from_light_reflected.normalize();
+			triangle_ilumination += lights[light].Id*(normal.dot(to_light))*material.Kd;
+			triangle_ilumination += lights[light].Is*powf(to_viewer.dot(from_light_reflected), material.alfa)*material.Ks;
 		}
 
 		if (i < num - 1)
 		{
-			triangle_ilumiantion += material.Ks*res*powf(to_viewer.dot(to_viewer), material.alfa);
+			triangle_ilumination += res * powf(to_viewer.dot(to_viewer), material.alfa)*material.Ks;
 		}
 
 		res = triangle_ilumination;
@@ -683,11 +686,11 @@ Color trace(Vector vector, int depth) {
 Image RayTracingOpenMP::render() {
 	nodes = new Node[N];
 	lights = new Light[10];
-	Light light(7, -7, 7, Color(5,5,5), Color(8,8,8), Color(1,1,1));
+	Light light(Point(7, -7, 7), Color(5, 5, 5), Color(8, 8, 8));
 	lights[0] = light;
 	num_of_lights++;
-	Material A(0.2, 0.5, 0.6);
-	Material B(0.8, 0.3, 0.1);
+	Material A(0.2, 0.5, 0.6, 0.2);
+	Material B(0.8, 0.3, 0.1, 0.5);
 	global_triangles = new Triangle[N];
 	global_triangles[0] = Triangle(Point(-1.25, -0.81, 0), Point(0.79, -0.81, 0), Point(0, 0, 1.5), A);
 	global_triangles[1] = Triangle(Point(-0.376859, 0.353287, -0.324435)
@@ -697,7 +700,7 @@ Image RayTracingOpenMP::render() {
 	num_of_triangles = 3;
 	std::vector<int> triangles = { 0,1,2 };
 	build_tree(triangles, -1, 0, 10);
-	Camera camera(400,400, Resolution(400,400),1);
+	Camera camera(400, 400, Resolution(400, 400), 1);
 	for (int i = 0; i < 400; ++i) {
 		for (int j = 0; j < 400; ++j) {
 			Vector vector = camera.get_primary_vector(i, j);
@@ -708,11 +711,9 @@ Image RayTracingOpenMP::render() {
 	delete[] nodes;
 	delete[] global_triangles;
 	delete[] lights;
-	auto pixels = camera.get_pixels();
-
+	// return Image
 }
 
 Point Point::translate(Vector vector) {
 	return Point(x + vector.x, y + vector.y, z + vector.z);
 }
-
