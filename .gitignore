@@ -10,3 +10,5 @@ packages/
 .vs/
 *.pdb
 *.png
+*.obj
+*.mtl
