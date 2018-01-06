@@ -712,8 +712,24 @@ Image RayTracingOpenMP::render() {
 	delete[] global_triangles;
 	delete[] lights;
 	// return Image
+	cudaMallocHost(&data, sizeof(byte) * width * height * BYTES_PER_PIXEL);
+	for (int i = 0; i < resolution.height; ++i)
+	{
+		for (int j = 0; j < resolution.width; ++j)
+		{
+			Color color = camera.get_pixel_color(resolution.height - i - 1, j);
+			data[(width * y + x) * BYTES_PER_PIXEL] = color.r;
+			data[(width * y + x) * BYTES_PER_PIXEL + 1] = color.g;
+			data[(width * y + x) * BYTES_PER_PIXEL + 2] = color.b;
+		}
+	}
+	return Image(resolution.width, resolution.height, data);
 }
 
 Point Point::translate(Vector vector) {
 	return Point(x + vector.x, y + vector.y, z + vector.z);
+}
+
+RayTracingOpenMP::~RayTracingOpenMP() {
+	cudaFree(data);
 }
