@@ -67,6 +67,15 @@
     <ClCompile Include="scene\Point.cpp">
       <Filter>scene</Filter>
     </ClCompile>
+    <ClCompile Include="scene\Color.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\Material.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\Shape.cpp">
+      <Filter>scene</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backends\Backend.h">
@@ -112,6 +121,15 @@
       <Filter>scene</Filter>
     </ClInclude>
     <ClInclude Include="scene\Vector.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\Color.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\Material.h">
+      <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\Shape.h">
       <Filter>scene</Filter>
     </ClInclude>
   </ItemGroup>
