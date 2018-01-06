@@ -90,6 +90,9 @@
     <ClCompile Include="scene\Scene.cpp">
       <Filter>scene</Filter>
     </ClCompile>
+    <ClCompile Include="frontends\frontend_controller\BackendController.cpp">
+      <Filter>frontends\frontend_controller</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backends\Backend.h">
@@ -157,6 +160,9 @@
     </ClInclude>
     <ClInclude Include="scene\Scene.h">
       <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="frontends\frontend_controller\BackendController.h">
+      <Filter>frontends\frontend_controller</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
