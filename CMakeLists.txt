@@ -31,6 +31,6 @@ include_directories(${PNG_INCLUDE_DIR})
 target_link_libraries(ray_tracer ${PNG_LIBRARY})
 
 # Boost
-find_package(Boost REQUIRED COMPONENTS program_options)
+find_package(Boost REQUIRED COMPONENTS program_options filesystem)
 include_directories(${Boost_INCLUDE_DIRS})
 target_link_libraries(ray_tracer ${Boost_LIBRARIES})
