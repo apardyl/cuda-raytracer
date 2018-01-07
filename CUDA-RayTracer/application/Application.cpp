@@ -6,8 +6,10 @@
 #include <boost/program_options/positional_options.hpp>
 #include <boost/program_options/parsers.hpp>
 
+#include "CompileSettings.h"
 #include "BackendInitializer.h"
 #include "frontends/sdl/SDLFrontend.h"
+#include "frontends/gtk/GTKFrontend.h"
 #include "frontends/image/ImageFrontend.h"
 
 using namespace std::string_literals;
@@ -56,6 +58,9 @@ void Application::rewriteOptions(po::variables_map const &vm) {
         options.outputFilename = vm["output"].as<std::string>();
     }
     options.sdlFrontendEnabled = vm.count("sdl") > 0;
+#if GTK_ENABLED
+    options.gtkFrontendEnabled = vm.count("gtk") > 0;
+#endif
 }
 
 po::options_description Application::createGeneralOptions() {
@@ -104,8 +109,20 @@ po::options_description Application::createRenderingOptions() {
 po::options_description Application::createFrontendsOptions() {
     po::options_description frontends("Frontends");
 
+    std::string sdlDescription = "run SDL2 frontend";
+    std::string gtkDescription = "run GTK+ 3 frontend";
+    std::string defaultDescription = " (default if no other is specified)";
+#if GTK_ENABLED
+    gtkDescription += defaultDescription;
+#else
+    sdlDescription += defaultDescription;
+#endif
+
     frontends.add_options()
-            ("sdl", "run SDL2 frontend (default if no other is specified)")
+            ("sdl", sdlDescription.c_str())
+#if GTK_ENABLED
+            ("gtk", gtkDescription.c_str())
+#endif
             ("output,o",
              po::value<std::string>()->value_name("OUTPUT_FILE_NAME"),
              "set output image file name");
@@ -166,9 +183,18 @@ Application::createFrontendList() const {
     }
 
     // SDL is the default frontend: created if no other was specified
-    if (options.sdlFrontendEnabled || !createdFrontend) {
+    if (options.sdlFrontendEnabled || (!createdFrontend && !GTK_ENABLED)) {
         frontendConstructors.emplace_back([]() { return new SDLFrontend; });
     }
+
+#if GTK_ENABLED
+    if (options.gtkFrontendEnabled || !createdFrontend) {
+        frontendConstructors.emplace_back([&]() {
+            return new GTKFrontend(options);
+        });
+        createdFrontend = true;
+    }
+#endif
 
     return frontendConstructors;
 }

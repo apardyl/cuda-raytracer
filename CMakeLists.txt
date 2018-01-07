@@ -34,3 +34,14 @@ target_link_libraries(ray_tracer ${PNG_LIBRARY})
 find_package(Boost REQUIRED COMPONENTS program_options filesystem)
 include_directories(${Boost_INCLUDE_DIRS})
 target_link_libraries(ray_tracer ${Boost_LIBRARIES})
+
+# GTK+
+find_package(PkgConfig)
+pkg_check_modules(GTKMM gtkmm-3.0)
+if (GTKMM_FOUND)
+    include_directories(${GTKMM_INCLUDE_DIRS})
+    link_directories(${GTKMM_LIBRARY_DIRS})
+    target_link_libraries(ray_tracer ${GTKMM_LIBRARIES})
+    file(COPY CUDA-RayTracer/frontends/gtk/MainWindow.glade
+            DESTINATION ${CMAKE_BINARY_DIR})
+endif (GTKMM_FOUND)
