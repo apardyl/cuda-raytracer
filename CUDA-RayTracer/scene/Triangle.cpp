@@ -29,7 +29,7 @@ float Triangle::get_dist(Vector vector) // if the is no intersection return -1
 	vector.normalize();
 	Vector a_b(x, y);
 	Vector a_c(x, z);
-	Vector normal = a_b.cross_product(a_c);
+	Vector normal = a_b.crossProduct(a_c);
 	Vector origin(Point(0, 0, 0), vector.startPoint.x, vector.startPoint.y, vector.startPoint.z);
 	Vector A(Point(0, 0, 0), x.x, x.y, x.z);
 	if (fabs(normal.dot(vector)) < eps)  // if triangle is parallel to vector return -1
@@ -46,9 +46,9 @@ float Triangle::get_dist(Vector vector) // if the is no intersection return -1
 	Vector a_p(x, p);
 	Vector b_p(y, p);
 	Vector c_p(z, p);
-	bool on_left_a_b = normal.dot(edge_a_b.cross_product(a_p)) > 0;
-	bool on_left_b_c = normal.dot(edge_b_c.cross_product(b_p)) > 0;
-	bool on_left_c_a = normal.dot(edge_c_a.cross_product(c_p)) > 0;
+	bool on_left_a_b = normal.dot(edge_a_b.crossProduct(a_p)) > 0;
+	bool on_left_b_c = normal.dot(edge_b_c.crossProduct(b_p)) > 0;
+	bool on_left_c_a = normal.dot(edge_c_a.crossProduct(c_p)) > 0;
 	if (on_left_a_b && on_left_b_c && on_left_c_a)
 	{
 		return dist_to_plane;
@@ -60,7 +60,7 @@ Vector Triangle::get_reflected_vector(Vector vector) {
 	vector.normalize();
 	Vector a_b(x, y);
 	Vector a_c(x, z);
-	Vector normal = a_b.cross_product(a_c);
+	Vector normal = a_b.crossProduct(a_c);
 	normal.normalize();
 	Vector res = vector.add(normal.mul((-2)*vector.dot(normal)));
 	res.normalize();
@@ -70,7 +70,7 @@ Vector Triangle::get_reflected_vector(Vector vector) {
 Vector Triangle::get_normal() {
 	Vector a_b(x, y);
 	Vector a_c(x, z);
-	Vector normal = a_b.cross_product(a_c);
+	Vector normal = a_b.crossProduct(a_c);
 	return normal;
 }
 

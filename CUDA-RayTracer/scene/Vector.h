@@ -13,9 +13,9 @@ struct Vector {
 
     Vector add(const Vector &a) const;
 
-	Vector mul(const float scl) const;
+	Vector mul(float scl) const;
 
-    Vector cross_product(const Vector a) const;
+    Vector crossProduct(Vector a) const;
 
     float dot(const Vector &a) const;
 

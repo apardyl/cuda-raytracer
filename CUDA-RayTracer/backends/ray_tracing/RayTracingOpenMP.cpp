@@ -499,9 +499,9 @@ Image RayTracingOpenMP::render() {
 			Color color = camera.get_pixel_color(resolution.height - i - 1, j);
 			int y = height - 1 - i;
 			int x = j;
-			data[(width * y + x) * BYTES_PER_PIXEL] = color.r;
-			data[(width * y + x) * BYTES_PER_PIXEL + 1] = color.g;
-			data[(width * y + x) * BYTES_PER_PIXEL + 2] = color.b;
+			data[(width * y + x) * BYTES_PER_PIXEL] = color.red;
+			data[(width * y + x) * BYTES_PER_PIXEL + 1] = color.green;
+			data[(width * y + x) * BYTES_PER_PIXEL + 2] = color.blue;
 		}
 	}
 	return Image(resolution.width, resolution.height, data);
