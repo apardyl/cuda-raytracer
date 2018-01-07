@@ -11,6 +11,10 @@
 #include "frontends/sdl/SDLFrontend.h"
 #include "frontends/gtk/GTKFrontend.h"
 #include "frontends/image/ImageFrontend.h"
+#include "scene/SceneLoader.h"
+#include "scene/scene_loaders/IOException.h"
+#include "scene/scene_loaders/ParseError.h"
+#include "scene/scene_loaders/UnknownFormatException.h"
 
 using namespace std::string_literals;
 
@@ -24,6 +28,7 @@ void Application::parseCommandLine() {
     all
             .add(createRenderingOptions())
             .add(createFrontendsOptions())
+            .add(createSceneOptions())
             .add(createGeneralOptions());
 
     po::variables_map vm;
@@ -61,6 +66,10 @@ void Application::rewriteOptions(po::variables_map const &vm) {
 #if GTK_ENABLED
     options.gtkFrontendEnabled = vm.count("gtk") > 0;
 #endif
+    options.sceneLoaderEnabled = vm.count("input-file") > 0;
+    if(options.sceneLoaderEnabled) {
+        options.sceneFilename = vm["input-file"].as<std::string>();
+    }
 }
 
 po::options_description Application::createGeneralOptions() {
@@ -130,6 +139,17 @@ po::options_description Application::createFrontendsOptions() {
     return frontends;
 }
 
+po::options_description Application::createSceneOptions() {
+    po::options_description scene("Scene");
+
+    scene.add_options()("input-file,f",
+                        boost::program_options::value<std::string>()
+                        ->value_name("SCENE_FILE_NAME"),
+                        "load scene from file");
+
+    return scene;
+}
+
 void Application::run() {
     parseCommandLine();
 
@@ -141,6 +161,18 @@ void Application::run() {
 
     std::unique_ptr<Backend> backend(
             BackendInitializer::createBackend(options.backendName));
+
+    if (options.sceneLoaderEnabled) {
+        try {
+            std::unique_ptr<Scene> scene =
+                std::make_unique<Scene>(SceneLoader::loadFromFile(options.sceneFilename));
+            backend->setScene(std::move(scene));
+        } catch(const std::runtime_error& exception) {
+            std::cerr << "[ERROR] " << exception.what() << std::endl;
+            exit(1);
+        }
+    }
+
     backend->setResolution(options.width, options.height);
     frontendController.setImage(backend->render());
 

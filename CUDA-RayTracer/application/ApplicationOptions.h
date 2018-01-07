@@ -16,6 +16,9 @@ struct ApplicationOptions {
 #endif
     bool imageFrontendEnabled;
     std::string outputFilename;
+
+    bool sceneLoaderEnabled;
+    std::string sceneFilename;
 };
 
 #endif //RAY_TRACER_APPLICATIONOPTIONS_H

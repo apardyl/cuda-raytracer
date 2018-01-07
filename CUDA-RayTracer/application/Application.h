@@ -28,6 +28,8 @@ private:
 
     po::options_description createFrontendsOptions();
 
+    po::options_description createSceneOptions();
+
     void run();
 
     std::vector<std::function<Frontend *()>> createFrontendList() const;
