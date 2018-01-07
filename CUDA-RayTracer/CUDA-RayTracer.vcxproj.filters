@@ -169,8 +169,5 @@
     <CudaCompile Include="backends\solid_color_cuda\SolidColorCudaBackend.cu">
       <Filter>backends\solid_color_cuda</Filter>
     </CudaCompile>
-    <CudaCompile Include="backends\ray_tracing\RayTracingOpenMP.cu">
-      <Filter>backends\ray_tracing</Filter>
-    </CudaCompile>
   </ItemGroup>
 </Project>

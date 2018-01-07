@@ -142,7 +142,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="scene\Vector.h" />
   </ItemGroup>
   <ItemGroup>
-    <CudaCompile Include="backends\ray_tracing\RayTracingOpenMP.cu" />
     <CudaCompile Include="backends\solid_color_cuda\SolidColorCudaBackend.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
