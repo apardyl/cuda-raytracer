@@ -2,7 +2,7 @@
 #include "Material.h"
 #include "Vector.h"
 #include <algorithm>
-
+#define PI 3.14159265
 
 const float inf = 1e9;
 const float eps = 1e-6;

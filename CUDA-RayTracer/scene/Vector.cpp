@@ -8,7 +8,7 @@
 
 Vector::Vector(const Point &a, const Point &b) : startPoint(a) {
     x = b.x - a.x;
-    y = b.y - a.x;
+    y = b.y - a.y;
     z = b.z - a.z;
 }
 
