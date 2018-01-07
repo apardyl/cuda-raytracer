@@ -1,4 +1,9 @@
 #include "RayTracingOpenMP.h"
+#include "../../scene/Color.h"
+#include "../../scene/Vector.h"
+#include "../../scene/Point.h"
+#include "../../scene/Triangle.h"
+#include "../../scene/Material.h"
 #include <utility>
 #include <vector>
 #include <algorithm>
@@ -9,6 +14,7 @@
 const int N = (int)1e6 + 5;
 const float inf = 1e9;
 const float eps = 1e-6;
+const int BYTES_PER_PIXEL = 3;
 
 int num_of_triangles = 0;
 int num_of_nodes = 0;
@@ -16,134 +22,11 @@ int num_of_lights = 0;
 
 struct Triangle;
 struct Node;
-struct Vector;
 struct Light;
-struct Color;
 
 Triangle * global_triangles = NULL;
 Node * nodes = NULL;
 Light * lights = NULL;
-
-struct Point {
-	float x, y, z;
-
-	Point() {}
-
-	Point(float x, float y, float z) {
-		this->x = x;
-		this->y = y;
-		this->z = z;
-	}
-
-	float get_dist(float x, float y, float z) {
-		float u = this->x - x;
-		float v = this->y - y;
-		float m = this->z - z;
-		return sqrt((u*u) + v * v + m * m);
-	}
-
-	Point& operator=(const Point &other) {
-		if (this != &other)
-		{
-			this->x = other.x;
-			this->y = other.y;
-			this->z = other.z;
-		}
-		return *this;
-	}
-
-	Point translate(Vector vector);
-};
-
-struct Vector {
-	Point point;
-	float x, y, z;
-
-	Vector() {}
-
-	Vector(Point point, float x, float y, float z) {
-		this->point = point;
-		this->x = x;
-		this->y = y;
-		this->z = z;
-	}
-
-	Vector(Point a, Point b) {
-		this->point = a;
-		this->x = b.x - a.x;
-		this->y = b.y - a.y;
-		this->z = b.z - a.z;
-	}
-
-	Vector mul(float scl) {
-		return Vector(point, this->x*scl, this->y*scl, this->z*scl);
-	}
-
-	Vector add(Vector other) {
-		return Vector(point, x + other.x, y + other.y, z + other.z);
-	}
-
-	Vector cross_product(Vector vec) {
-		int vec_x = y * vec.z - vec.y * z;
-		int vec_y = z * vec.x - vec.z * x;
-		int vec_z = x * vec.y - vec.x *	y;
-		Vector res = Vector(point, vec_x, vec_y, vec_z);
-		return res;
-	}
-
-	float dot(Vector vector) {
-		return x * vector.x + y * vector.y + z * vector.z;
-	}
-
-	float len() {
-		return sqrt(x * x + y * y + z * z);
-	}
-
-	void normalize() {
-		float div = len();
-		if (div != 0)
-		{
-			x /= div;
-			y /= div;
-			z /= div;
-		}
-	}
-};
-
-
-struct Color {
-	float r, g, b;
-	Color() {}
-	Color(float r, float g, float  b) {
-		this->r = r;
-		this->g = g;
-		this->b = b;
-	}
-
-	Color& operator+=(const Color& color) {
-		this->r += color.r;
-		this->g += color.g;
-		this->b += color.b;
-		return *this;
-	}
-
-	Color& operator/=(const float& div) {
-		this->r /= div;
-		this->g /= div;
-		this->b /= div;
-		return *this;
-	}
-
-	Color operator*(const float& mul) {
-		Color res = Color(r*mul, g*mul, b*mul);
-		return res;
-	}
-
-	Color operator/(const float& div) {
-		Color res = Color(r / div, g / div, b / div);
-		return res;
-	}
-};
 
 Color Ia(0.2, 0.2, 0.2); // ambient intensities 
 
@@ -157,120 +40,6 @@ struct Light {
 		this->point = point;
 		this->Is = Is;
 		this->Id = Id;
-	}
-};
-
-struct Material {
-	float Ks, Kd, Ka, alfa;
-
-	Material() {}
-
-	Material(float Ks, float Kd, float Ka, float alfa) {
-		this->Ks = Ks;
-		this->Kd = Kd;
-		this->Ka = Ka;
-		this->alfa = alfa;
-	}
-};
-
-struct Triangle {
-	Point x, y, z;
-	Material material;
-
-	Triangle() {}
-
-	Triangle(Point a, Point b, Point c, Material material) {
-		x = a;
-		y = b;
-		z = c;
-		this->material = material;
-	}
-
-	Point get_midpoint() const {
-		float mid_x = (x.x + y.x + z.x) / 3;
-		float mid_y = (x.y + y.y + z.y) / 3;
-		float mid_z = (x.z + y.z + z.z) / 3;
-		Point res(mid_x, mid_y, mid_z);
-		return  res;
-	}
-
-	float get_dist(Vector vector) // if the is no intersection return -1
-	{
-		vector.normalize();
-		Vector a_b(x, y);
-		Vector a_c(x, z);
-		Vector normal = a_b.cross_product(a_c);
-		Vector origin(Point(0, 0, 0), vector.point.x, vector.point.y, vector.point.z);
-		Vector A(Point(0, 0, 0), x.x, x.y, x.z);
-		if (fabs(normal.dot(vector)) < eps)  // if triangle is parallel to vector return -1
-			return -1;
-		float D = -normal.dot(A);
-		float dist_to_plane = -(normal.dot(origin) + D) / (normal.dot(vector));
-		if (dist_to_plane < 0) // vector is directed in opposite direction
-			return -1;
-		// check if intersection point is inside the triangle
-		Point p(vector.point.translate(vector.mul(dist_to_plane)));
-		Vector edge_a_b(x, y);
-		Vector edge_b_c(y, z);
-		Vector edge_c_a(z, x);
-		Vector a_p(x, p);
-		Vector b_p(y, p);
-		Vector c_p(z, p);
-		bool on_left_a_b = normal.dot(edge_a_b.cross_product(a_p)) > 0;
-		bool on_left_b_c = normal.dot(edge_b_c.cross_product(b_p)) > 0;
-		bool on_left_c_a = normal.dot(edge_c_a.cross_product(c_p)) > 0;
-		if (on_left_a_b && on_left_b_c && on_left_c_a)
-		{
-			return dist_to_plane;
-		}
-		return -1;
-	}
-
-	Vector get_reflected_vector(Vector vector) {
-		vector.normalize();
-		Vector a_b(x, y);
-		Vector a_c(x, z);
-		Vector normal = a_b.cross_product(a_c);
-		normal.normalize();
-		Vector res = vector.add(normal.mul((-2)*vector.dot(normal)));
-		res.normalize();
-		return res;
-	}
-
-	Vector get_normal() {
-		Vector a_b(x, y);
-		Vector a_c(x, z);
-		Vector normal = a_b.cross_product(a_c);
-		return normal;
-	}
-
-	Point get_intersection_point(Vector vector) // not implemented
-	{
-		return x;
-	}
-
-	float get_min_x() {
-		return std::min(x.x, std::min(y.x, z.x));
-	}
-
-	float get_min_y() {
-		return std::min(x.y, std::min(y.y, z.y));
-	}
-
-	float get_min_z() {
-		return std::min(x.z, std::min(y.z, z.z));
-	}
-
-	float get_max_x() {
-		return std::max(x.x, std::max(y.x, z.x));
-	}
-
-	float get_max_y() {
-		return std::max(x.y, std::max(y.y, z.y));
-	}
-
-	float get_max_z() {
-		return std::max(x.z, std::max(y.z, z.z));
 	}
 };
 
@@ -308,15 +77,15 @@ struct Box {
 		Point pMin = getMin();
 		Point pMax = getMax();
 
-		float txMin = (pMin.x - vector.point.x) / vector.x;
-		float txMax = (pMax.x - vector.point.x) / vector.x;
+		float txMin = (pMin.x - vector.startPoint.x) / vector.x;
+		float txMax = (pMax.x - vector.startPoint.x) / vector.x;
 
 		if (txMin > txMax) {
 			std::swap(txMin, txMax);
 		}
 
-		float tyMin = (pMin.y - vector.point.y) / vector.y;
-		float tyMax = (pMax.y - vector.point.y) / vector.y;
+		float tyMin = (pMin.y - vector.startPoint.y) / vector.y;
+		float tyMax = (pMax.y - vector.startPoint.y) / vector.y;
 
 		if (tyMin > tyMax) {
 			std::swap(tyMin, tyMax);
@@ -334,8 +103,8 @@ struct Box {
 			txMax = tyMax;
 		}
 
-		float tzMin = (pMin.z - vector.point.z) / vector.z;
-		float tzMax = (pMax.z - vector.point.z) / vector.z;
+		float tzMin = (pMin.z - vector.startPoint.z) / vector.z;
+		float tzMax = (pMax.z - vector.startPoint.z) / vector.z;
 
 		if (tzMin > tzMax) {
 			std::swap(tzMin, tzMax);
@@ -650,7 +419,7 @@ Color trace(Vector vector, int depth) {
 	Color res(0, 0, 0);
 	for (int i = num - 1; i >= 1; i--)
 	{
-		Point reflection_point = vectors[i].point;
+		Point reflection_point = vectors[i].startPoint;
 		Vector normal = global_triangles[triangles[i]].get_normal();
 		normal.normalize();
 		Vector to_viewer = vectors[i - 1].mul(-1);
@@ -701,7 +470,8 @@ Image RayTracingOpenMP::render() {
 	num_of_triangles = 3;
 	std::vector<int> triangles = { 0,1,2 };
 	build_tree(triangles, -1, 0, 10);
-	Camera camera(400, 400, Resolution(400, 400), 1);
+	Resolution resolution = Resolution(width, height);
+	Camera camera(400, 400, resolution, 1);
 	for (int i = 0; i < 400; ++i) {
 		for (int j = 0; j < 400; ++j) {
 			Vector vector = camera.get_primary_vector(i, j);
@@ -713,12 +483,14 @@ Image RayTracingOpenMP::render() {
 	delete[] global_triangles;
 	delete[] lights;
 	// return Image
-	cudaMallocHost(&data, sizeof(byte) * width * height * BYTES_PER_PIXEL);
+	data = new byte[width * height * BYTES_PER_PIXEL];
 	for (int i = 0; i < resolution.height; ++i)
 	{
 		for (int j = 0; j < resolution.width; ++j)
 		{
 			Color color = camera.get_pixel_color(resolution.height - i - 1, j);
+			int y = height - 1 - i;
+			int x = j;
 			data[(width * y + x) * BYTES_PER_PIXEL] = color.r;
 			data[(width * y + x) * BYTES_PER_PIXEL + 1] = color.g;
 			data[(width * y + x) * BYTES_PER_PIXEL + 2] = color.b;
@@ -727,10 +499,17 @@ Image RayTracingOpenMP::render() {
 	return Image(resolution.width, resolution.height, data);
 }
 
-Point Point::translate(Vector vector) {
-	return Point(x + vector.x, y + vector.y, z + vector.z);
+RayTracingOpenMP::~RayTracingOpenMP() {
+	delete[] data;
 }
 
-RayTracingOpenMP::~RayTracingOpenMP() {
-	cudaFree(data);
+RayTracingOpenMP::RayTracingOpenMP() { }
+
+void RayTracingOpenMP::setResolution(unsigned width, unsigned height) {
+	this->width = width;
+	this->height = height;
+}
+
+void RayTracingOpenMP::setSoftShadows(bool var) { // not implemented
+
 }

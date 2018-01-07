@@ -1,5 +1,12 @@
 ﻿#include "Material.h"
 
-Material::Material(Color ambient, Color diffuse, Color specular, float specularExponent, float dissolve)
-    : ambient(ambient), diffuse(diffuse), specular(specular), specularExponent(specularExponent), dissolve(dissolve) {
+
+Material::Material() {}
+
+Material::Material(float Ks, float Kd, float Ka, float alfa) {
+	this->Ks = Ks;
+	this->Kd = Kd;
+	this->Ka = Ka;
+	this->alfa = alfa;
 }
+

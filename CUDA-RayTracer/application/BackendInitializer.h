@@ -5,12 +5,13 @@
 #include <array>
 
 #include "backends/solid_color_cuda/SolidColorCudaBackend.h"
+#include "backends/ray_tracing/RayTracingOpenMP.h"
 #include "backends/Backend.h"
 
 class BackendInitializer {
     static const std::string SOLID_COLOR_CUDA_NAME;
-//    static const std::string RAY_TRACER_CUDA_NAME;
-    static const std::array<std::string, 1> BACKEND_LIST;
+    static const std::string RAY_TRACER_OPENMP;
+    static const std::array<std::string, 2> BACKEND_LIST;
 
 public:
     static Backend *createBackend(std::string const &name);

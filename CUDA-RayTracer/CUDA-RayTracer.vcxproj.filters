@@ -25,6 +25,9 @@
     <Filter Include="application">
       <UniqueIdentifier>{ec8a798c-ff98-4cc7-a4f3-5041d17b4bca}</UniqueIdentifier>
     </Filter>
+    <Filter Include="backends\ray_tracing">
+      <UniqueIdentifier>{12763184-26a8-4030-b40b-c9a4596b0b57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="backends\Backend.cpp">
@@ -86,6 +89,9 @@
     </ClCompile>
     <ClCompile Include="scene\Shape.cpp">
       <Filter>scene</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ray_tracing\RayTracingOpenMP.cpp">
+      <Filter>backends\ray_tracing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -152,6 +158,9 @@
     <ClInclude Include="scene\Shape.h">
       <Filter>scene</Filter>
     </ClInclude>
+    <ClInclude Include="backends\ray_tracing\RayTracingOpenMP.h">
+      <Filter>backends\ray_tracing</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -159,6 +168,9 @@
   <ItemGroup>
     <CudaCompile Include="backends\solid_color_cuda\SolidColorCudaBackend.cu">
       <Filter>backends\solid_color_cuda</Filter>
+    </CudaCompile>
+    <CudaCompile Include="backends\ray_tracing\RayTracingOpenMP.cu">
+      <Filter>backends\ray_tracing</Filter>
     </CudaCompile>
   </ItemGroup>
 </Project>

@@ -6,16 +6,16 @@
 using namespace std::string_literals;
 
 const std::string BackendInitializer::SOLID_COLOR_CUDA_NAME = "SolidColorCuda";
-//const std::string BackendInitializer::RAY_TRACER_CUDA_NAME = "RayTracerCuda";
-const std::array<std::string, 1> BackendInitializer::BACKEND_LIST = {
-        SOLID_COLOR_CUDA_NAME/*, RAY_TRACER_CUDA_NAME*/};
+const std::string BackendInitializer::RAY_TRACER_OPENMP = "RayTracerOpenMP";
+const std::array<std::string, 2> BackendInitializer::BACKEND_LIST = {
+        SOLID_COLOR_CUDA_NAME, RAY_TRACER_OPENMP};
 
 Backend *BackendInitializer::createBackend(std::string const &name) {
     if (name == SOLID_COLOR_CUDA_NAME) {
         return new SolidColorCudaBackend;
-    } /*else if (name == RAY_TRACER_CUDA_NAME) {
-            return new RayTracerCudaBackend;
-    }*/
+    } else if (name == RAY_TRACER_OPENMP) {
+            return new RayTracingOpenMP;
+    }
     return nullptr;
 }
 

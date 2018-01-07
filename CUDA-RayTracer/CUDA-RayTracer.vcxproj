@@ -99,6 +99,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="application\main.cpp" />
     <ClCompile Include="backends\Backend.cpp" />
     <ClCompile Include="backends\Image.cpp" />
+    <ClCompile Include="backends\ray_tracing\RayTracingOpenMP.cpp" />
     <ClCompile Include="backends\solid_color_cuda\SolidColorCudaBackend.cpp" />
     <ClCompile Include="frontends\Frontend.cpp" />
     <ClCompile Include="frontends\frontend_controller\CountDownLatch.cpp" />
@@ -121,6 +122,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="application\BackendInitializer.h" />
     <ClInclude Include="backends\Backend.h" />
     <ClInclude Include="backends\Image.h" />
+    <ClInclude Include="backends\ray_tracing\RayTracingOpenMP.h" />
     <ClInclude Include="backends\solid_color_cuda\SolidColorCudaBackend.h" />
     <ClInclude Include="frontends\Frontend.h" />
     <ClInclude Include="frontends\frontend_controller\CountDownLatch.h" />
@@ -139,6 +141,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="scene\Vector.h" />
   </ItemGroup>
   <ItemGroup>
+    <CudaCompile Include="backends\ray_tracing\RayTracingOpenMP.cu" />
     <CudaCompile Include="backends\solid_color_cuda\SolidColorCudaBackend.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

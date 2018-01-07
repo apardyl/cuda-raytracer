@@ -11,6 +11,7 @@ struct Point {
 
     float getDist(const Point &a) const;
     Point translate(const Vector &a) const;
+	Point& operator=(const Point &other);
 };
 
 #endif // RAY_TRACER_POINT_H

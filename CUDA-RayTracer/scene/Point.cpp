@@ -18,3 +18,13 @@ float Point::getDist(const Point &a) const {
 Point Point::translate(const Vector &a) const {
     return {x + a.x, y + a.y, z + a.z};
 }
+
+Point& Point::operator=(const Point &other) {
+	if (this != &other)
+	{
+		this->x = other.x;
+		this->y = other.y;
+		this->z = other.z;
+	}
+	return *this;
+}

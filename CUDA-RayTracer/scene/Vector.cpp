@@ -20,7 +20,7 @@ Vector Vector::add(const Vector &a) const {
     return {startPoint, x + a.x, y + a.y, z + a.z};
 }
 
-Vector Vector::crossProduct(const Vector a) const {
+Vector Vector::cross_product(const Vector a) const {
     return {
         startPoint,
         y * a.z - a.y * z,
@@ -44,4 +44,8 @@ void Vector::normalize() {
         y /= div;
         z /= div;
     }
+}
+
+Vector Vector::mul(float scl) const {
+	return Vector(startPoint, this->x*scl, this->y*scl, this->z*scl);
 }

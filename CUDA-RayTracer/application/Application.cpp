@@ -93,7 +93,7 @@ po::options_description Application::createRenderingOptions() {
              "set rendered image height")
             ("backend,b",
              boost::program_options::value<std::string>()
-                     ->default_value("SolidColorCuda")
+                     ->default_value("RayTracingOpenMP")
                      ->value_name("BACKEND_NAME")
                      ->notifier(&validateBackend),
              backendDescription.c_str());
