@@ -298,9 +298,9 @@ struct Box {
 
 	Point getMax() const {
 		Point p;
-		p.x = p.x + x;
-		p.y = p.y + y;
-		p.z = p.z + z;
+		p.x = point.x + x;
+		p.y = point.y + y;
+		p.z = point.z + z;
 		return p;
 	}
 
@@ -579,7 +579,8 @@ int build_tree(std::vector<int> triangles, int parent, int axis, int depth) {
 			cur.triangles[i] = triangles[i];
 		}
 		return node_index;
-	} else
+	} 
+	else
 	{
 		if (left.size() != 0)
 		{
