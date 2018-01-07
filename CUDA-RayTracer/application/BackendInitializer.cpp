@@ -6,7 +6,7 @@
 using namespace std::string_literals;
 
 const std::string BackendInitializer::SOLID_COLOR_CUDA_NAME = "SolidColorCuda";
-const std::string BackendInitializer::RAY_TRACER_OPENMP = "RayTracerOpenMP";
+const std::string BackendInitializer::RAY_TRACER_OPENMP = "RayTracingOpenMP";
 const std::array<std::string, 2> BackendInitializer::BACKEND_LIST = {
         SOLID_COLOR_CUDA_NAME, RAY_TRACER_OPENMP};
 

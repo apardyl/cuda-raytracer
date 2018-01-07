@@ -295,7 +295,7 @@ struct Random {
 struct Camera {
 	float width, height;
 	Resolution resolution;
-	Point focus_point = Point(0, 0, 1);
+	Point focus_point = Point(0, 0, -1);
 	int num_of_samples = 1024;
 	Color active_pixel_sensor[3003][3003];
 	Random random;
@@ -471,9 +471,9 @@ Image RayTracingOpenMP::render() {
 	std::vector<int> triangles = { 0,1,2 };
 	build_tree(triangles, -1, 0, 10);
 	Resolution resolution = Resolution(width, height);
-	Camera camera(400, 400, resolution, 1);
-	for (int i = 0; i < 400; ++i) {
-		for (int j = 0; j < 400; ++j) {
+	Camera camera(2, 2, resolution, 1);
+	for (int i = 0; i < height; ++i) {
+		for (int j = 0; j < width; ++j) {
 			Vector vector = camera.get_primary_vector(i, j);
 			Color color = trace(vector, 20);
 			camera.update(i, j, color);
