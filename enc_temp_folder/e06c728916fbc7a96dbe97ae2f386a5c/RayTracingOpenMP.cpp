@@ -401,6 +401,7 @@ int get_triangle(Vector &vector) // get triangle which have collison with vector
 }
 
 Color trace(Vector vector, int depth) {
+	if (get_triangle(vector) != -1) return Color(200, 0, 0);
 	Vector * vectors = new Vector[depth];
 	int * triangles = new int[depth];
 	vectors[0] = vector;
