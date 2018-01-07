@@ -37,15 +37,16 @@ float Vector::len() const {
     return sqrtf(x * x + y * y + z * z);
 }
 
-void Vector::normalize() {
+Vector& Vector::normalize() {
     const float div = len();
     if (div != 0) {
         x /= div;
         y /= div;
         z /= div;
     }
+    return *this;
 }
 
 Vector Vector::mul(float scl) const {
-    return Vector(startPoint, this->x * scl, this->y * scl, this->z * scl);
+    return {startPoint, this->x * scl, this->y * scl, this->z * scl};
 }

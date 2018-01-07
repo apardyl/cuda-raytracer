@@ -21,7 +21,7 @@ struct Vector {
 
     float len() const;
 
-    void normalize();
+    Vector& normalize();
 };
 
 #endif // RAY_TRACER_VECTOR_H

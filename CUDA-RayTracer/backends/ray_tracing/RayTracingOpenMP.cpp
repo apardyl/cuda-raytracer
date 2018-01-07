@@ -162,7 +162,7 @@ struct Node {
 		{
 			for (int i = 0; i < num_of_triangles; ++i)
 			{
-				float dist = global_triangles[this->triangles[i]].get_dist(vector);
+				float dist = global_triangles[this->triangles[i]].getDist(vector);
 				if (dist != -1 && dist < best)
 				{
 					best_index = triangles[i];
@@ -207,15 +207,15 @@ struct Stack {
 /// Comparators
 
 bool com_by_x(const int & a, const int & b) {
-	return global_triangles[a].get_midpoint().x < global_triangles[b].get_midpoint().x;
+	return global_triangles[a].getMidpoint().x < global_triangles[b].getMidpoint().x;
 }
 
 bool com_by_y(const int & a, const int & b) {
-	return global_triangles[a].get_midpoint().y < global_triangles[b].get_midpoint().y;
+	return global_triangles[a].getMidpoint().y < global_triangles[b].getMidpoint().y;
 }
 
 bool com_by_z(const int & a, const int & b) {
-	return global_triangles[a].get_midpoint().z < global_triangles[b].get_midpoint().z;
+	return global_triangles[a].getMidpoint().z < global_triangles[b].getMidpoint().z;
 }
 
 ///
@@ -258,18 +258,18 @@ Box get_bounding_box(std::vector<int> &triangles_) {
 	for (auto &index : triangles_)
 	{
 		Triangle &triangle = global_triangles[index];
-		min_point.x = std::min(min_point.x, triangle.get_min_x());
-		min_point.y = std::min(min_point.y, triangle.get_min_y());
-		min_point.z = std::min(min_point.z, triangle.get_min_z());
+		min_point.x = std::min(min_point.x, triangle.getMinX());
+		min_point.y = std::min(min_point.y, triangle.getMinY());
+		min_point.z = std::min(min_point.z, triangle.getMinZ());
 	}
 
 	Point max_point(-inf, -inf, -inf);
 	for (auto &index : triangles_)
 	{
 		Triangle &triangle = global_triangles[index];
-		max_point.x = std::max(max_point.x, triangle.get_max_x());
-		max_point.y = std::max(max_point.y, triangle.get_max_y());
-		max_point.z = std::max(max_point.z, triangle.get_max_z());
+		max_point.x = std::max(max_point.x, triangle.getMaxX());
+		max_point.y = std::max(max_point.y, triangle.getMaxY());
+		max_point.z = std::max(max_point.z, triangle.getMaxZ());
 	}
 	x = max_point.x - min_point.x;
 	y = max_point.y - min_point.y;
@@ -381,7 +381,7 @@ int get_triangle(Vector &vector) // get triangle which have collison with vector
 				int index_of_best_triangle = nodes[cur].get_minimal_triangle(vector);
 				if (index_of_best_triangle != -1)
 				{
-					float distance = global_triangles[index_of_best_triangle].get_dist(vector);
+					float distance = global_triangles[index_of_best_triangle].getDist(vector);
 					if (best_distance > distance)
 					{
 						best_distance = distance;
@@ -414,14 +414,14 @@ Color trace(Vector vector, int depth) {
 			num--;
 			break;
 		}
-		vectors[num] = global_triangles[triangle_index].get_reflected_vector(vectors[num - 1]);
+		vectors[num] = global_triangles[triangle_index].getReflectedVector(vectors[num - 1]);
 		triangles[num] = triangle_index;
 	}
 	Color res(0, 0, 0);
 	for (int i = num - 1; i >= 1; i--)
 	{
 		Point reflection_point = vectors[i].startPoint;
-		Vector normal = global_triangles[triangles[i]].get_normal();
+		Vector normal = global_triangles[triangles[i]].getNormal();
 		normal.normalize();
 		Vector to_viewer = vectors[i - 1].mul(-1);
 		to_viewer.normalize();
@@ -437,7 +437,7 @@ Color trace(Vector vector, int depth) {
 				continue;
 			//
 			Vector from_light(lights[light].point, reflection_point);
-			Vector from_light_reflected = global_triangles[triangles[i]].get_reflected_vector(from_light);
+			Vector from_light_reflected = global_triangles[triangles[i]].getReflectedVector(from_light);
 			from_light_reflected.normalize();
 			triangle_ilumination += lights[light].Id*(normal.dot(to_light))*material.Kd;
 			triangle_ilumination += lights[light].Is*powf(to_viewer.dot(from_light_reflected), material.alfa)*material.Ks;

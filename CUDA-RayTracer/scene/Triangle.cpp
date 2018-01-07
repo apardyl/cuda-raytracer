@@ -2,114 +2,88 @@
 #include "Material.h"
 #include "Vector.h"
 #include <algorithm>
-#define PI 3.14159265
+#include <cfloat>
 
-const float inf = 1e9;
-const float eps = 1e-6;
-
-Triangle::Triangle() {}
-
-Triangle::Triangle(Point a, Point b, Point c, Material material) {
-	x = a;
-	y = b;
-	z = c;
-	this->material = material;
+Triangle::Triangle(const Point a, const Point b, const Point c, Material material) {
+    x = a;
+    y = b;
+    z = c;
+    this->material = material;
 }
 
-Point Triangle::get_midpoint() const {
-	float mid_x = (x.x + y.x + z.x) / 3;
-	float mid_y = (x.y + y.y + z.y) / 3;
-	float mid_z = (x.z + y.z + z.z) / 3;
-	Point res(mid_x, mid_y, mid_z);
-	return  res;
+Point Triangle::getMidpoint() const {
+    const float midX = (x.x + y.x + z.x) / 3;
+    const float midY = (x.y + y.y + z.y) / 3;
+    const float midZ = (x.z + y.z + z.z) / 3;
+    return {midX, midY, midZ};
 }
 
-float Triangle::get_dist(Vector vector) // if the is no intersection return -1
-{
-	vector.normalize();
-	Vector a_b(x, y);
-	Vector a_c(x, z);
-	Vector normal = a_b.crossProduct(a_c);
-	Vector origin(Point(0, 0, 0), vector.startPoint.x, vector.startPoint.y, vector.startPoint.z);
-	Vector A(Point(0, 0, 0), x.x, x.y, x.z);
-	if (fabs(normal.dot(vector)) < eps)  // if triangle is parallel to vector return -1
-		return -1;
-	float D = -normal.dot(A);
-	float dist_to_plane = -(normal.dot(origin) + D) / (normal.dot(vector));
-	if (dist_to_plane < 0) // vector is directed in opposite direction
-		return -1;
-	// check if intersection point is inside the triangle
-	Point p(vector.startPoint.translate(vector.mul(dist_to_plane)));
-	Vector edge_a_b(x, y);
-	Vector edge_b_c(y, z);
-	Vector edge_c_a(z, x);
-	Vector a_p(x, p);
-	Vector b_p(y, p);
-	Vector c_p(z, p);
-	bool on_left_a_b = normal.dot(edge_a_b.crossProduct(a_p)) > 0;
-	bool on_left_b_c = normal.dot(edge_b_c.crossProduct(b_p)) > 0;
-	bool on_left_c_a = normal.dot(edge_c_a.crossProduct(c_p)) > 0;
-	if (on_left_a_b && on_left_b_c && on_left_c_a)
-	{
-		return dist_to_plane;
-	}
-	return -1;
+// if the is no intersection return -1
+float Triangle::getDist(Vector vector) const {
+    vector.normalize();
+    Vector aB(x, y);
+    const Vector aC(x, z);
+    Vector normal = aB.crossProduct(aC);
+    const Vector origin(Point(0, 0, 0), vector.startPoint.x, vector.startPoint.y,
+                        vector.startPoint.z);
+    const Vector a(Point(0, 0, 0), x.x, x.y, x.z);
+    if (fabs(normal.dot(vector)) < FLT_EPSILON) // if triangle is parallel to vector return -1
+        return -1;
+    const float d = -normal.dot(a);
+    const float distToPlane = -(normal.dot(origin) + d) / (normal.dot(vector));
+    if (distToPlane < 0) // vector is directed in opposite direction
+        return -1;
+    // check if intersection point is inside the triangle
+    const Point p(vector.startPoint.translate(vector.mul(distToPlane)));
+    Vector edgeAB(x, y);
+    Vector edgeBC(y, z);
+    Vector edgeCA(z, x);
+    const Vector aP(x, p);
+    const Vector bP(y, p);
+    const Vector cP(z, p);
+    const bool onLeftAB = normal.dot(edgeAB.crossProduct(aP)) > 0;
+    const bool onLeftBC = normal.dot(edgeBC.crossProduct(bP)) > 0;
+    const bool onLeftCA = normal.dot(edgeCA.crossProduct(cP)) > 0;
+    if (onLeftAB && onLeftBC && onLeftCA) {
+        return distToPlane;
+    }
+    return -1;
 }
 
-Vector Triangle::get_reflected_vector(Vector vector) {
-	vector.normalize();
-	Vector a_b(x, y);
-	Vector a_c(x, z);
-	Vector normal = a_b.crossProduct(a_c);
-	normal.normalize();
-	Vector res = vector.add(normal.mul((-2)*vector.dot(normal)));
-	res.normalize();
-	return res;
+Vector Triangle::getReflectedVector(Vector vector) const {
+    vector.normalize();
+    Vector aB(x, y);
+    const Vector aC(x, z);
+    Vector normal = aB.crossProduct(aC).normalize();
+    return vector.add(normal.mul((-2) * vector.dot(normal))).normalize();
 }
 
-Vector Triangle::get_normal() {
-	Vector a_b(x, y);
-	Vector a_c(x, z);
-	Vector normal = a_b.crossProduct(a_c);
-	return normal;
+Vector Triangle::getNormal() const {
+    Vector aB(x, y);
+    const Vector aC(x, z);
+    return aB.crossProduct(aC);
 }
 
-Point Triangle::get_intersection_point(Vector vector) // not implemented
-{
-	return x;
+float Triangle::getMinX() const {
+    return std::min(x.x, std::min(y.x, z.x));
 }
 
-float Triangle::get_min_x() {
-	return std::min(x.x, std::min(y.x, z.x));
+float Triangle::getMinY() const {
+    return std::min(x.y, std::min(y.y, z.y));
 }
 
-float Triangle::get_min_y() {
-	return std::min(x.y, std::min(y.y, z.y));
+float Triangle::getMinZ() const {
+    return std::min(x.z, std::min(y.z, z.z));
 }
 
-float Triangle::get_min_z() {
-	return std::min(x.z, std::min(y.z, z.z));
+float Triangle::getMaxX() const {
+    return std::max(x.x, std::max(y.x, z.x));
 }
 
-float Triangle::get_max_x() {
-	return std::max(x.x, std::max(y.x, z.x));
+float Triangle::getMaxY() const {
+    return std::max(x.y, std::max(y.y, z.y));
 }
 
-float Triangle::get_max_y() {
-	return std::max(x.y, std::max(y.y, z.y));
-}
-
-float Triangle::get_max_z() {
-	return std::max(x.z, std::max(y.z, z.z));
-}
-
-Triangle& Triangle::operator=(const Triangle &other) {
-	if (this != &other)
-	{
-		this->x = other.x;
-		this->y = other.y;
-		this->z = other.z;
-		this->material = other.material;
-	}
-	return *this;
+float Triangle::getMaxZ() const {
+    return std::max(x.z, std::max(y.z, z.z));
 }

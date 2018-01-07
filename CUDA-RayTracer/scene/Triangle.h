@@ -8,33 +8,29 @@ struct Triangle {
 	Point x, y, z;
 	Material material;
 
-	Triangle();
+	Triangle() = default;
 
 	Triangle(Point a, Point b, Point c, Material material);
 
-	Point get_midpoint() const;
+	Point getMidpoint() const;
 
-	float get_dist(Vector vector);
+	float getDist(Vector vector) const;
 
-	Vector get_reflected_vector(Vector vector);
+	Vector getReflectedVector(Vector vector) const;
 
-	Vector get_normal();
+	Vector getNormal() const;
 
-	Point get_intersection_point(Vector vector);
+	float getMinX() const;
 
-	float get_min_x();
+	float getMinY() const;
 
-	float get_min_y();
+	float getMinZ() const;
 
-	float get_min_z();
+	float getMaxX() const;
 
-	float get_max_x();
+	float getMaxY() const;
 
-	float get_max_y();
-
-	float get_max_z();
-
-	Triangle& operator=(const Triangle &other);
+	float getMaxZ() const;
 };
 
 #endif // RAY_TRACER_TRIANGLE_H
