@@ -20,6 +20,8 @@ int num_of_triangles = 0;
 int num_of_nodes = 0;
 int num_of_lights = 0;
 
+Material THE_MATERIAL(Color(0.2, 0, 0), Color(0.5, 0, 0), Color(0.6, 0, 0), 0.2, 1);
+
 struct Triangle;
 struct Node;
 struct Light;
@@ -425,7 +427,7 @@ Color trace(Vector vector, int depth) {
 		normal.normalize();
 		Vector to_viewer = vectors[i - 1].mul(-1);
 		to_viewer.normalize();
-		Material material = global_triangles[triangles[i]].material;
+        Material material = THE_MATERIAL;
 		Color triangle_ilumination = Ia * material.ambient.red;
 		for (int light = 0; light < num_of_lights; ++light)
 		{
@@ -461,14 +463,13 @@ Image RayTracingOpenMP::render() {
 	Light light(Point(0, 0, 0.5), Color(100, 100, 100), Color(100, 100, 100));
 	lights[0] = light;
 	num_of_lights++;
-	Material A(Color(0.2, 0, 0), Color(0.5, 0, 0), Color(0.6, 0, 0), 0.2, 1);
-	Material B(Color(0.8, 0, 0), Color(0.3, 0, 0), Color(0.1, 0, 0), 0.5, 1);
+	
 	global_triangles = new Triangle[N];
-	global_triangles[0] = Triangle(Point(-1.25, -0.81, 0), Point(0.79, -0.81, 0), Point(0, 0, 1.5), A);
+	global_triangles[0] = Triangle(Point(-1.25, -0.81, 0), Point(0.79, -0.81, 0), Point(0, 0, 1.5));
 	global_triangles[1] = Triangle(Point(-0.376859, 0.353287, -0.324435)
-		, Point(1.623141, 0.353287, -0.324435), Point(-0.376859, 0.353287, 1.675565), A);
+		, Point(1.623141, 0.353287, -0.324435), Point(-0.376859, 0.353287, 1.675565));
 	global_triangles[2] = Triangle(Point(1.22, 1.15, 0)
-		, Point(0, 0, 1), Point(-1.35, 1.28, 0), A);
+		, Point(0, 0, 1), Point(-1.35, 1.28, 0));
 		
 	//global_triangles[0] = Triangle(Point(4.64, -2.6, 2), Point(7.92, 1.67, 2), Point(6.21, -5.27, 2), A);
 	//global_triangles[1] = Triangle(Point(-7.08, 7.7, 2)

@@ -4,11 +4,8 @@
 #include <algorithm>
 #include <cfloat>
 
-Triangle::Triangle(const Point a, const Point b, const Point c, Material material) {
-    x = a;
-    y = b;
-    z = c;
-    this->material = material;
+Triangle::Triangle(const Point a, const Point b, const Point c)
+    : x(a), y(b), z(c) {
 }
 
 Point Triangle::getMidpoint() const {

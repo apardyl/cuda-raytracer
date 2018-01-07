@@ -6,11 +6,10 @@
 
 struct Triangle {
 	Point x, y, z;
-	Material material;
 
 	Triangle() = default;
 
-	Triangle(Point a, Point b, Point c, Material material);
+	Triangle(Point a, Point b, Point c);
 
 	Point getMidpoint() const;
 
