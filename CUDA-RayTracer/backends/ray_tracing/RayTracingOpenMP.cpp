@@ -426,7 +426,7 @@ Color trace(Vector vector, int depth) {
 		Vector to_viewer = vectors[i - 1].mul(-1);
 		to_viewer.normalize();
 		Material material = global_triangles[triangles[i]].material;
-		Color triangle_ilumination = Ia * material.Ka;
+		Color triangle_ilumination = Ia * material.ambient.red;
 		for (int light = 0; light < num_of_lights; ++light)
 		{
 			Vector to_light = Vector(reflection_point, lights[light].point);
@@ -439,13 +439,13 @@ Color trace(Vector vector, int depth) {
 			Vector from_light(lights[light].point, reflection_point);
 			Vector from_light_reflected = global_triangles[triangles[i]].getReflectedVector(from_light);
 			from_light_reflected.normalize();
-			triangle_ilumination += lights[light].Id*(normal.dot(to_light))*material.Kd;
-			triangle_ilumination += lights[light].Is*powf(to_viewer.dot(from_light_reflected), material.alfa)*material.Ks;
+			triangle_ilumination += lights[light].Id*(normal.dot(to_light))*material.diffuse.red;
+			triangle_ilumination += lights[light].Is*powf(to_viewer.dot(from_light_reflected), material.specularExponent)*material.specular.red;
 		}
 
 		if (i < num - 1)
 		{
-			triangle_ilumination += res * powf(to_viewer.dot(to_viewer), material.alfa)*material.Ks;
+			triangle_ilumination += res * powf(to_viewer.dot(to_viewer), material.specularExponent)*material.specular.red;
 		}
 
 		res = triangle_ilumination;
@@ -461,8 +461,8 @@ Image RayTracingOpenMP::render() {
 	Light light(Point(0, 0, 0.5), Color(100, 100, 100), Color(100, 100, 100));
 	lights[0] = light;
 	num_of_lights++;
-	Material A(0.2, 0.5, 0.6, 0.2);
-	Material B(0.8, 0.3, 0.1, 0.5);
+	Material A(Color(0.2, 0, 0), Color(0.5, 0, 0), Color(0.6, 0, 0), 0.2, 1);
+	Material B(Color(0.8, 0, 0), Color(0.3, 0, 0), Color(0.1, 0, 0), 0.5, 1);
 	global_triangles = new Triangle[N];
 	global_triangles[0] = Triangle(Point(-1.25, -0.81, 0), Point(0.79, -0.81, 0), Point(0, 0, 1.5), A);
 	global_triangles[1] = Triangle(Point(-0.376859, 0.353287, -0.324435)

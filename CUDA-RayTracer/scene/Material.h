@@ -4,11 +4,11 @@
 #include "Color.h"
 
 struct Material {
-	float Ks, Kd, Ka, alfa;
+    Color ambient, diffuse, specular;
+    float specularExponent, dissolve;
 
-	Material();
-
-	Material(float Ks, float Kd, float Ka, float alfa);
+    Material();
+    Material(Color ambient, Color diffuse, Color specular, float specularExponent, float dissolve);
 };
 
 #endif // RAY_TRACER_MATERIAL_H
