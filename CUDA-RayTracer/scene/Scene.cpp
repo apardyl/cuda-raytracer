@@ -26,7 +26,7 @@ Material *Scene::getMaterials() const {
     return materials;
 }
 
-Material Scene::getMaterial(int id) const {
+const Material& Scene::getMaterial(int id) const {
     if (id < 0 || id >= materialsCount) {
         return {};
     } else {
@@ -36,4 +36,9 @@ Material Scene::getMaterial(int id) const {
 
 Triangle *Scene::getTriangles() const {
     return triangles;
+}
+
+Scene::~Scene() {
+    delete[] triangles;
+    delete[] materials;
 }

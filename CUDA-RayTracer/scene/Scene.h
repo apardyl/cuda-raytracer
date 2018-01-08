@@ -18,12 +18,14 @@ public:
 
     Scene(Scene &&scene) noexcept;
 
+    ~Scene();
+
     Scene& operator=(const Scene &scene) = delete;
     Scene& operator=(Scene &&scene) = delete;
 
     Material* getMaterials() const;
 
-    Material getMaterial(int id) const;
+    const Material& getMaterial(int id) const;
 
     Triangle* getTriangles() const;
 };
