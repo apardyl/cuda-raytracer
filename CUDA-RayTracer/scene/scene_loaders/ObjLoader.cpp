@@ -40,10 +40,12 @@ Scene ObjLoader::load(const string &fileName) {
             Point p;
             obj >> p.x >> p.y >> p.z;
             vertices.push_back(p);
+            obj.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         } else if (keyword == "usemtl") {
             string materialName;
             obj >> materialName;
             currentMaterialName = materialName;
+            obj.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         } else if (keyword == "f") {
             string face;
             std::getline(obj, face);
@@ -65,9 +67,8 @@ Scene ObjLoader::load(const string &fileName) {
             obj >> pathstr;
             boost::filesystem::path path = boost::filesystem::absolute(pathstr, parent);
             mtlParser.parse(path.string());
+            obj.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
-
-        obj.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
 
     Scene scene(static_cast<int>(knownMaterials.size()), static_cast<int>(triangles.size()));
