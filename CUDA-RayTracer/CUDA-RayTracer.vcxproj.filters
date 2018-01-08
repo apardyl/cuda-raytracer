@@ -93,9 +93,6 @@
     <ClCompile Include="scene\Material.cpp">
       <Filter>scene</Filter>
     </ClCompile>
-    <ClCompile Include="scene\Shape.cpp">
-      <Filter>scene</Filter>
-    </ClCompile>
     <ClCompile Include="backends\ray_tracing\RayTracingOpenMP.cpp">
       <Filter>backends\ray_tracing</Filter>
     </ClCompile>
@@ -186,9 +183,6 @@
       <Filter>scene</Filter>
     </ClInclude>
     <ClInclude Include="scene\Material.h">
-      <Filter>scene</Filter>
-    </ClInclude>
-    <ClInclude Include="scene\Shape.h">
       <Filter>scene</Filter>
     </ClInclude>
     <ClInclude Include="backends\ray_tracing\RayTracingOpenMP.h">

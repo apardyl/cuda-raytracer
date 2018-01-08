@@ -2,17 +2,17 @@
 #define RAY_TRACER_SCENE_H
 
 #include "Material.h"
-#include "Shape.h"
+#include "Triangle.h"
 
 class Scene {
 private:
     Material *materials = nullptr;
-    Shape *shapes = nullptr;
+    Triangle *triangles = nullptr;
 public:
     const int materialsCount;
-    const int shapesCount;
+    const int trianglesCount;
 
-    Scene(int materialsCount, int shapesCount);
+    Scene(int trianglesCount, int shapesCount);
 
     Scene(const Scene &scene);
 
@@ -23,15 +23,9 @@ public:
 
     Material* getMaterials() const;
 
-    Material getMaterial(int id) const {
-        if (id < 0 || id >= materialsCount) {
-            return {};
-        } else {
-            return materials[id];
-        }
-    }
+    Material getMaterial(int id) const;
 
-    Shape* getShapes() const;
+    Triangle* getTriangles() const;
 };
 
 #endif // RAY_TRACER_SCENE_H

@@ -4,13 +4,17 @@
 #include "Point.h"
 #include "Material.h"
 #include "Intersection.h"
+#include "Vector.h"
 
 struct Triangle {
     Point x, y, z;
+    int materialCode;
 
     Triangle() = default;
 
     Triangle(Point a, Point b, Point c);
+
+    Triangle(Point a, Point b, Point c, int materialCode);
 
     Point getMidpoint() const;
 

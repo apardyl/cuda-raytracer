@@ -121,7 +121,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="scene\scene_loaders\ObjLoader.cpp" />
     <ClCompile Include="scene\scene_loaders\ParseError.cpp" />
     <ClCompile Include="scene\scene_loaders\UnknownFormatException.cpp" />
-    <ClCompile Include="scene\Shape.cpp" />
     <ClCompile Include="scene\Triangle.cpp" />
     <ClCompile Include="scene\Vector.cpp" />
   </ItemGroup>
@@ -156,7 +155,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="scene\scene_loaders\ObjLoader.h" />
     <ClInclude Include="scene\scene_loaders\ParseError.h" />
     <ClInclude Include="scene\scene_loaders\UnknownFormatException.h" />
-    <ClInclude Include="scene\Shape.h" />
     <ClInclude Include="scene\Triangle.h" />
     <ClInclude Include="scene\Vector.h" />
   </ItemGroup>
