@@ -417,6 +417,7 @@ Color trace(Vector vector, int depth) {
 			break;
 		}
 		vectors[num] = global_triangles[triangle_index].getReflectedVector(vectors[num - 1]);
+		vectors[num].translateStartedPoint(FLT_EPSILON*3);
 		triangles[num] = triangle_index;
 	}
 	Color res(0, 0, 0);
@@ -434,9 +435,9 @@ Color trace(Vector vector, int depth) {
 			Vector to_light = Vector(reflection_point, lights[light].point);
 			to_light.normalize();
 			// check if light is block out
-			to_light.startPoint = to_light.startPoint.translate(to_light.mul(1e-9));
-			if (get_triangle(to_light) != -1) // fix this
-				continue;
+			to_light.translateStartedPoint(FLT_EPSILON);
+			//if (get_triangle(to_light) != -1) // fix this
+			//	continue;
 			//
 			Vector from_light(lights[light].point, reflection_point);
 			Vector from_light_reflected = global_triangles[triangles[i]].getReflectedVector(from_light);

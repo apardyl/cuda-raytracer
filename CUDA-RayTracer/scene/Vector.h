@@ -22,6 +22,8 @@ struct Vector {
     float len() const;
 
     Vector& normalize();
+
+	void translateStartedPoint(float eps);
 };
 
 #endif // RAY_TRACER_VECTOR_H

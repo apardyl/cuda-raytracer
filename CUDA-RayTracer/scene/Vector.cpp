@@ -50,3 +50,7 @@ Vector& Vector::normalize() {
 Vector Vector::mul(float scl) const {
     return {startPoint, this->x * scl, this->y * scl, this->z * scl};
 }
+
+void Vector::translateStartedPoint(float eps) {
+	startPoint = startPoint.translate(this->mul(eps / this->len()));
+}
