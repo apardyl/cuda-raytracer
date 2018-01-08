@@ -22,8 +22,9 @@ public:
     Scene& operator=(Scene &&scene) = delete;
 
     Material* getMaterials() const;
+
     Material getMaterial(int id) const {
-        if(id < 0 || id >= materialsCount) {
+        if (id < 0 || id >= materialsCount) {
             return {};
         } else {
             return materials[id];

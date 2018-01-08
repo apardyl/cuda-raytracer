@@ -8,7 +8,7 @@ class SceneLoader {
 public:
     virtual ~SceneLoader() = default;
 
-    virtual Scene load(const std::string& filename) = 0;
+    virtual Scene load(const std::string &filename) = 0;
 
     static Scene loadFromFile(const std::string &fileName);
 };

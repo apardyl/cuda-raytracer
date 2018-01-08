@@ -13,7 +13,7 @@ struct Vector {
 
     Vector add(const Vector &a) const;
 
-	Vector mul(float scl) const;
+    Vector mul(float scl) const;
 
     Vector crossProduct(Vector a) const;
 
