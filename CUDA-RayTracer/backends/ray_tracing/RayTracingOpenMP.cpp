@@ -481,24 +481,16 @@ Color trace(Vector vector, int depth) {
 Image RayTracingOpenMP::render() {
 	nodes = new Node[N];
 	lights = new Light[10];
-	Light light(Point(0, 0, 0.5), Color(100, 100, 100), Color(100, 100, 100));
+	Light light(Point(0, 0, -1), Color(100, 100, 100), Color(100, 100, 100));
 	lights[0] = light;
 	num_of_lights++;
-	
-	global_triangles = new Triangle[N];
-	global_triangles[0] = Triangle(Point(-1.25, -0.81, 0), Point(0.79, -0.81, 0), Point(0, 0, 1.5));
-	global_triangles[1] = Triangle(Point(-0.376859, 0.353287, -0.324435)
-		, Point(1.623141, 0.353287, -0.324435), Point(-0.376859, 0.353287, 1.675565));
-	global_triangles[2] = Triangle(Point(1.22, 1.15, 0)
-		, Point(0, 0, 1), Point(-1.35, 1.28, 0));
-		
-	//global_triangles[0] = Triangle(Point(4.64, -2.6, 2), Point(7.92, 1.67, 2), Point(6.21, -5.27, 2), A);
-	//global_triangles[1] = Triangle(Point(-7.08, 7.7, 2)
-	//	, Point(1, 4, 2), Point(0, 0, 2), A);
-	//global_triangles[2] = Triangle(Point(1.22, 1.15, 2)
-	//	, Point(0, 0, 2), Point(-1.35, 1.28, 2), B);
-	num_of_triangles = 3;
-	std::vector<int> triangles = {0, 1, 2};
+
+	global_triangles = scene->getTriangles();
+	num_of_triangles = scene->trianglesCount;
+	std::vector<int> triangles(num_of_triangles);
+	for (int i = 0; i < num_of_triangles; ++i) {
+		triangles[i] = i;
+	}
 	build_tree(triangles, -1, 0, 10);
 	Resolution resolution = Resolution(width, height);
 	Camera camera(2, 2, resolution, 1);
@@ -510,7 +502,6 @@ Image RayTracingOpenMP::render() {
 		}
 	}
 	delete[] nodes;
-	delete[] global_triangles;
 	delete[] lights;
 	// return Image
 	data = new byte[width * height * BYTES_PER_PIXEL];
