@@ -22,7 +22,7 @@ int num_of_triangles = 0;
 int num_of_nodes = 0;
 int num_of_lights = 0;
 
-Material THE_MATERIAL(Color(0.2, 0, 0), Color(0.5, 0, 0), Color(0.6, 0, 0), 0.2, 1);
+Material * materials;
 
 struct Triangle;
 struct Node;
@@ -436,7 +436,7 @@ Color trace(Vector vector, int depth) {
 		}
 		Vector to_viewer = vectors[i - 1].mul(-1);
 		to_viewer.normalize();
-        Material material = THE_MATERIAL;
+        Material material = materials[global_triangles[triangles[i]].materialCode];
 		Color triangle_ilumination = Ia * material.ambient;
 		for (int light = 0; light < num_of_lights; ++light)
 		{
@@ -479,9 +479,10 @@ Color trace(Vector vector, int depth) {
 }
 
 Image RayTracingOpenMP::render() {
+    materials = scene.get()->getMaterials();
 	nodes = new Node[N];
 	lights = new Light[10];
-	Light light(Point(0, 0, -1), Color(100, 100, 100), Color(100, 100, 100));
+	Light light(Point(0, 0, -1), Color(255, 255, 255), Color(255, 255, 255));
 	lights[0] = light;
 	num_of_lights++;
 
