@@ -3,19 +3,23 @@
 #include "FrontendController.h"
 
 FrontendController::FrontendController(
-        std::vector<std::function<Frontend *()>> const &constructors) :
+        std::vector<std::function<Frontend *()>> const &constructors,
+        BackendController &backendController) :
+        frontendsTerminated(false),
         initLatch(static_cast<unsigned int>(constructors.size())) {
     frontends.resize(constructors.size());
 
     for (size_t i = 0; i < constructors.size(); ++i) {
         frontends[i].thread = std::make_unique<std::thread>(
-                std::thread([&](int i, auto constructor) {
+                std::thread([&](int i, auto constructor,
+                                auto *backendController) {
                     std::shared_ptr<Frontend> frontend(constructor());
+                    frontend->setBackendController(backendController);
                     frontends[i].setFrontend(frontend);
                     initLatch.countDown();
 
                     frontend->run();
-                }, i, constructors[i]));
+                }, i, constructors[i], &backendController));
     }
 }
 
@@ -53,4 +57,9 @@ void FrontendController::waitForTermination() {
             frontend.thread->join();
         }
     }
+    frontendsTerminated = true;
+}
+
+bool FrontendController::areFrontendsTerminated() const {
+    return static_cast<bool>(frontendsTerminated);
 }

@@ -15,6 +15,8 @@ private:
     char **argv;
 
     ApplicationOptions options;
+    std::recursive_mutex executionLock;
+    std::condition_variable_any executionCondition;
 
     void parseCommandLine();
 
@@ -25,6 +27,8 @@ private:
     po::options_description createRenderingOptions();
 
     po::options_description createFrontendsOptions();
+
+    po::options_description createSceneOptions();
 
     void run();
 

@@ -101,8 +101,8 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="backends\Backend.cpp" />
     <ClCompile Include="backends\Image.cpp" />
     <ClCompile Include="backends\ray_tracing\RayTracingOpenMP.cpp" />
-    <ClCompile Include="backends\solid_color_cuda\SolidColorCudaBackend.cpp" />
     <ClCompile Include="frontends\Frontend.cpp" />
+    <ClCompile Include="frontends\frontend_controller\BackendController.cpp" />
     <ClCompile Include="frontends\frontend_controller\CountDownLatch.cpp" />
     <ClCompile Include="frontends\frontend_controller\FrontendController.cpp" />
     <ClCompile Include="frontends\frontend_controller\FrontendInstance.cpp" />
@@ -113,6 +113,13 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="scene\Color.cpp" />
     <ClCompile Include="scene\Material.cpp" />
     <ClCompile Include="scene\Point.cpp" />
+    <ClCompile Include="scene\Scene.cpp" />
+    <ClCompile Include="scene\SceneLoader.cpp" />
+    <ClCompile Include="scene\scene_loaders\IOException.cpp" />
+    <ClCompile Include="scene\scene_loaders\MtlParser.cpp" />
+    <ClCompile Include="scene\scene_loaders\ObjLoader.cpp" />
+    <ClCompile Include="scene\scene_loaders\ParseError.cpp" />
+    <ClCompile Include="scene\scene_loaders\UnknownFormatException.cpp" />
     <ClCompile Include="scene\Shape.cpp" />
     <ClCompile Include="scene\Triangle.cpp" />
     <ClCompile Include="scene\Vector.cpp" />
@@ -122,10 +129,13 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="application\ApplicationOptions.h" />
     <ClInclude Include="application\BackendInitializer.h" />
     <ClInclude Include="backends\Backend.h" />
+    <ClInclude Include="backends\cuda_backend\CudaBackend.h" />
     <ClInclude Include="backends\Image.h" />
     <ClInclude Include="backends\ray_tracing\RayTracingOpenMP.h" />
+    <ClInclude Include="backends\random_cuda\RandomCudaBackend.h" />
     <ClInclude Include="backends\solid_color_cuda\SolidColorCudaBackend.h" />
     <ClInclude Include="frontends\Frontend.h" />
+    <ClInclude Include="frontends\frontend_controller\BackendController.h" />
     <ClInclude Include="frontends\frontend_controller\CountDownLatch.h" />
     <ClInclude Include="frontends\frontend_controller\FrontendController.h" />
     <ClInclude Include="frontends\frontend_controller\FrontendInstance.h" />
@@ -137,11 +147,20 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="scene\Material.h" />
     <ClInclude Include="scene\Models.h" />
     <ClInclude Include="scene\Point.h" />
+    <ClInclude Include="scene\Scene.h" />
+    <ClInclude Include="scene\SceneLoader.h" />
+    <ClInclude Include="scene\scene_loaders\IOException.h" />
+    <ClInclude Include="scene\scene_loaders\MtlParser.h" />
+    <ClInclude Include="scene\scene_loaders\ObjLoader.h" />
+    <ClInclude Include="scene\scene_loaders\ParseError.h" />
+    <ClInclude Include="scene\scene_loaders\UnknownFormatException.h" />
     <ClInclude Include="scene\Shape.h" />
     <ClInclude Include="scene\Triangle.h" />
     <ClInclude Include="scene\Vector.h" />
   </ItemGroup>
   <ItemGroup>
+    <CudaCompile Include="backends\cuda_backend\CudaBackend.cu" />
+    <CudaCompile Include="backends\random_cuda\RandomCudaBackend.cu" />
     <CudaCompile Include="backends\solid_color_cuda\SolidColorCudaBackend.cu" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
