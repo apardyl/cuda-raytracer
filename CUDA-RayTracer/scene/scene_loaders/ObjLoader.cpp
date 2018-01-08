@@ -23,6 +23,7 @@ Scene ObjLoader::load(const string &fileName) {
 
     const boost::filesystem::path parent = boost::filesystem::absolute(fileName).parent_path();
     MaterialMap knownMaterials;
+    knownMaterials[""] = Material();
     vector<Point> vertices(1);
 
 
