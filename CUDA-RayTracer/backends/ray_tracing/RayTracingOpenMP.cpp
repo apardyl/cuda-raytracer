@@ -513,9 +513,9 @@ Image RayTracingOpenMP::render() {
 			Color color = camera.get_pixel_color(resolution.height - i - 1, j);
 			int y = height - 1 - i;
 			int x = j;
-			data[(width * y + x) * BYTES_PER_PIXEL] = color.red;
-			data[(width * y + x) * BYTES_PER_PIXEL + 1] = color.green;
-			data[(width * y + x) * BYTES_PER_PIXEL + 2] = color.blue;
+			data[(width * y + x) * BYTES_PER_PIXEL] = std::min(color.red, (float)255);
+			data[(width * y + x) * BYTES_PER_PIXEL + 1] = std::min(color.green, (float) 255);
+			data[(width * y + x) * BYTES_PER_PIXEL + 2] = std::min(color.blue, (float) 255);
 		}
 	}
 	return Image(resolution.width, resolution.height, data);
