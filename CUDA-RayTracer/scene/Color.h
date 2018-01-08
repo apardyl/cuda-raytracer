@@ -13,6 +13,8 @@ struct Color {
 
     Color operator*(const float &mul) const;
 
+    Color operator*(const Color &color) const;
+
     Color operator/(const float &div) const;
 };
 

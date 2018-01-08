@@ -1,31 +1,39 @@
 ﻿#include "Scene.h"
 #include "utility"
 
-Scene::Scene(int materialsCount, int shapesCount): materialsCount(materialsCount),
-                                                   shapesCount(shapesCount) {
+Scene::Scene(int materialsCount, int trianglesCount) : materialsCount(materialsCount),
+                                                       trianglesCount(trianglesCount) {
     materials = new Material[materialsCount];
-    shapes = new Shape[shapesCount];
+    triangles = new Triangle[trianglesCount];
 }
 
-Scene::Scene(const Scene &scene): Scene(scene.materialsCount, scene.shapesCount) {
+Scene::Scene(const Scene &scene) : Scene(scene.materialsCount, scene.trianglesCount) {
     for (int i = 0; i < materialsCount; i++) {
         materials[i] = scene.materials[i];
     }
-    for (int i = 0; i < shapesCount; i++) {
-        shapes[i] = scene.shapes[i];
+    for (int i = 0; i < trianglesCount; i++) {
+        triangles[i] = scene.triangles[i];
     }
 }
 
 Scene::Scene(Scene &&scene) noexcept: materialsCount(scene.materialsCount),
-                                      shapesCount(scene.shapesCount) {
+                                      trianglesCount(scene.trianglesCount) {
     std::swap(materials, scene.materials);
-    std::swap(shapes, scene.shapes);
+    std::swap(triangles, scene.triangles);
 }
 
-Material* Scene::getMaterials() const {
+Material *Scene::getMaterials() const {
     return materials;
 }
 
-Shape* Scene::getShapes() const {
-    return shapes;
+Material Scene::getMaterial(int id) const {
+    if (id < 0 || id >= materialsCount) {
+        return {};
+    } else {
+        return materials[id];
+    }
+}
+
+Triangle *Scene::getTriangles() const {
+    return triangles;
 }

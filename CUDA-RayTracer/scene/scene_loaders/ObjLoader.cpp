@@ -23,9 +23,10 @@ Scene ObjLoader::load(const string &fileName) {
 
     const boost::filesystem::path parent = boost::filesystem::absolute(fileName).parent_path();
     MaterialMap knownMaterials;
-    vector<std::pair<vector<Triangle>, string>> shapes;
     vector<Point> vertices(1);
-    vector<Triangle> currentShapeTriangles;
+
+
+    vector<std::pair<Triangle, string>> triangles;
     string currentMaterialName;
 
     MtlParser mtlParser(knownMaterials);
@@ -34,12 +35,7 @@ Scene ObjLoader::load(const string &fileName) {
         string keyword;
         obj >> keyword;
 
-        if (keyword == "o") {
-            if (!currentShapeTriangles.empty()) {
-                shapes.emplace_back(vector<Triangle>(), currentMaterialName);
-                shapes[shapes.size() - 1].first.swap(currentShapeTriangles);
-            }
-        } else if (keyword == "v") {
+        if (keyword == "v") {
             Point p;
             obj >> p.x >> p.y >> p.z;
             vertices.push_back(p);
@@ -55,14 +51,14 @@ Scene ObjLoader::load(const string &fileName) {
             for (int &i : x) {
                 stream >> i;
                 if (i < 1 || i >= vertices.size()) {
-                    throw ParseError("Unknow vertex " + std::to_string(i));
+                    throw ParseError("Unknown vertex " + std::to_string(i));
                 }
                 stream.ignore(std::numeric_limits<std::streamsize>::max(), ' ');
             }
             if (stream.good()) {
                 throw ParseError("Too many vertices, only triangles supported: " + face);
             }
-            currentShapeTriangles.emplace_back(vertices[x[0]], vertices[x[1]], vertices[x[2]]);
+            triangles.emplace_back(Triangle(vertices[x[0]], vertices[x[1]], vertices[x[2]]), currentMaterialName);
         } else if (keyword == "mtllib") {
             string pathstr;
             obj >> pathstr;
@@ -72,33 +68,26 @@ Scene ObjLoader::load(const string &fileName) {
 
         obj.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
     }
-    if (!currentShapeTriangles.empty()) {
-        shapes.emplace_back(vector<Triangle>(), currentMaterialName);
-        shapes[shapes.size() - 1].first.swap(currentShapeTriangles);
-    }
 
-    Scene scene(knownMaterials.size(), shapes.size());
+    Scene scene(static_cast<int>(knownMaterials.size()), static_cast<int>(triangles.size()));
     vector<string> materialNames(knownMaterials.size());
     int i = 0;
-    for (const auto matPair : knownMaterials) {
+    for (const auto &matPair : knownMaterials) {
         scene.getMaterials()[i] = matPair.second;
         materialNames[i] = matPair.first;
         i++;
     }
     i = 0;
-    for (auto p : shapes) {
-        const int materialNum = std::lower_bound(materialNames.begin(),
-                                                 materialNames.end(), p.second) -
-            materialNames.begin();
+    for (const auto &p : triangles) {
+        long materialNum = std::lower_bound(materialNames.begin(),
+                                            materialNames.end(), p.second) -
+                           materialNames.begin();
         if (materialNum >= scene.materialsCount || materialNum < 0) {
             throw ParseError("Unknown material " + p.second);
         }
-        Shape shape(p.first.size(), materialNum);
-        int j = 0;
-        for (const auto t : p.first) {
-            shape.getTriangles()[j++] = t;
-        }
-        scene.getShapes()[i++] = std::move(shape);
+        scene.getTriangles()[i] = p.first;
+        scene.getTriangles()[i].materialCode = static_cast<int>(materialNum);
+        i++;
     }
 
     return scene;

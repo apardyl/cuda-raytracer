@@ -1,12 +1,15 @@
 ﻿#include "Triangle.h"
-#include "Material.h"
-#include "Vector.h"
 #include <algorithm>
 #include <cmath>
 #include <cfloat>
 
 Triangle::Triangle(const Point a, const Point b, const Point c)
     : x(a), y(b), z(c) {
+}
+
+Triangle::Triangle(Point a, Point b, Point c, int materialCode)
+        : Triangle(a, b, c) {
+    this->materialCode = materialCode;
 }
 
 Point Triangle::getMidpoint() const {

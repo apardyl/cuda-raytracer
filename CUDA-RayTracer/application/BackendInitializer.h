@@ -2,17 +2,18 @@
 #define RAY_TRACER_BACKENDINITIALIZER_H
 
 #include <string>
-#include <array>
+#include <vector>
 
-#include "backends/solid_color_cuda/SolidColorCudaBackend.h"
-#include "backends/ray_tracing/RayTracingOpenMP.h"
+#include "CompileSettings.h"
 #include "backends/Backend.h"
 
 class BackendInitializer {
+#ifdef CUDA_ENABLED
     static const std::string SOLID_COLOR_CUDA_NAME;
-    static const std::string RAY_TRACER_OPENMP;
     static const std::string RANDOM_CUDA_NAME;
-    static const std::array<std::string, 3> BACKEND_LIST;
+#endif
+    static const std::string RAY_TRACER_OPENMP;
+    static const std::vector<std::string> BACKEND_LIST;
 
 public:
     static Backend *createBackend(std::string const &name);
