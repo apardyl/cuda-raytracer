@@ -4,10 +4,11 @@
 #include <string>
 #include <vector>
 
+#include "CompileSettings.h"
 #include "backends/Backend.h"
 
 class BackendInitializer {
-#ifdef ENABLE_CUDA
+#ifdef CUDA_ENABLED
     static const std::string SOLID_COLOR_CUDA_NAME;
     static const std::string RANDOM_CUDA_NAME;
 #endif
