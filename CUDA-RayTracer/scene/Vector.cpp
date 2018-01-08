@@ -54,3 +54,11 @@ Vector Vector::mul(float scl) const {
 void Vector::translateStartedPoint(float eps) {
 	startPoint = startPoint.translate(this->mul(eps / this->len()));
 }
+
+float Vector::getAngle(Vector vector) {
+	Vector temp = *this;
+	Vector other = vector;
+	temp.normalize();
+	other.normalize();
+	return acos(temp.dot(other));
+}

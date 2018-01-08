@@ -24,6 +24,8 @@ struct Vector {
     Vector& normalize();
 
 	void translateStartedPoint(float eps);
+
+	float getAngle(Vector vector);
 };
 
 #endif // RAY_TRACER_VECTOR_H

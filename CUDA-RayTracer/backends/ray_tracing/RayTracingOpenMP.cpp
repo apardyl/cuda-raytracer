@@ -10,6 +10,8 @@
 #include <limits>
 #include <iostream>
 #include <cmath>
+#define PI 3.14159265
+
 
 const int N = (int)1e6 + 5;
 const float inf = 1e9;
@@ -405,27 +407,33 @@ int get_triangle(Vector &vector) // get triangle which have collison with vector
 Color trace(Vector vector, int depth) {
 	Vector * vectors = new Vector[depth];
 	int * triangles = new int[depth];
+	vector.normalize();
 	vectors[0] = vector;
 	triangles[0] = -1; // there is no triangle for primary vector
 	int num = 1;
-	for (; num < depth; ++num)
+	for (; num <= depth; ++num)
 	{
+		vector = vectors[num - 1];
+		vector.translateStartedPoint(FLT_EPSILON * 3);
 		int triangle_index = get_triangle(vector);
-		if (triangle_index == -1 || num == depth - 1)
+		if (triangle_index == -1 || depth == num)
 		{
-			num--;
 			break;
 		}
 		vectors[num] = global_triangles[triangle_index].getReflectedVector(vectors[num - 1]);
-		vectors[num].translateStartedPoint(FLT_EPSILON*3);
+		vectors[num].normalize();
 		triangles[num] = triangle_index;
 	}
 	Color res(0, 0, 0);
-	for (int i = num - 1; i >= 1; i--)
+	for (int i = num-1; i >= 1; i--)
 	{
 		Point reflection_point = vectors[i].startPoint;
-		Vector normal = global_triangles[triangles[i]].getNormal();
+		Vector normal = global_triangles[triangles[i]].getNormal(); 
 		normal.normalize();
+		if (normal.getAngle(vectors[i]) > PI) 
+		{
+			normal = normal.mul(-1);
+		}
 		Vector to_viewer = vectors[i - 1].mul(-1);
 		to_viewer.normalize();
         Material material = THE_MATERIAL;
@@ -435,7 +443,7 @@ Color trace(Vector vector, int depth) {
 			Vector to_light = Vector(reflection_point, lights[light].point);
 			to_light.normalize();
 			// check if light is block out
-			to_light.translateStartedPoint(FLT_EPSILON);
+			//to_light.startPoint = to_light.startPoint.translate(vectors[i].mul((FLT_EPSILON ) / vectors[i].len()));
 			//if (get_triangle(to_light) != -1) // fix this
 			//	continue;
 			//
