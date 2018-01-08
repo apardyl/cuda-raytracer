@@ -3,6 +3,7 @@
 
 #include "Point.h"
 #include "Material.h"
+#include "Intersection.h"
 
 struct Triangle {
 	Point x, y, z;
@@ -12,6 +13,8 @@ struct Triangle {
 	Triangle(Point a, Point b, Point c);
 
 	Point getMidpoint() const;
+
+	Intersection intersect(Vector vector) const;
 
 	float getDist(Vector vector) const;
 

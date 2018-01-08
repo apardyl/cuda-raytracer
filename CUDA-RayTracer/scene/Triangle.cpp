@@ -2,6 +2,7 @@
 #include "Material.h"
 #include "Vector.h"
 #include <algorithm>
+#include <cmath>
 #include <cfloat>
 
 Triangle::Triangle(const Point a, const Point b, const Point c)
@@ -15,8 +16,7 @@ Point Triangle::getMidpoint() const {
     return {midX, midY, midZ};
 }
 
-// if the is no intersection return -1
-float Triangle::getDist(Vector vector) const {
+Intersection Triangle::intersect(Vector vector) const {
     vector.normalize();
     Vector aB(x, y);
     const Vector aC(x, z);
@@ -25,11 +25,11 @@ float Triangle::getDist(Vector vector) const {
                         vector.startPoint.z);
     const Vector a(Point(0, 0, 0), x.x, x.y, x.z);
     if (fabs(normal.dot(vector)) < FLT_EPSILON) // if triangle is parallel to vector return -1
-        return -1;
+        return Intersection::NO_INTERSECTION;
     const float d = -normal.dot(a);
     const float distToPlane = -(normal.dot(origin) + d) / (normal.dot(vector));
     if (distToPlane < 0) // vector is directed in opposite direction
-        return -1;
+        return Intersection::NO_INTERSECTION;
     // check if intersection point is inside the triangle
     const Point p(vector.startPoint.translate(vector.mul(distToPlane)));
     Vector edgeAB(x, y);
@@ -42,9 +42,13 @@ float Triangle::getDist(Vector vector) const {
     const bool onLeftBC = normal.dot(edgeBC.crossProduct(bP)) > 0;
     const bool onLeftCA = normal.dot(edgeCA.crossProduct(cP)) > 0;
     if (onLeftAB && onLeftBC && onLeftCA) {
-        return distToPlane;
+        return Intersection(p, distToPlane);
     }
-    return -1;
+    return Intersection::NO_INTERSECTION;
+}
+
+float Triangle::getDist(Vector vector) const {
+    return intersect(vector).distance;
 }
 
 Vector Triangle::getReflectedVector(Vector vector) const {
@@ -52,7 +56,9 @@ Vector Triangle::getReflectedVector(Vector vector) const {
     Vector aB(x, y);
     const Vector aC(x, z);
     Vector normal = aB.crossProduct(aC).normalize();
-    return vector.add(normal.mul((-2) * vector.dot(normal))).normalize();
+    Vector res = vector.add(normal.mul((-2)*vector.dot(normal)));
+    res.startPoint = intersect(vector).point;
+    return res.normalize();
 }
 
 Vector Triangle::getNormal() const {
