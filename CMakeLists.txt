@@ -13,11 +13,16 @@ include_directories(${ray_tracer_SOURCE_DIR})
 
 FILE(GLOB_RECURSE SOURCES
         ${ray_tracer_SOURCE_DIR}/*.cpp
-        ${ray_tracer_SOURCE_DIR}/*.cu
+        #        ${ray_tracer_SOURCE_DIR}/*.cu
         ${ray_tracer_SOURCE_DIR}/*.h
         ${ray_tracer_SOURCE_DIR}/*.hpp)
+#list(REMOVE_ITEM SOURCES ${ray_tracer_SOURCE_DIR}/)
 
 cuda_add_executable(ray_tracer ${SOURCES})
+
+# Threads
+find_package(Threads)
+target_link_libraries(ray_tracer ${CMAKE_THREAD_LIBS_INIT})
 
 # SDL2
 find_package(SDL2 REQUIRED)
