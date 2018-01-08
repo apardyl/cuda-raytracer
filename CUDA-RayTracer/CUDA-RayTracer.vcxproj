@@ -111,6 +111,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="frontends\sdl\SDLError.cpp" />
     <ClCompile Include="frontends\sdl\SDLFrontend.cpp" />
     <ClCompile Include="scene\Color.cpp" />
+    <ClCompile Include="scene\Intersection.cpp" />
     <ClCompile Include="scene\Material.cpp" />
     <ClCompile Include="scene\Point.cpp" />
     <ClCompile Include="scene\Scene.cpp" />
@@ -144,6 +145,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="frontends\sdl\SDLError.h" />
     <ClInclude Include="frontends\sdl\SDLFrontend.h" />
     <ClInclude Include="scene\Color.h" />
+    <ClInclude Include="scene\Intersection.h" />
     <ClInclude Include="scene\Material.h" />
     <ClInclude Include="scene\Models.h" />
     <ClInclude Include="scene\Point.h" />
