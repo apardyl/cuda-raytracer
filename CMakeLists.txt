@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ray_tracer_SOURCE_DIR}/cmake")
 
 # CUDA
-find_package(CUDA REQUIRED)
+#find_package(CUDA REQUIRED)
 
 # Project files
 set(ray_tracer_SOURCE_DIR ${ray_tracer_SOURCE_DIR}/CUDA-RayTracer)
@@ -13,10 +13,9 @@ include_directories(${ray_tracer_SOURCE_DIR})
 
 FILE(GLOB_RECURSE SOURCES
         ${ray_tracer_SOURCE_DIR}/*.cpp
-        #        ${ray_tracer_SOURCE_DIR}/*.cu
+        ${ray_tracer_SOURCE_DIR}/*.cu
         ${ray_tracer_SOURCE_DIR}/*.h
         ${ray_tracer_SOURCE_DIR}/*.hpp)
-#list(REMOVE_ITEM SOURCES ${ray_tracer_SOURCE_DIR}/)
 
 cuda_add_executable(ray_tracer ${SOURCES})
 
