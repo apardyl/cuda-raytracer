@@ -10,6 +10,7 @@
 #include <limits>
 #include <iostream>
 #include <cmath>
+#include <cfloat>
 
 const int N = (int)1e6 + 5;
 const float inf = 1e9;
