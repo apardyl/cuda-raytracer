@@ -443,9 +443,21 @@ Color trace(Vector vector, int depth) {
 			Vector to_light = Vector(reflection_point, lights[light].point);
 			to_light.normalize();
 			// check if light is block out
-			//to_light.startPoint = to_light.startPoint.translate(vectors[i].mul((FLT_EPSILON ) / vectors[i].len()));
-			//if (get_triangle(to_light) != -1) // fix this
-			//	continue;
+			if (normal.getAngle(to_light) > PI)
+				continue;
+			Vector temp = to_light;
+			temp.translateStartedPoint(FLT_EPSILON*10);
+			int index = get_triangle(temp);
+			if (index == triangles[i])
+			{
+				std::cout << "zle\n" << std::endl;
+			}
+				
+			if (index != -1 && (global_triangles[index].getDist(to_light) < lights[light].point.getDist(reflection_point))) // fix this
+			{
+				continue;
+			}
+			
 			//
 			Vector from_light(lights[light].point, reflection_point);
 			Vector from_light_reflected = global_triangles[triangles[i]].getReflectedVector(from_light);
@@ -493,7 +505,7 @@ Image RayTracingOpenMP::render() {
 	for (int i = 0; i < height; ++i) {
 		for (int j = 0; j < width; ++j) {
 			Vector vector = camera.get_primary_vector(i, j);
-			Color color = trace(vector, 20);
+			Color color = trace(vector, 2);
 			camera.update(i, j, color);
 		}
 	}
