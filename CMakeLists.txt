@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${ray_tracer_SOURCE_DIR}/cmake")
 
 # CUDA
-#find_package(CUDA REQUIRED)
+find_package(CUDA REQUIRED)
 
 # Project files
 set(ray_tracer_SOURCE_DIR ${ray_tracer_SOURCE_DIR}/CUDA-RayTracer)
