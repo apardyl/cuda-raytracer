@@ -1,7 +1,6 @@
 ﻿#include "ObjLoader.h"
 #include <boost/algorithm/string/predicate.hpp>
 #include "IOException.h"
-#include "UnknownFormatException.h"
 #include <fstream>
 #include <vector>
 #include "ParseError.h"
@@ -12,10 +11,6 @@ using std::string;
 using std::vector;
 
 Scene ObjLoader::load(const string &fileName) {
-    if (!boost::ends_with(fileName, ".obj")) {
-        throw UnknowFormatException("Unknown file extension " + fileName);
-    }
-
     std::ifstream obj(fileName);
     if (!obj.is_open()) {
         throw IOException("Unable to open " + fileName);
@@ -25,11 +20,8 @@ Scene ObjLoader::load(const string &fileName) {
     MaterialMap knownMaterials;
     knownMaterials[""] = Material();
     vector<Point> vertices(1);
-
-
     vector<std::pair<Triangle, string>> triangles;
     string currentMaterialName;
-
     MtlParser mtlParser(knownMaterials);
 
     while (obj.good()) {
@@ -40,12 +32,10 @@ Scene ObjLoader::load(const string &fileName) {
             Point p;
             obj >> p.x >> p.y >> p.z;
             vertices.push_back(p);
-            obj.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         } else if (keyword == "usemtl") {
             string materialName;
             obj >> materialName;
             currentMaterialName = materialName;
-            obj.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         } else if (keyword == "f") {
             string face;
             std::getline(obj, face);
@@ -61,12 +51,15 @@ Scene ObjLoader::load(const string &fileName) {
             if (stream.good()) {
                 throw ParseError("Too many vertices, only triangles supported: " + face);
             }
-            triangles.emplace_back(Triangle(vertices[x[0]], vertices[x[1]], vertices[x[2]]), currentMaterialName);
+            triangles.emplace_back(Triangle(vertices[x[0]], vertices[x[1]], vertices[x[2]]),
+                                   currentMaterialName);
         } else if (keyword == "mtllib") {
             string pathstr;
             obj >> pathstr;
             boost::filesystem::path path = boost::filesystem::absolute(pathstr, parent);
             mtlParser.parse(path.string());
+            obj.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        } else {
             obj.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
     }
@@ -81,9 +74,8 @@ Scene ObjLoader::load(const string &fileName) {
     }
     i = 0;
     for (const auto &p : triangles) {
-        long materialNum = std::lower_bound(materialNames.begin(),
-                                            materialNames.end(), p.second) -
-                           materialNames.begin();
+        const long materialNum = std::lower_bound(materialNames.begin(),
+                                  materialNames.end(), p.second) - materialNames.begin();
         if (materialNum >= scene.materialsCount || materialNum < 0) {
             throw ParseError("Unknown material " + p.second);
         }
