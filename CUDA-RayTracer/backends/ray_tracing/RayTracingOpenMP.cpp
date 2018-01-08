@@ -430,7 +430,7 @@ Color trace(Vector vector, int depth) {
 		Vector to_viewer = vectors[i - 1].mul(-1);
 		to_viewer.normalize();
         Material material = THE_MATERIAL;
-		Color triangle_ilumination = Ia * material.ambient.red;
+		Color triangle_ilumination = Ia * material.ambient;
 		for (int light = 0; light < num_of_lights; ++light)
 		{
 			Vector to_light = Vector(reflection_point, lights[light].point);
@@ -443,13 +443,13 @@ Color trace(Vector vector, int depth) {
 			Vector from_light(lights[light].point, reflection_point);
 			Vector from_light_reflected = global_triangles[triangles[i]].getReflectedVector(from_light);
 			from_light_reflected.normalize();
-			triangle_ilumination += lights[light].Id*std::max(0.f, (normal.dot(to_light)))*material.diffuse.red;
-			triangle_ilumination += lights[light].Is*powf(std::max(0.f, to_viewer.dot(from_light_reflected)), material.specularExponent)*material.specular.red;
+			triangle_ilumination += lights[light].Id*std::max(0.f, (normal.dot(to_light)))*material.diffuse;
+			triangle_ilumination += lights[light].Is*powf(std::max(0.f, to_viewer.dot(from_light_reflected)), material.specularExponent)*material.specular;
 		}
 
 		if (i < num - 1)
 		{
-			triangle_ilumination += res * powf(std::max(0.f, to_viewer.dot(normal)), material.specularExponent)*material.specular.red;
+			triangle_ilumination += res * powf(std::max(0.f, to_viewer.dot(normal)), material.specularExponent)*material.specular;
 		}
 
 		res = triangle_ilumination;

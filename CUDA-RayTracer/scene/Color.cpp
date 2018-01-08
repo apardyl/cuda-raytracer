@@ -26,6 +26,10 @@ Color Color::operator*(const float &mul) const {
     return res;
 }
 
+Color Color::operator*(const Color &color) const {
+    return Color(red * color.red, green * color.green, blue * color.blue);
+}
+
 Color Color::operator/(const float &div) const {
     Color res = Color(red / div, green / div, blue / div);
     return res;
