@@ -447,7 +447,7 @@ Color trace(Vector vector, int depth) {
 
 		if (i < num - 1)
 		{
-			triangle_ilumination += res * powf(to_viewer.dot(to_viewer), material.specularExponent)*material.specular.red;
+			triangle_ilumination += res * powf(std::max(0.f, to_viewer.dot(normal)), material.specularExponent)*material.specular.red;
 		}
 
 		res = triangle_ilumination;
