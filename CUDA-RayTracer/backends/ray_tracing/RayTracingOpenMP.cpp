@@ -301,26 +301,31 @@ struct Camera {
 	Resolution resolution;
 	Point focus_point = Point(0, 0, -1);
 	int num_of_samples = 1024;
-	Color active_pixel_sensor[3003][3003];
+	std::unique_ptr<Color[]> active_pixel_sensor;
 	Random random;
 
-	Camera(float width, float height, Resolution resolution, int num_of_samples) {
-		this->width = width;
-		this->height = height;
-		this->resolution = resolution;
-		this->num_of_samples = num_of_samples;
+	Camera(float width, float height, Resolution resolution, int num_of_samples) :
+			width(width),
+			height(height),
+			resolution(resolution),
+			num_of_samples(num_of_samples),
+			active_pixel_sensor(std::make_unique<Color[]>(resolution.width * resolution.height)) {
 		for (int i = 0; i < resolution.height; ++i) {
 			for (int j = 0; j < resolution.width; ++j) {
-				active_pixel_sensor[i][j] = Color(0, 0, 0);
+				getActivePixelSensor(i, j) = Color(0, 0, 0);
 			}
 		}
 	}
 
-	Vector get_random_vector(int row, int column) { // not implemented
+	Color& getActivePixelSensor(int x, int y) const {
+		return active_pixel_sensor[resolution.width * y + x];
+	}
+
+	Vector get_random_vector(int row, int column) const { // not implemented
 		return Vector(Point(0, 0, 0), 0, 0, 0);
 	}
 
-	Vector get_primary_vector(int row, int column) { // row from [0,..., resolution.height-1]  column from [0, resolution.width-1]
+	Vector get_primary_vector(int row, int column) const { // row from [0,..., resolution.height-1]  column from [0, resolution.width-1]
 		float pixel_width = width / resolution.width;
 		float pixel_height = height / resolution.height;
 		float x_cord = (-width / 2) + pixel_width * (0.5 + column);
@@ -329,12 +334,12 @@ struct Camera {
 	}
 
 	void update(int row, int column, Color color) {
-		active_pixel_sensor[row][column] += color;
+		getActivePixelSensor(row, column) += color;
 	}
 
-	Color get_pixel_color(int i, int j) {
-		return active_pixel_sensor[i][j] / (float)num_of_samples;
-	}
+	Color get_pixel_color(int x, int y) const {
+        return getActivePixelSensor(x, y) / (float) num_of_samples;
+    }
 };
 
 int build_tree(std::vector<int> triangles, int parent, int axis, int depth) {
