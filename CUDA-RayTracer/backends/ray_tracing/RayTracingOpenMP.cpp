@@ -462,7 +462,8 @@ Color trace(Vector vector, int depth) {
 			Vector from_light(lights[light].point, reflection_point);
 			Vector from_light_reflected = global_triangles[triangles[i]].getReflectedVector(from_light);
 			from_light_reflected.normalize();
-			triangle_ilumination += lights[light].Id*std::max(0.f, (normal.dot(to_light)))*material.diffuse;
+            // todo: check why the normal vectors are inverted (and dot product < 0)
+			triangle_ilumination += lights[light].Id*std::max(0.f, std::abs(normal.dot(to_light)))*material.diffuse;
 			triangle_ilumination += lights[light].Is*powf(std::max(0.f, to_viewer.dot(from_light_reflected)), material.specularExponent)*material.specular;
 		}
 
