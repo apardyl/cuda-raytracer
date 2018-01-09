@@ -1,4 +1,6 @@
 #include "CudaBackend.h"
+#if CUDA_ENABLED
+
 #include <cuda_runtime.h>
 
 CudaBackend::~CudaBackend() {
@@ -16,3 +18,5 @@ void CudaBackend::setResolution(unsigned width, unsigned height) {
     cudaFree(data);
     cudaMallocHost(&data, sizeof(byte) * width * height * BYTES_PER_PIXEL);
 }
+
+#endif //CUDA_ENABLED

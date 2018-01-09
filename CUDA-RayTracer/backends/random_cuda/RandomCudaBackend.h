@@ -1,6 +1,8 @@
 #ifndef RAY_TRACER_RANDOMCUDABACKEND_H
 #define RAY_TRACER_RANDOMCUDABACKEND_H
 
+#if CUDA_ENABLED
+
 #include "backends/cuda_backend/CudaBackend.h"
 
 /**
@@ -12,4 +14,5 @@ protected:
     void doRender() override;
 };
 
+#endif //CUDA_ENABLED
 #endif //RAY_TRACER_RANDOMCUDABACKEND_H

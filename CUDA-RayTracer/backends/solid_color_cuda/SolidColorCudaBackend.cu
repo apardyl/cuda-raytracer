@@ -1,4 +1,6 @@
 #include "SolidColorCudaBackend.h"
+#if CUDA_ENABLED
+
 #include <cuda_runtime.h>
 
 const int BLOCK_SIZE = 32;
@@ -30,3 +32,5 @@ void SolidColorCudaBackend::doRender() {
             1);
     renderSolidColor<<<gridSize, blockSize>>>(data, width, height);
 }
+
+#endif

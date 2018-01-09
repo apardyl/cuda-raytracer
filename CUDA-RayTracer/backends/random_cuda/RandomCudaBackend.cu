@@ -1,4 +1,5 @@
 #include "RandomCudaBackend.h"
+#if CUDA_ENABLED
 
 #include <cuda_runtime.h>
 #include <ctime>
@@ -55,3 +56,5 @@ void RandomCudaBackend::doRender() {
     cudaDeviceSynchronize();
     cudaFree(states);
 }
+
+#endif //CUDA_ENABLED

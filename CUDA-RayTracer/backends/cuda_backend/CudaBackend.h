@@ -1,6 +1,9 @@
 #ifndef RAY_TRACER_CUDABACKEND_H
 #define RAY_TRACER_CUDABACKEND_H
 
+#include "application/CompileSettings.h"
+#if CUDA_ENABLED
+
 #include "backends/Backend.h"
 
 /**
@@ -22,4 +25,5 @@ public:
     void setResolution(unsigned width, unsigned height) override;
 };
 
+#endif //CUDA_ENABLED
 #endif //RAY_TRACER_CUDABACKEND_H
