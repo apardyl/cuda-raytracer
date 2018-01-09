@@ -26,6 +26,8 @@ struct Vector {
 	void translateStartedPoint(float eps);
 
 	float getAngle(Vector vector);
+
+	bool isObtuse(Vector vector);
 };
 
 #endif // RAY_TRACER_VECTOR_H

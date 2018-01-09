@@ -62,3 +62,11 @@ float Vector::getAngle(Vector vector) {
 	other.normalize();
 	return acos(temp.dot(other));
 }
+
+bool Vector::isObtuse(Vector vector) {
+    Vector temp = *this;
+    Vector other = vector;
+    temp.normalize();
+    other.normalize();
+    return temp.dot(other) < 0;
+}

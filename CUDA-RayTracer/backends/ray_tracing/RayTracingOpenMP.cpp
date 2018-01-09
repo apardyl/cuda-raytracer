@@ -430,7 +430,7 @@ Color trace(Vector vector, int depth) {
 		Point reflection_point = vectors[i].startPoint;
 		Vector normal = global_triangles[triangles[i]].getNormal(); 
 		normal.normalize();
-		if (normal.getAngle(vectors[i]) > PI) 
+		if (normal.isObtuse(vectors[i]))
 		{
 			normal = normal.mul(-1);
 		}
@@ -443,7 +443,7 @@ Color trace(Vector vector, int depth) {
 			Vector to_light = Vector(reflection_point, lights[light].point);
 			to_light.normalize();
 			// check if light is block out
-			if (normal.getAngle(to_light) > PI)
+			if (normal.isObtuse(to_light))
 				continue;
 			Vector temp = to_light;
 			temp.translateStartedPoint(FLT_EPSILON*10);
@@ -463,7 +463,7 @@ Color trace(Vector vector, int depth) {
 			Vector from_light_reflected = global_triangles[triangles[i]].getReflectedVector(from_light);
 			from_light_reflected.normalize();
             // todo: check why the normal vectors are inverted (and dot product < 0)
-			triangle_ilumination += lights[light].Id*std::max(0.f, std::abs(normal.dot(to_light)))*material.diffuse;
+			triangle_ilumination += lights[light].Id*std::max(0.f, normal.dot(to_light))*material.diffuse;
 			triangle_ilumination += lights[light].Is*powf(std::max(0.f, to_viewer.dot(from_light_reflected)), material.specularExponent)*material.specular;
 		}
 
