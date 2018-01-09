@@ -1,9 +1,9 @@
 #ifndef RAY_TRACER_RANDOMCUDABACKEND_H
 #define RAY_TRACER_RANDOMCUDABACKEND_H
 
-#if CUDA_ENABLED
-
 #include "backends/cuda_backend/CudaBackend.h"
+
+#if CUDA_ENABLED
 
 /**
  * Simple rendering backend that fills the surface with random pixels using
