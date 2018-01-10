@@ -28,7 +28,7 @@ Material *Scene::getMaterials() const {
 
 const Material& Scene::getMaterial(int id) const {
     if (id < 0 || id >= materialsCount) {
-        return {};
+        return materials[0];
     } else {
         return materials[id];
     }
