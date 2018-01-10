@@ -53,25 +53,25 @@ void GTKFrontend::run() {
     app->run(*mainWindow);
 }
 
-void GTKFrontend::setImage(Image image) {
+void GTKFrontend::setImage(Bitmap image) {
     std::unique_lock<std::mutex> localImageLock(imageLock);
-    newImage = std::make_unique<Image>(std::move(image));
+    newBitmap = std::make_unique<Bitmap>(std::move(image));
     dispatcher.emit();
 }
 
 void GTKFrontend::onImageSet() {
     std::unique_lock<std::mutex> localImageLock(imageLock);
 
-    imagePixbuf = std::move(Gdk::Pixbuf::create_from_data(
-            newImage->pixelData, Gdk::COLORSPACE_RGB, false, 8, newImage->width,
-            newImage->height, newImage->width * newImage->bytesPerPixel));
+    bitmapPixbuf = std::move(Gdk::Pixbuf::create_from_data(
+            newBitmap->pixelData, Gdk::COLORSPACE_RGB, false, 8, newBitmap->width,
+            newBitmap->height, newBitmap->width * newBitmap->bytesPerPixel));
 
-    std::swap(image, newImage);
-    newImage = nullptr;
+    std::swap(bitmap, newBitmap);
+    newBitmap = nullptr;
 
     headerBar->set_subtitle(
-            std::to_string(image->width) + " x " +
-            std::to_string(image->height));
+            std::to_string(bitmap->width) + " x " +
+            std::to_string(bitmap->height));
     refreshAction->set_enabled(true);
     saveAction->set_enabled(true);
     contentStack->set_visible_child(*renderedImage);
@@ -82,7 +82,7 @@ bool GTKFrontend::drawImage(Cairo::RefPtr<Cairo::Context> const &context) {
     int width = renderedImage->get_allocated_width() * scaleFactor;
     int height = renderedImage->get_allocated_height() * scaleFactor;
 
-    const Glib::RefPtr<Gdk::Pixbuf> &img = imagePixbuf->scale_simple(
+    const Glib::RefPtr<Gdk::Pixbuf> &img = bitmapPixbuf->scale_simple(
             width, height, Gdk::InterpType::INTERP_BILINEAR);
 
     context->scale(1. / scaleFactor, 1. / scaleFactor);
@@ -141,7 +141,7 @@ void GTKFrontend::onSave() {
             type = "bmp";
         }
 
-        imagePixbuf->save(dialog.get_filename(), type);
+        bitmapPixbuf->save(dialog.get_filename(), type);
     }
 }
 

@@ -27,9 +27,9 @@ private:
     Glib::Dispatcher dispatcher;
 
     std::mutex imageLock;
-    std::unique_ptr<Image> image;
-    std::unique_ptr<Image> newImage;
-    Glib::RefPtr<Gdk::Pixbuf> imagePixbuf;
+    std::unique_ptr<Bitmap> bitmap;
+    std::unique_ptr<Bitmap> newBitmap;
+    Glib::RefPtr<Gdk::Pixbuf> bitmapPixbuf;
 
     void createActions();
 
@@ -47,7 +47,7 @@ public:
 
     void run() override;
 
-    void setImage(Image image) override;
+    void setImage(Bitmap image) override;
 };
 
 #endif //GTK_ENABLED
