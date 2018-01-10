@@ -310,9 +310,9 @@ struct Camera {
 			resolution(resolution),
 			num_of_samples(num_of_samples),
 			active_pixel_sensor(std::make_unique<Color[]>(resolution.width * resolution.height)) {
-		for (int i = 0; i < resolution.height; ++i) {
-			for (int j = 0; j < resolution.width; ++j) {
-				getActivePixelSensor(i, j) = Color(0, 0, 0);
+		for (int y = 0; y < resolution.height; ++y) {
+			for (int x = 0; x < resolution.width; ++x) {
+				getActivePixelSensor(x, y) = Color(0, 0, 0);
 			}
 		}
 	}
@@ -321,20 +321,20 @@ struct Camera {
 		return active_pixel_sensor[resolution.width * y + x];
 	}
 
-	Vector get_random_vector(int row, int column) const { // not implemented
+	Vector get_random_vector(int x, int y) const { // not implemented
 		return Vector(Point(0, 0, 0), 0, 0, 0);
 	}
 
-	Vector get_primary_vector(int row, int column) const { // row from [0,..., resolution.height-1]  column from [0, resolution.width-1]
+	Vector get_primary_vector(int x, int y) const { // row from [0,..., resolution.height-1]  column from [0, resolution.width-1]
 		float pixel_width = width / resolution.width;
 		float pixel_height = height / resolution.height;
-		float x_cord = (-width / 2) + pixel_width * (0.5 + column);
-		float y_cord = (-height / 2) + pixel_height * (0.5 + row);
+		float x_cord = (-width / 2) + pixel_width * (0.5 + x);
+		float y_cord = (-height / 2) + pixel_height * (0.5 + y);
 		return Vector(focus_point, Point(x_cord, y_cord, 0));
 	}
 
-	void update(int row, int column, Color color) {
-		getActivePixelSensor(row, column) += color;
+	void update(int x, int y, Color color) {
+		getActivePixelSensor(x, y) += color;
 	}
 
 	Color get_pixel_color(int x, int y) const {
@@ -501,27 +501,26 @@ Image RayTracingOpenMP::render() {
 	build_tree(triangles, -1, 0, 10);
 	Resolution resolution = Resolution(width, height);
 	Camera camera(2, 2, resolution, 1);
-	for (int i = 0; i < height; ++i) {
-		for (int j = 0; j < width; ++j) {
-			Vector vector = camera.get_primary_vector(i, j);
+	for (int y = 0; y < height; ++y) {
+		for (int x = 0; x < width; ++x) {
+			Vector vector = camera.get_primary_vector(x, y);
 			Color color = trace(vector, 20);
-			camera.update(i, j, color);
+			camera.update(x, y, color);
 		}
 	}
 	delete[] nodes;
 	delete[] lights;
 	// return Image
 	data = new byte[width * height * BYTES_PER_PIXEL];
-	for (int i = 0; i < resolution.height; ++i)
+	for (int y = 0; y < resolution.height; ++y)
 	{
-		for (int j = 0; j < resolution.width; ++j)
+		for (int x = 0; x < resolution.width; ++x)
 		{
-			Color color = camera.get_pixel_color(resolution.height - i - 1, j);
-			int y = height - 1 - i;
-			int x = j;
-			data[(width * y + x) * BYTES_PER_PIXEL] = std::min(color.red, (float)255);
-			data[(width * y + x) * BYTES_PER_PIXEL + 1] = std::min(color.green, (float) 255);
-			data[(width * y + x) * BYTES_PER_PIXEL + 2] = std::min(color.blue, (float) 255);
+			Color color = camera.get_pixel_color(x, resolution.height - y - 1);
+			int realY = height - 1 - y;
+			data[(width * realY + x) * BYTES_PER_PIXEL] = std::min(color.red, (float)255);
+			data[(width * realY + x) * BYTES_PER_PIXEL + 1] = std::min(color.green, (float) 255);
+			data[(width * realY + x) * BYTES_PER_PIXEL + 2] = std::min(color.blue, (float) 255);
 		}
 	}
 	return Image(resolution.width, resolution.height, data);
