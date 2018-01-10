@@ -70,3 +70,31 @@ bool Vector::isObtuse(Vector vector) {
     other.normalize();
     return temp.dot(other) < 0;
 }
+
+Vector Vector::rotateX(float angle) const {
+    Vector vector(startPoint, x, y, z);
+    performRotation(angle, vector.y, vector.z, y, -z, y, z);
+    return vector;
+}
+
+Vector Vector::rotateY(float angle) const {
+    Vector vector(startPoint, x, y, z);
+    performRotation(angle, vector.x, vector.z, x, z, -x, z);
+    return vector;
+}
+
+Vector Vector::rotateZ(float angle) const {
+    Vector vector(startPoint, x, y, z);
+    performRotation(angle, vector.x, vector.y, x, -y, x, y);
+    return vector;
+}
+
+void Vector::performRotation(float angle,
+                             float &axis1, float &axis2,
+                             float axis1Mult1, float axis1Mult2,
+                             float axis2Mult1, float axis2Mult2) const {
+    float angleSin = std::sin(angle);
+    float angleCos = std::cos(angle);
+    axis1 = axis1Mult1 * angleCos + axis1Mult2 * angleSin;
+    axis2 = axis2Mult1 * angleSin + axis2Mult2 * angleCos;
+}
