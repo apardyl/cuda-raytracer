@@ -25,6 +25,7 @@ struct Random {
 struct Camera {
     Point location;
     Point rotation;
+    float horizontalFOV;
 
     float width, height;
     Resolution resolution;
@@ -32,12 +33,21 @@ struct Camera {
     std::unique_ptr<Color[]> active_pixel_sensor;
     Random random;
 
-    Camera(Point location, Point rotation, float width, float height, Resolution resolution,
+    /**
+     * @param location location of the camera
+     * @param rotation rotation of the camera in radians. (0, 0, 0) rotation means bottom
+     *  (negative Z axis).
+     * @param horizontalFOV horizontal field of view (FOV), in radians
+     * @param resolution resolution of the camera, in pixels
+     * @param num_of_samples number of samples computed for each pixel
+     */
+    Camera(Point location, Point rotation, float horizontalFOV, Resolution resolution,
            int num_of_samples) :
             location(location),
             rotation(rotation),
-            width(width),
-            height(height),
+            horizontalFOV(horizontalFOV),
+            width(2 * std::sin(horizontalFOV / 2)),
+            height(width * resolution.height / resolution.width),
             resolution(resolution),
             num_of_samples(num_of_samples),
             active_pixel_sensor(std::make_unique<Color[]>(resolution.width * resolution.height)) {
@@ -89,7 +99,7 @@ Image RayTracingOpenMP::render() {
     Light light(Point(0, 0, -1), Color(1, 1, 1), Color(1, 1, 1));
     kdTree.registerLight(light);
     Resolution resolution = Resolution(width, height);
-    Camera camera(Point(0, 0, -1), Point(0, static_cast<float>(M_PI), 0), 2, 2, resolution, 1);
+    Camera camera(Point(0, 0, -1), Point(0, static_cast<float>(M_PI), 0), M_PI_2, resolution, 1);
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             Vector vector = camera.get_primary_vector(x, y);
