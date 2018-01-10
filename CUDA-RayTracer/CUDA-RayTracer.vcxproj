@@ -101,7 +101,12 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="application\main.cpp" />
     <ClCompile Include="backends\Backend.cpp" />
     <ClCompile Include="backends\Image.cpp" />
+    <ClCompile Include="backends\ray_tracing\Box.cpp" />
+    <ClCompile Include="backends\ray_tracing\KdTree.cpp" />
+    <ClCompile Include="backends\ray_tracing\Light.cpp" />
+    <ClCompile Include="backends\ray_tracing\Node.cpp" />
     <ClCompile Include="backends\ray_tracing\RayTracingOpenMP.cpp" />
+    <ClCompile Include="backends\ray_tracing\Stack.cpp" />
     <ClCompile Include="frontends\Frontend.cpp" />
     <ClCompile Include="frontends\frontend_controller\BackendController.cpp" />
     <ClCompile Include="frontends\frontend_controller\CountDownLatch.cpp" />
@@ -132,8 +137,13 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="backends\Backend.h" />
     <ClInclude Include="backends\cuda_backend\CudaBackend.h" />
     <ClInclude Include="backends\Image.h" />
+    <ClInclude Include="backends\ray_tracing\Box.h" />
+    <ClInclude Include="backends\ray_tracing\KdTree.h" />
+    <ClInclude Include="backends\ray_tracing\Light.h" />
+    <ClInclude Include="backends\ray_tracing\Node.h" />
     <ClInclude Include="backends\ray_tracing\RayTracingOpenMP.h" />
     <ClInclude Include="backends\random_cuda\RandomCudaBackend.h" />
+    <ClInclude Include="backends\ray_tracing\Stack.h" />
     <ClInclude Include="backends\solid_color_cuda\SolidColorCudaBackend.h" />
     <ClInclude Include="frontends\Frontend.h" />
     <ClInclude Include="frontends\frontend_controller\BackendController.h" />

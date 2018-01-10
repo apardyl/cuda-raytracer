@@ -123,6 +123,21 @@
     <ClCompile Include="scene\Intersection.cpp">
       <Filter>scene</Filter>
     </ClCompile>
+    <ClCompile Include="backends\ray_tracing\Stack.cpp">
+      <Filter>backends\ray_tracing</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ray_tracing\Box.cpp">
+      <Filter>backends\ray_tracing</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ray_tracing\KdTree.cpp">
+      <Filter>backends\ray_tracing</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ray_tracing\Node.cpp">
+      <Filter>backends\ray_tracing</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ray_tracing\Light.cpp">
+      <Filter>backends\ray_tracing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backends\Backend.h">
@@ -220,6 +235,21 @@
     </ClInclude>
     <ClInclude Include="scene\Intersection.h">
       <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\ray_tracing\Stack.h">
+      <Filter>backends\ray_tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\ray_tracing\Box.h">
+      <Filter>backends\ray_tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\ray_tracing\KdTree.h">
+      <Filter>backends\ray_tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\ray_tracing\Node.h">
+      <Filter>backends\ray_tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\ray_tracing\Light.h">
+      <Filter>backends\ray_tracing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -62,8 +62,8 @@ void ImageFrontend::savePNG(Image const &image) {
     }
 
     // Init info structure
-    png_infop pngInfo = png_create_info_struct(pngStruct);
-    if (pngInfo == nullptr) {
+    png_infop pnginfo = png_create_info_struct(pngStruct);
+    if (pnginfo == nullptr) {
         throw ImageError("Could not create info structure");
     }
 
@@ -71,11 +71,11 @@ void ImageFrontend::savePNG(Image const &image) {
     png_init_io(pngStruct, fp);
 
     // Write header
-    png_set_IHDR(pngStruct, pngInfo, image.width, image.height,
+    png_set_IHDR(pngStruct, pnginfo, image.width, image.height,
                  8, PNG_COLOR_TYPE_RGB, PNG_INTERLACE_NONE,
                  PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE);
 
-    png_write_info(pngStruct, pngInfo);
+    png_write_info(pngStruct, pnginfo);
 
     // Rewrite image
     auto row = new png_byte[image.width * image.bytesPerPixel];
@@ -94,6 +94,6 @@ void ImageFrontend::savePNG(Image const &image) {
 
     fclose(fp);
     delete[] row;
-    png_free_data(pngStruct, pngInfo, PNG_FREE_ALL, -1);
+    png_free_data(pngStruct, pnginfo, PNG_FREE_ALL, -1);
     png_destroy_write_struct(&pngStruct, nullptr);
 }
