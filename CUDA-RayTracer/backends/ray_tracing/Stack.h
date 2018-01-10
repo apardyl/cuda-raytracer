@@ -1,14 +1,14 @@
 ﻿#pragma once
 
 struct Stack {
-	int tab[60];
-	int size = 0;
+    int tab[60];
+    int size = 0;
 
-	Stack();
+    Stack();
 
-	void add_element(int x);
+    void add_element(int x);
 
-	int top();
+    int top();
 
-	void pop();
+    void pop();
 };

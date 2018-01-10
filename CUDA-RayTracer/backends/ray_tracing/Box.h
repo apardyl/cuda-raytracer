@@ -1,24 +1,25 @@
 ﻿#pragma once
+
 #include <algorithm>
 #include "../../scene/Point.h"
 #include "../../scene/Vector.h"
 
 
 struct Box {
-	Point point;
-	float x, y, z;
+    Point point;
+    float x, y, z;
 
-	Box();
+    Box();
 
-	Box(Point point, float x, float y, float z);
+    Box(Point point, float x, float y, float z);
 
-	float get_dist(Vector vector); // not implemented
+    float get_dist(Vector vector); // not implemented
 
-	Point getMin() const;
+    Point getMin() const;
 
-	Point getMax() const;
+    Point getMax() const;
 
-	bool is_intersecting(Vector vector);
+    bool is_intersecting(Vector vector);
 
-	Box& operator=(const Box& other);
+    Box &operator=(const Box &other);
 };

@@ -12,7 +12,7 @@ private:
     byte *data = nullptr;
 
 public:
-	RayTracingOpenMP();
+    RayTracingOpenMP();
 
     ~RayTracingOpenMP() override;
 
@@ -20,7 +20,7 @@ public:
 
     void setResolution(unsigned width, unsigned height) override;
 
-	void setSoftShadows(bool var);
+    void setSoftShadows(bool var);
 };
 
 #endif //RAY_TRACER_OPENMP_H

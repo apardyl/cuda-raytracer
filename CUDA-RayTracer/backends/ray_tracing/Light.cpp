@@ -1,12 +1,9 @@
 ﻿#include "Light.h"
 
-Light::Light()
-{
-}
+Light::Light() = default;
 
-Light::Light(Point point, Color Is, Color Id)
-{
-	this->point = point;
-	this->Is = Is;
-	this->Id = Id;
+Light::Light(Point point, Color Is, Color Id) {
+    this->point = point;
+    this->Is = Is;
+    this->Id = Id;
 }

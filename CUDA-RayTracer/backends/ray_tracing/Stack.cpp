@@ -1,22 +1,15 @@
 ﻿#include "Stack.h"
 
-Stack::Stack()
-{
-	
+Stack::Stack() = default;
+
+void Stack::add_element(int x) {
+    tab[size++] = x;
 }
 
-
-void Stack::add_element(int x)
-{
-	tab[size++] = x;
+int Stack::top() {
+    return tab[size - 1];
 }
 
-int Stack::top()
-{
-	return tab[size - 1];
-}
-
-void Stack::pop()
-{
-	size--;
+void Stack::pop() {
+    size--;
 }
