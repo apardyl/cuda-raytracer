@@ -18,8 +18,6 @@ public:
 
     Image render() override;
 
-    void setResolution(unsigned width, unsigned height) override;
-
     void setSoftShadows(bool var);
 };
 

@@ -1,5 +1,5 @@
-﻿#include <cfloat>
-#include "Node.h"
+﻿#include "Node.h"
+#include <cfloat>
 
 Node::Node() = default;
 

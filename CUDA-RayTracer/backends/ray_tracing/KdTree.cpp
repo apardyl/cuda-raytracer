@@ -1,5 +1,4 @@
 ﻿#include "KdTree.h"
-#include "Node.h"
 
 #include <cmath>
 #include <cfloat>
@@ -10,8 +9,9 @@ KdTree::KdTree(Scene *scene) {
     lights = new Light[20];
     Ia = Color(0.2, 0.2, 0.2);
     std::vector<int> triangles;
-    for (int i = 0; i < scene->trianglesCount; ++i)
+    for (int i = 0; i < scene->trianglesCount; ++i) {
         triangles.push_back(i);
+    }
     build_tree(triangles, -1, 0, 1);
 }
 
@@ -34,10 +34,12 @@ int KdTree::get_triangle(Vector &vector) {
                     }
                 }
             } else {
-                if (nodes[cur].left != -1)
+                if (nodes[cur].left != -1) {
                     stack.add_element(nodes[cur].left);
-                if (nodes[cur].right != -1)
+                }
+                if (nodes[cur].right != -1) {
                     stack.add_element(nodes[cur].right);
+                }
             }
         }
     }
@@ -59,18 +61,18 @@ int KdTree::build_tree(std::vector<int> triangles, int parent, int axis, int dep
         }
         return node_index;
     }
-    if (left.size() != 0) {
+    if (!left.empty()) {
         cur.left = build_tree(left, node_index, next_axis, depth + 1);
     }
-    if (right.size() != 0) {
+    if (!right.empty()) {
         cur.right = build_tree(right, node_index, next_axis, depth + 1);
     }
     return node_index;
 }
 
 Color KdTree::trace(Vector vector, int depth) {
-    Vector *vectors = new Vector[depth + 1];
-    int *triangles = new int[depth + 1];
+    auto *vectors = new Vector[depth + 1];
+    auto *triangles = new int[depth + 1];
     vector.normalize();
     vectors[0] = vector;
     triangles[0] = -1; // there is no triangle for primary vector
@@ -131,8 +133,7 @@ Color KdTree::trace(Vector vector, int depth) {
         if (i < num - 1) {
             triangle_ilumination +=
                     res * powf(std::max(0.f, to_viewer.dot(normal)), material.specularExponent) *
-                    material.
-                            specular;
+                    material.specular;
         }
 
         res = triangle_ilumination;

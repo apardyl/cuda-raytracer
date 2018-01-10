@@ -1,12 +1,7 @@
 #include "RayTracingOpenMP.h"
-#include "scene/Color.h"
-#include "scene/Vector.h"
-#include "scene/Point.h"
-#include "KdTree.h"
-#include "Light.h"
 
-#include <algorithm>
 #include <cmath>
+#include "KdTree.h"
 
 const int N = (int) 1e6 + 5;
 const float eps = 1e-6;
@@ -83,6 +78,11 @@ struct Camera {
     }
 };
 
+RayTracingOpenMP::RayTracingOpenMP() = default;
+
+RayTracingOpenMP::~RayTracingOpenMP() {
+    delete[] data;
+}
 
 Image RayTracingOpenMP::render() {
     KdTree kdTree(scene.get());
@@ -108,18 +108,6 @@ Image RayTracingOpenMP::render() {
         }
     }
     return Image(resolution.width, resolution.height, data);
-}
-
-RayTracingOpenMP::~RayTracingOpenMP() {
-    delete[] data;
-}
-
-RayTracingOpenMP::RayTracingOpenMP() {
-}
-
-void RayTracingOpenMP::setResolution(unsigned width, unsigned height) {
-    this->width = width;
-    this->height = height;
 }
 
 void RayTracingOpenMP::setSoftShadows(bool var) {

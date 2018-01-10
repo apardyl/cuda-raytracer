@@ -1,13 +1,14 @@
 ﻿#pragma once
 
-#include "scene/Scene.h"
+#include <iostream>
+#include <vector>
+#include <functional>
+
 #include "Box.h"
 #include "Node.h"
-#include <vector>
 #include "Stack.h"
-#include <iostream>
-#include "Light.h"
-#include <functional>
+#include "scene/Scene.h"
+#include "scene/Light.h"
 
 struct KdTree {
     Scene *scene = nullptr;
@@ -21,7 +22,6 @@ struct KdTree {
 
     int get_triangle(Vector &vector);
     // get triangle which have collison with vector // if there isn't any triangle return -1
-
 
     int build_tree(std::vector<int> triangles, int parent, int axis, int depth);
 

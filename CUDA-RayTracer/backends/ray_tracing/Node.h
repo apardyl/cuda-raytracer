@@ -1,7 +1,7 @@
 ﻿#pragma once
 
-#include "scene/Scene.h"
 #include "Box.h"
+#include "scene/Scene.h"
 
 struct Node {
     int parent, left, right, my_index;

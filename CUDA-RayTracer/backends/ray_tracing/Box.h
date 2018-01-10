@@ -1,9 +1,8 @@
 ﻿#pragma once
 
 #include <algorithm>
-#include "../../scene/Point.h"
-#include "../../scene/Vector.h"
-
+#include "scene/Point.h"
+#include "scene/Vector.h"
 
 struct Box {
     Point point;
