@@ -1,11 +1,12 @@
 #include "RandomCudaBackend.h"
 #if CUDA_ENABLED
 
+#include "scene/Color.h"
 #include <cuda_runtime.h>
 #include <ctime>
+#include <climits>
 
 const int BLOCK_SIZE = 32;
-const int BYTES_PER_PIXEL = RandomCudaBackend::BYTES_PER_PIXEL;
 
 __device__ unsigned xorshift64star(unsigned long long *state) {
     unsigned long long x = *state;
@@ -24,7 +25,7 @@ __device__ void randInit(unsigned long long *state, int x, int y, int seed) {
     }
 }
 
-__global__ void renderRandomColor(byte *data, unsigned width, unsigned height,
+__global__ void renderRandomColor(Color * data, unsigned width, unsigned height,
                                   unsigned seed, unsigned long long *states) {
     int x = blockIdx.x * blockDim.x + threadIdx.x;
     int y = blockIdx.y * blockDim.y + threadIdx.y;
@@ -35,9 +36,9 @@ __global__ void renderRandomColor(byte *data, unsigned width, unsigned height,
     unsigned long long *state = &states[y * width + x];
     randInit(state, x, y, seed);
 
-    data[(width * y + x) * BYTES_PER_PIXEL] = xorshift64star(state) % 255;
-    data[(width * y + x) * BYTES_PER_PIXEL + 1] = xorshift64star(state) % 255;
-    data[(width * y + x) * BYTES_PER_PIXEL + 2] = xorshift64star(state) % 255;
+    data[(width * y + x)].red = static_cast<double>(xorshift64star(state)) / UINT_MAX;
+    data[(width * y + x)].green = static_cast<double>(xorshift64star(state)) / UINT_MAX;
+    data[(width * y + x)].blue = static_cast<double>(xorshift64star(state)) / UINT_MAX;
 }
 
 void RandomCudaBackend::doRender() {
@@ -50,7 +51,7 @@ void RandomCudaBackend::doRender() {
     unsigned long long *states;
     cudaMalloc((void**) &states, width * height * sizeof(unsigned long long));
 
-    renderRandomColor << <gridSize, blockSize >> >(
+    renderRandomColor<<<gridSize, blockSize>>>(
         data, width, height, time(0), states);
 
     cudaDeviceSynchronize();

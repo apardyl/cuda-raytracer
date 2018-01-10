@@ -32,9 +32,9 @@ void ImageFrontend::run() {
     }
 }
 
-void ImageFrontend::setImage(Image image) {
+void ImageFrontend::setImage(Bitmap image) {
     std::unique_lock<std::mutex> localLock(lock);
-    this->image = std::make_unique<Image>(std::move(image));
+    this->image = std::make_unique<Bitmap>(std::move(image));
     condition.notify_all();
 }
 
@@ -48,7 +48,7 @@ void ImageFrontend::terminate() {
     condition.notify_all();
 }
 
-void ImageFrontend::savePNG(Image const &image) {
+void ImageFrontend::savePNG(Bitmap const &image) {
     FILE *fp = nullptr;
     if (fopen_s(&fp, filename.c_str(), "wb") || fp == nullptr) {
         throw ImageError("Could not open file for writing");

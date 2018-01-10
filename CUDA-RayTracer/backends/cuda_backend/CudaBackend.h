@@ -11,7 +11,7 @@
  */
 class CudaBackend : public Backend {
 protected:
-    byte *data = nullptr;
+    Color *data = nullptr;
 
     virtual void doRender() = 0;
 

@@ -9,7 +9,7 @@
  */
 class RayTracingOpenMP : public Backend {
 private:
-    byte *data = nullptr;
+    Color *data = nullptr;
 
 public:
     RayTracingOpenMP();

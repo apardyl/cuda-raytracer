@@ -11,10 +11,10 @@ private:
     std::mutex lock;
 
     const std::string filename;
-    std::unique_ptr<Image> image = nullptr;
+    std::unique_ptr<Bitmap> image = nullptr;
     bool shouldTerminate = false;
 
-    void savePNG(Image const &image);
+    void savePNG(Bitmap const &image);
 public:
     explicit ImageFrontend(std::string const &filename);
 
@@ -22,7 +22,7 @@ public:
 
     void run() override;
 
-    void setImage(Image image) override;
+    void setImage(Bitmap image) override;
 
     bool isDaemon() override;
 

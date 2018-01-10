@@ -73,6 +73,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;WIN64;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(CudaToolkitIncludeDir);$(ProjectDir)</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -100,6 +101,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="application\BackendInitializer.cpp" />
     <ClCompile Include="application\main.cpp" />
     <ClCompile Include="backends\Backend.cpp" />
+    <ClCompile Include="backends\Bitmap.cpp" />
     <ClCompile Include="backends\Image.cpp" />
     <ClCompile Include="backends\ray_tracing\Box.cpp" />
     <ClCompile Include="backends\ray_tracing\KdTree.cpp" />
@@ -134,7 +136,9 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="application\Application.h" />
     <ClInclude Include="application\ApplicationOptions.h" />
     <ClInclude Include="application\BackendInitializer.h" />
+    <ClInclude Include="application\CompileSettings.h" />
     <ClInclude Include="backends\Backend.h" />
+    <ClInclude Include="backends\Bitmap.h" />
     <ClInclude Include="backends\cuda_backend\CudaBackend.h" />
     <ClInclude Include="backends\Image.h" />
     <ClInclude Include="backends\ray_tracing\Box.h" />

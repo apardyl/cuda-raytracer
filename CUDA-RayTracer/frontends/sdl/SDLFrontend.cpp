@@ -66,7 +66,7 @@ void SDLFrontend::render() {
     }
 }
 
-void SDLFrontend::setImage(Image image) {
+void SDLFrontend::setImage(Bitmap image) {
     SDL_Surface *surface = SDL_CreateRGBSurfaceFrom(
             image.pixelData, image.width, image.height, 24,
             image.width * image.bytesPerPixel,

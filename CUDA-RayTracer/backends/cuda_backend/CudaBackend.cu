@@ -16,7 +16,7 @@ Image CudaBackend::render() {
 void CudaBackend::setResolution(unsigned width, unsigned height) {
     Backend::setResolution(width, height);
     cudaFree(data);
-    cudaMallocHost(&data, sizeof(byte) * width * height * BYTES_PER_PIXEL);
+    cudaMallocHost(&data, sizeof(Color) * width * height);
 }
 
 #endif //CUDA_ENABLED

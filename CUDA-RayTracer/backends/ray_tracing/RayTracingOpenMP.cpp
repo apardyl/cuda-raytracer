@@ -86,7 +86,7 @@ RayTracingOpenMP::~RayTracingOpenMP() {
 
 Image RayTracingOpenMP::render() {
     KdTree kdTree(scene.get());
-    Light light(Point(0, 0, -1), Color(255, 255, 255), Color(255, 255, 255));
+    Light light(Point(0, 0, -1), Color(1, 1, 1), Color(1, 1, 1));
     kdTree.registerLight(light);
     Resolution resolution = Resolution(width, height);
     Camera camera(Point(0, 0, -1), Point(0, static_cast<float>(M_PI), 0), 2, 2, resolution, 1);
@@ -98,13 +98,10 @@ Image RayTracingOpenMP::render() {
         }
     }
     // return Image
-    data = new byte[width * height * BYTES_PER_PIXEL];
+    data = new Color[width * height];
     for (int y = 0; y < resolution.height; ++y) {
         for (int x = 0; x < resolution.width; ++x) {
-            Color color = camera.get_pixel_color(x, y);
-            data[(width * y + x) * BYTES_PER_PIXEL] = std::min(color.red, (float) 255);
-            data[(width * y + x) * BYTES_PER_PIXEL + 1] = std::min(color.green, (float) 255);
-            data[(width * y + x) * BYTES_PER_PIXEL + 2] = std::min(color.blue, (float) 255);
+            data[width * y + x] = camera.get_pixel_color(x, y);
         }
     }
     return Image(resolution.width, resolution.height, data);

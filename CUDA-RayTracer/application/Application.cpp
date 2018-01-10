@@ -15,6 +15,7 @@
 #include "scene/scene_loaders/IOException.h"
 #include "scene/scene_loaders/ParseError.h"
 #include "scene/scene_loaders/UnknownFormatException.h"
+#include "backends/Bitmap.h"
 
 using namespace std::string_literals;
 
@@ -174,7 +175,8 @@ void Application::run() {
     }
 
     backend->setResolution(options.width, options.height);
-    frontendController.setImage(backend->render());
+    Bitmap bitmap(backend->render());
+    frontendController.setImage(bitmap);
 
     std::thread frontendControllerThread([&]() {
         frontendController.waitForTermination();
@@ -190,7 +192,8 @@ void Application::run() {
         std::unique_lock<std::recursive_mutex> localLock(executionLock);
         if (backendController.isRefreshRequested()) {
             backendController.applyBackendSettings(backend.get());
-            frontendController.setImage(backend->render());
+            Bitmap bitmap(backend->render());
+            frontendController.setImage(bitmap);
         }
 
         executionCondition.wait(localLock);

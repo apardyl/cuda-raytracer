@@ -1,8 +1,8 @@
 #ifndef RAY_TRACER_FRONTEND_H
 #define RAY_TRACER_FRONTEND_H
 
-#include "backends/Image.h"
 #include "frontends/frontend_controller/BackendController.h"
+#include "backends/Bitmap.h"
 
 class Frontend {
 protected:
@@ -13,7 +13,7 @@ public:
 
     virtual void run() = 0;
 
-    virtual void setImage(Image image) = 0;
+    virtual void setImage(Bitmap image) = 0;
 
     virtual void setBackendController(BackendController *backendController);
 

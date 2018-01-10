@@ -138,6 +138,9 @@
     <ClCompile Include="scene\Light.cpp">
       <Filter>scene</Filter>
     </ClCompile>
+    <ClCompile Include="backends\Bitmap.cpp">
+      <Filter>backends</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backends\Backend.h">
@@ -250,6 +253,12 @@
     </ClInclude>
     <ClInclude Include="scene\Light.h">
       <Filter>scene</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\Bitmap.h">
+      <Filter>backends</Filter>
+    </ClInclude>
+    <ClInclude Include="application\CompileSettings.h">
+      <Filter>application</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

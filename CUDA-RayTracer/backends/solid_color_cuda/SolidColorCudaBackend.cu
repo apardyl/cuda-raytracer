@@ -1,27 +1,20 @@
 #include "SolidColorCudaBackend.h"
 #if CUDA_ENABLED
-
+#include "scene/Color.h"
 #include <cuda_runtime.h>
 
 const int BLOCK_SIZE = 32;
-const int BYTES_PER_PIXEL = SolidColorCudaBackend::BYTES_PER_PIXEL;
 
-// Rendering red to make sure the subpixel values are interpreted in the
-// correct order
-const byte COLOR_RED = 255;
-const byte COLOR_GREEN = 0;
-const byte COLOR_BLUE = 0;
-
-__global__ void renderSolidColor(byte *data, unsigned width, unsigned height) {
+__global__ void renderSolidColor(Color *data, unsigned width, unsigned height) {
     int x = blockIdx.x * blockDim.x + threadIdx.x;
     int y = blockIdx.y * blockDim.y + threadIdx.y;
     if (x >= width || y >= height) {
         return;
     }
 
-    data[(width * y + x) * BYTES_PER_PIXEL] = COLOR_RED;
-    data[(width * y + x) * BYTES_PER_PIXEL + 1] = COLOR_GREEN;
-    data[(width * y + x) * BYTES_PER_PIXEL + 2] = COLOR_BLUE;
+    data[(width * y + x)].red = 1;
+    data[(width * y + x)].green = 0;
+    data[(width * y + x)].blue = 0;
 }
 
 void SolidColorCudaBackend::doRender() {

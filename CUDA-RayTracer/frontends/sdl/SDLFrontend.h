@@ -4,7 +4,7 @@
 #include <SDL.h>
 #include <atomic>
 #include "frontends/Frontend.h"
-#include "backends/Image.h"
+#include "backends/Bitmap.h"
 
 class SDLFrontend : public Frontend {
 private:
@@ -26,7 +26,7 @@ public:
 
     void run() override;
 
-    void setImage(Image image) override;
+    void setImage(Bitmap image) override;
 };
 
 #endif //RAY_TRACER_SDLFRONTEND_H

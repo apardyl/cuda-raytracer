@@ -1,17 +1,16 @@
 #ifndef RAY_TRACER_IMAGE_H
 #define RAY_TRACER_IMAGE_H
+#include "scene/Color.h"
 
 typedef unsigned char byte;
 
 struct Image {
     unsigned width;
     unsigned height;
-    unsigned bytesPerPixel;
 
-    byte *pixelData = nullptr;
+    Color *pixelData = nullptr;
 
-    Image(unsigned int width, unsigned int height, byte *pixelData,
-          unsigned int bytesPerPixel = 3);
+    Image(unsigned int width, unsigned int height, Color *pixelData);
 
     Image(Image const &image);
 
