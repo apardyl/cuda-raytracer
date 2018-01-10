@@ -135,8 +135,8 @@
     <ClCompile Include="backends\ray_tracing\Node.cpp">
       <Filter>backends\ray_tracing</Filter>
     </ClCompile>
-    <ClCompile Include="backends\ray_tracing\Light.cpp">
-      <Filter>backends\ray_tracing</Filter>
+    <ClCompile Include="scene\Light.cpp">
+      <Filter>scene</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -248,8 +248,8 @@
     <ClInclude Include="backends\ray_tracing\Node.h">
       <Filter>backends\ray_tracing</Filter>
     </ClInclude>
-    <ClInclude Include="backends\ray_tracing\Light.h">
-      <Filter>backends\ray_tracing</Filter>
+    <ClInclude Include="scene\Light.h">
+      <Filter>scene</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -13,11 +13,13 @@ Node::Node(int parent, int my_index, int *triangles, Box bounding_box, Scene *sc
     this->scene = scene;
 }
 
-int Node::get_minimal_triangle(Vector &vector) {
+int Node::get_minimal_triangle(Vector &vector, int ignoredIndex) {
     int best_index = -1;
     float best = FLT_MAX;
     if (left == -1 && right == -1) {
         for (int i = 0; i < num_of_triangles; ++i) {
+			if(this->triangles[i] == ignoredIndex)
+				continue;
             float dist = scene->getTriangles()[this->triangles[i]].getDist(vector);
             if (dist != -1 && dist < best) {
                 best_index = triangles[i];

@@ -20,7 +20,7 @@ struct KdTree {
 
     explicit KdTree(Scene *scene);
 
-    int get_triangle(Vector &vector);
+    int get_triangle(Vector &vector, int ingnoredIndex);
     // get triangle which have collison with vector // if there isn't any triangle return -1
 
     int build_tree(std::vector<int> triangles, int parent, int axis, int depth);

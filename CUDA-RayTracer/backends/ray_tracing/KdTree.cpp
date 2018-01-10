@@ -15,7 +15,7 @@ KdTree::KdTree(Scene *scene) {
     build_tree(triangles, -1, 0, 1);
 }
 
-int KdTree::get_triangle(Vector &vector) {
+int KdTree::get_triangle(Vector &vector, int ignoredIndex) {
     int ans = -1;
     float best_distance = FLT_MAX;
     Stack stack;
@@ -25,7 +25,7 @@ int KdTree::get_triangle(Vector &vector) {
         stack.pop();
         if (nodes[cur].bounding_box.is_intersecting(vector)) {
             if (nodes[cur].is_leaf()) {
-                int index_of_best_triangle = nodes[cur].get_minimal_triangle(vector);
+                int index_of_best_triangle = nodes[cur].get_minimal_triangle(vector, ignoredIndex);
                 if (index_of_best_triangle != -1) {
                     float distance = scene->getTriangles()[index_of_best_triangle].getDist(vector);
                     if (best_distance > distance) {
@@ -79,8 +79,7 @@ Color KdTree::trace(Vector vector, int depth) {
     int num = 1;
     for (; num <= depth; ++num) {
         vector = vectors[num - 1];
-        vector.translateStartedPoint(FLT_EPSILON * 3);
-        int triangle_index = get_triangle(vector);
+        int triangle_index = get_triangle(vector, triangles[num-1]);
         if (triangle_index == -1 || depth == num) {
             break;
         }
@@ -108,8 +107,7 @@ Color KdTree::trace(Vector vector, int depth) {
                 continue;
             }
             Vector temp = to_light;
-            temp.translateStartedPoint(FLT_EPSILON * 10);
-            int index = get_triangle(temp);
+            int index = get_triangle(temp, triangles[i]);
             if (index == triangles[i]) {
                 std::cout << "zle\n" << std::endl;
             }

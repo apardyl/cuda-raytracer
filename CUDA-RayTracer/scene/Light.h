@@ -4,10 +4,10 @@
 #include "scene/Point.h"
 
 struct Light {
-    Point point;
-    Color Is, Id;
+	Point point;
+	Color Is, Id;
 
-    Light();
+	Light();
 
-    Light(Point point, Color Is, Color Id);
+	Light(Point point, Color Is, Color Id);
 };

@@ -1,7 +1,7 @@
 #include "RayTracingOpenMP.h"
-
 #include <cmath>
 #include "KdTree.h"
+#include <SDL_stdinc.h>
 
 const int N = (int) 1e6 + 5;
 const float eps = 1e-6;

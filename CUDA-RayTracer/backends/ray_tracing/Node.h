@@ -14,7 +14,7 @@ struct Node {
 
     Node(int parent, int my_index, int *triangles, Box bounding_box, Scene *scene);
 
-    int get_minimal_triangle(Vector &vector); // if there is no such triangle return -1
+    int get_minimal_triangle(Vector &vector, int ignoredIndex); // if there is no such triangle return -1
 
     bool is_leaf();
 
