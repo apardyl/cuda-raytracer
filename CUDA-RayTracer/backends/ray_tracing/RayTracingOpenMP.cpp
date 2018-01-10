@@ -297,14 +297,19 @@ struct Random {
 };
 
 struct Camera {
+    Point location;
+    Point rotation;
+
 	float width, height;
 	Resolution resolution;
-	Point focus_point = Point(0, 0, -1);
 	int num_of_samples = 1024;
 	std::unique_ptr<Color[]> active_pixel_sensor;
 	Random random;
 
-	Camera(float width, float height, Resolution resolution, int num_of_samples) :
+	Camera(Point location, Point rotation, float width, float height, Resolution resolution,
+		   int num_of_samples) :
+			location(location),
+			rotation(rotation),
 			width(width),
 			height(height),
 			resolution(resolution),
@@ -325,12 +330,17 @@ struct Camera {
 		return Vector(Point(0, 0, 0), 0, 0, 0);
 	}
 
-	Vector get_primary_vector(int x, int y) const { // row from [0,..., resolution.height-1]  column from [0, resolution.width-1]
+	Vector get_primary_vector(int x, int y) const {
 		float pixel_width = width / resolution.width;
 		float pixel_height = height / resolution.height;
 		float x_cord = (-width / 2) + pixel_width * (0.5 + x);
 		float y_cord = (-height / 2) + pixel_height * (0.5 + y);
-		return Vector(focus_point, Point(x_cord, y_cord, 0));
+        Vector vector = Vector(Point(0,0,0), Point(y_cord, x_cord, -1))
+                .rotateX(rotation.x)
+                .rotateY(rotation.y)
+                .rotateZ(rotation.z);
+        vector.startPoint = location;
+        return vector;
 	}
 
 	void update(int x, int y, Color color) {
@@ -499,7 +509,7 @@ Image RayTracingOpenMP::render() {
 	}
 	build_tree(triangles, -1, 0, 10);
 	Resolution resolution = Resolution(width, height);
-	Camera camera(2, 2, resolution, 1);
+	Camera camera(Point(0, 0, -1), Point(0, static_cast<float>(M_PI), 0), 2, 2, resolution, 1);
 	for (int y = 0; y < height; ++y) {
 		for (int x = 0; x < width; ++x) {
 			Vector vector = camera.get_primary_vector(x, y);
@@ -515,11 +525,10 @@ Image RayTracingOpenMP::render() {
 	{
 		for (int x = 0; x < resolution.width; ++x)
 		{
-			Color color = camera.get_pixel_color(x, resolution.height - y - 1);
-			int realY = height - 1 - y;
-			data[(width * realY + x) * BYTES_PER_PIXEL] = std::min(color.red, (float)255);
-			data[(width * realY + x) * BYTES_PER_PIXEL + 1] = std::min(color.green, (float) 255);
-			data[(width * realY + x) * BYTES_PER_PIXEL + 2] = std::min(color.blue, (float) 255);
+			Color color = camera.get_pixel_color(x, y);
+			data[(width * y + x) * BYTES_PER_PIXEL] = std::min(color.red, (float)255);
+			data[(width * y + x) * BYTES_PER_PIXEL + 1] = std::min(color.green, (float) 255);
+			data[(width * y + x) * BYTES_PER_PIXEL + 2] = std::min(color.blue, (float) 255);
 		}
 	}
 	return Image(resolution.width, resolution.height, data);
