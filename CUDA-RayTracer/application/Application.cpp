@@ -16,6 +16,8 @@
 #include "scene/scene_loaders/ParseError.h"
 #include "scene/scene_loaders/UnknownFormatException.h"
 #include "backends/Bitmap.h"
+#include "backends/post_processing/Exposure.h"
+#include "backends/post_processing/SRGBEncode.h"
 
 using namespace std::string_literals;
 
@@ -175,8 +177,7 @@ void Application::run() {
     }
 
     backend->setResolution(options.width, options.height);
-    Bitmap bitmap(backend->render());
-    frontendController.setImage(bitmap);
+    renderImage(backend.get(), frontendController);
 
     std::thread frontendControllerThread([&]() {
         frontendController.waitForTermination();
@@ -192,8 +193,7 @@ void Application::run() {
         std::unique_lock<std::recursive_mutex> localLock(executionLock);
         if (backendController.isRefreshRequested()) {
             backendController.applyBackendSettings(backend.get());
-            Bitmap bitmap(backend->render());
-            frontendController.setImage(bitmap);
+            renderImage(backend.get(), frontendController);
         }
 
         executionCondition.wait(localLock);
@@ -232,4 +232,11 @@ Application::createFrontendList() const {
 #endif
 
     return frontendConstructors;
+}
+
+void Application::renderImage(Backend *backend, FrontendController &frontendController) const {
+    std::unique_ptr<Image> image = std::make_unique<Image>(backend->render());
+    image = Exposure().process(std::move(image)); // TODO: Add console switch.
+    image = SRGBEncode().process(std::move(image));
+    frontendController.setImage(Bitmap(*image));
 }

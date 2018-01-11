@@ -34,6 +34,8 @@ private:
 
     std::vector<std::function<Frontend *()>> createFrontendList() const;
 
+    void renderImage(Backend* backend, FrontendController& frontendController);
+
 public:
 
     Application(int argc, char *argv[]);

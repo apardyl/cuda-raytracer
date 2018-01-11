@@ -37,6 +37,9 @@
     <Filter Include="backends\random_cuda">
       <UniqueIdentifier>{9b71263a-9af6-410d-98d6-5fa56a9ac536}</UniqueIdentifier>
     </Filter>
+    <Filter Include="backends\post_processing">
+      <UniqueIdentifier>{66835b31-1601-4931-9364-a9ac8f8f9720}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="backends\Backend.cpp">
@@ -140,6 +143,21 @@
     </ClCompile>
     <ClCompile Include="backends\Bitmap.cpp">
       <Filter>backends</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ray_tracing\Camera.cpp">
+      <Filter>backends\ray_tracing</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ray_tracing\Random.cpp">
+      <Filter>backends\ray_tracing</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\ray_tracing\Resolution.cpp">
+      <Filter>backends\ray_tracing</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\post_processing\Exposure.cpp">
+      <Filter>backends\post_processing</Filter>
+    </ClCompile>
+    <ClCompile Include="backends\post_processing\SRGBEncode.cpp">
+      <Filter>backends\post_processing</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -259,6 +277,24 @@
     </ClInclude>
     <ClInclude Include="application\CompileSettings.h">
       <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\ray_tracing\Camera.h">
+      <Filter>backends\ray_tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\ray_tracing\Random.h">
+      <Filter>backends\ray_tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\ray_tracing\Resolution.h">
+      <Filter>backends\ray_tracing</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\post_processing\Exposure.h">
+      <Filter>backends\post_processing</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\post_processing\SRGBEncode.h">
+      <Filter>backends\post_processing</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\post_processing\PostBackend.h">
+      <Filter>backends\post_processing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

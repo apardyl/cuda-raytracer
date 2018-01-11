@@ -16,6 +16,8 @@ struct Color {
     Color operator*(const Color &color) const;
 
     Color operator/(const float &div) const;
+
+    Color pow(float f) const;
 };
 
 #endif // RAY_TRACER_COLOR_H

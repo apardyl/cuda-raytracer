@@ -23,7 +23,7 @@ public:
 
     void waitForInit();
 
-    void setImage(Bitmap image);
+    void setImage(const Bitmap& image);
 
     void waitForTermination();
 

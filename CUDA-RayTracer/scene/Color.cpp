@@ -1,4 +1,5 @@
 ﻿#include "Color.h"
+#include <cmath>
 
 Color::Color() : red(0.5), green(0.5), blue(0.5) {
 }
@@ -33,4 +34,8 @@ Color Color::operator*(const Color &color) const {
 Color Color::operator/(const float &div) const {
     Color res = Color(red / div, green / div, blue / div);
     return res;
+}
+
+Color Color::pow(float f) const {
+    return {powf(red, f), powf(green, f), powf(blue, f)};
 }

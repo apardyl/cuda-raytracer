@@ -42,7 +42,7 @@ void FrontendController::waitForInit() {
     initLatch.await();
 }
 
-void FrontendController::setImage(Bitmap image) {
+void FrontendController::setImage(const Bitmap& image) {
     for (auto const &frontend : frontends) {
         const std::shared_ptr<Frontend> &frontendPtr = frontend.frontend.lock();
         if (frontendPtr) {

@@ -1,14 +1,11 @@
 #include "RayTracingOpenMP.h"
-
-#include <cmath>
-
-#include "KdTree.h"
-#include "Resolution.h"
 #include "Camera.h"
+#include "Resolution.h"
+#include "KdTree.h"
+#include <cmath>
+#include <boost/math/constants/constants.hpp>
 
-const int N = (int) 1e6 + 5;
-const float eps = 1e-6;
-const int BYTES_PER_PIXEL = 3;
+namespace math = boost::math::constants;
 
 RayTracingOpenMP::RayTracingOpenMP() = default;
 
@@ -21,7 +18,8 @@ Image RayTracingOpenMP::render() {
     Light light(Point(0, 0, -1), Color(1, 1, 1), Color(1, 1, 1));
     kdTree.registerLight(light);
     Resolution resolution = Resolution(width, height);
-    Camera camera(Point(0, 0, -1), Point(0, static_cast<float>(M_PI), 0), M_PI_2, resolution, 1);
+    Camera camera(Point(0, 0, -1), Point(0, static_cast<float>(math::pi<float>()), 0),
+                  math::pi<float>() / 2, resolution, 1);
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             Vector vector = camera.getPrimaryVector(x, y);
