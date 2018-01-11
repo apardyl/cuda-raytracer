@@ -8,37 +8,46 @@ KdTree::KdTree(Scene *scene) {
     nodes = new Node[1000005];
     lights = new Light[20];
     Ia = Color(0.2, 0.2, 0.2);
+
     std::vector<int> triangles;
     for (int i = 0; i < scene->trianglesCount; ++i) {
         triangles.push_back(i);
     }
-    build_tree(triangles, -1, 0, 1);
+
+    buildTree(triangles, -1, 0, 1);
 }
 
-int KdTree::get_triangle(Vector &vector, int ignoredIndex) {
+int KdTree::getNearestTriangle(Vector &vector, int ignoredIndex) {
     int ans = -1;
-    float best_distance = FLT_MAX;
+    float bestDistance = FLT_MAX;
+
     Stack stack;
-    stack.add_element(0);
+    stack.addElement(0);
+
     while (stack.size > 0) {
         int cur = stack.top();
         stack.pop();
-        if (nodes[cur].bounding_box.is_intersecting(vector)) {
-            if (nodes[cur].is_leaf()) {
-                int index_of_best_triangle = nodes[cur].get_minimal_triangle(vector, ignoredIndex);
-                if (index_of_best_triangle != -1) {
-                    float distance = scene->getTriangles()[index_of_best_triangle].getDist(vector);
-                    if (best_distance > distance) {
-                        best_distance = distance;
-                        ans = index_of_best_triangle;
+
+        if (nodes[cur].boundingBox.isIntersecting(vector)) {
+            if (nodes[cur].isLeaf()) {
+                int indexOfBestTriangle = nodes[cur].getNearestTriangle(vector, ignoredIndex);
+
+                if (indexOfBestTriangle != -1) {
+                    float distance = scene->getTriangles()[indexOfBestTriangle].getDist(vector);
+
+                    if (bestDistance > distance) {
+                        bestDistance = distance;
+                        ans = indexOfBestTriangle;
                     }
                 }
             } else {
+
                 if (nodes[cur].left != -1) {
-                    stack.add_element(nodes[cur].left);
+                    stack.addElement(nodes[cur].left);
                 }
+
                 if (nodes[cur].right != -1) {
-                    stack.add_element(nodes[cur].right);
+                    stack.addElement(nodes[cur].right);
                 }
             }
         }
@@ -46,129 +55,159 @@ int KdTree::get_triangle(Vector &vector, int ignoredIndex) {
     return ans;
 }
 
-int KdTree::build_tree(std::vector<int> triangles, int parent, int axis, int depth) {
-    int node_index = numberOfNodes++;
-    int next_axis = (axis + 1) % 3;
-    Node temp(parent, node_index, nullptr, get_bounding_box(triangles), scene);
-    nodes[node_index] = temp;
-    Node &cur = nodes[node_index];
+int KdTree::buildTree(std::vector<int> triangles, int parent, int axis, int depth) {
+    int nodeIndex = numberOfNodes++;
+    int nextAxis = (axis + 1) % 3;
+
+    Node temp(parent, nodeIndex, nullptr, getBoundingBox(triangles), scene);
+    nodes[nodeIndex] = temp;
+    Node &cur = nodes[nodeIndex];
+
     std::vector<int> left, right;
+
+	// if it's leaf
     if (triangles.size() < 10 || depth > 15 || !split(triangles, left, right, axis)) {
-        cur.num_of_triangles = triangles.size();
+        cur.nomNumOfTriangles = triangles.size();
         cur.triangles = new int[triangles.size()];
+
         for (int i = 0; i < triangles.size(); ++i) {
             cur.triangles[i] = triangles[i];
         }
-        return node_index;
+
+        return nodeIndex;
     }
+
     if (!left.empty()) {
-        cur.left = build_tree(left, node_index, next_axis, depth + 1);
+        cur.left = buildTree(left, nodeIndex, nextAxis, depth + 1);
     }
+
     if (!right.empty()) {
-        cur.right = build_tree(right, node_index, next_axis, depth + 1);
+        cur.right = buildTree(right, nodeIndex, nextAxis, depth + 1);
     }
-    return node_index;
+
+    return nodeIndex;
 }
 
 Color KdTree::trace(Vector vector, int depth) {
     auto *vectors = new Vector[depth + 1];
     auto *triangles = new int[depth + 1];
+
     vector.normalize();
     vectors[0] = vector;
     triangles[0] = -1; // there is no triangle for primary vector
-    int num = 1;
+    
+	int num = 1;
     for (; num <= depth; ++num) {
         vector = vectors[num - 1];
-        int triangle_index = get_triangle(vector, triangles[num-1]);
-        if (triangle_index == -1 || depth == num) {
+        int triangleIndex = getNearestTriangle(vector, triangles[num-1]);
+
+        if (triangleIndex == -1 || depth == num) {
             break;
         }
-        vectors[num] = scene->getTriangles()[triangle_index].getReflectedVector(vectors[num - 1]);
+
+        vectors[num] = scene->getTriangles()[triangleIndex].getReflectedVector(vectors[num - 1]);
         vectors[num].normalize();
-        triangles[num] = triangle_index;
+        triangles[num] = triangleIndex;
     }
+
     Color res(0, 0, 0);
     for (int i = num - 1; i >= 1; i--) {
-        Point reflection_point = vectors[i].startPoint;
+        Point reflectionPoint = vectors[i].startPoint;
+
         Vector normal = scene->getTriangles()[triangles[i]].getNormal();
         normal.normalize();
+
         if (normal.isObtuse(vectors[i])) {
             normal = normal.mul(-1);
         }
-        Vector to_viewer = vectors[i - 1].mul(-1);
-        to_viewer.normalize();
+
+        Vector toViewer = vectors[i - 1].mul(-1);
+        toViewer.normalize();
+
         Material material = scene->getMaterial((scene->getTriangles()[triangles[i]]).materialCode);
-        Color triangle_ilumination = Ia * material.ambient;
+
+        Color triangleIlumination = Ia * material.ambient;
+
         for (int light = 0; light < numberOfLights; ++light) {
-            Vector to_light = Vector(reflection_point, lights[light].point);
-            to_light.normalize();
+            Vector toLight = Vector(reflectionPoint, lights[light].point);
+            toLight.normalize();
+
             // check if light is block out
-            if (normal.isObtuse(to_light)) {
-                continue;
-            }
-            Vector temp = to_light;
-            int index = get_triangle(temp, triangles[i]);
-            if (index == triangles[i]) {
-                std::cout << "zle\n" << std::endl;
-            }
-
-            if (index != -1 && (scene->getTriangles()[index].getDist(to_light) <
-                                lights[light].point.getDist(reflection_point))) { // fix this
+            if (normal.isObtuse(toLight)) {
                 continue;
             }
 
-            Vector from_light(lights[light].point, reflection_point);
-            Vector from_light_reflected = scene->getTriangles()[triangles[i]].getReflectedVector(
-                    from_light);
-            from_light_reflected.normalize();
-            triangle_ilumination +=
-                    lights[light].Id * std::max(0.f, normal.dot(to_light)) * material.diffuse;
-            triangle_ilumination +=
-                    lights[light].Is * powf(std::max(0.f, to_viewer.dot(from_light_reflected)),
+            int index = getNearestTriangle(toLight, triangles[i]);
+
+            if (index != -1 && (scene->getTriangles()[index].getDist(toLight) <
+                                lights[light].point.getDist(reflectionPoint))) { 
+                continue;
+            }
+
+            Vector fromLight(lights[light].point, reflectionPoint);
+            Vector fromLightReflected = scene->getTriangles()[triangles[i]].getReflectedVector(
+					fromLight);
+            fromLightReflected.normalize();
+
+            triangleIlumination +=
+                    lights[light].Id * std::max(0.f, normal.dot(toLight)) * material.diffuse;
+            triangleIlumination +=
+                    lights[light].Is * powf(std::max(0.f, toViewer.dot(fromLightReflected)),
                                             material.specularExponent) * material.specular;
         }
 
+		// add radience from traced vector
         if (i < num - 1) {
-            triangle_ilumination +=
-                    res * powf(std::max(0.f, to_viewer.dot(normal)), material.specularExponent) *
+            triangleIlumination +=
+                    res * powf(std::max(0.f, toViewer.dot(normal)), material.specularExponent) *
                     material.specular;
         }
 
-        res = triangle_ilumination;
+        res = triangleIlumination;
     }
     delete[] vectors;
     delete[] triangles;
     return res;
 }
 
-Box KdTree::get_bounding_box(std::vector<int> &triangles_) {
-    Point min_point(FLT_MAX, FLT_MAX, FLT_MAX);
+Box KdTree::getBoundingBox(std::vector<int> &triangles_) {
+    Point minPoint(FLT_MAX, FLT_MAX, FLT_MAX);
+
+	// width, length, height
     float x = 0, y = 0, z = 0;
+
     for (auto &index : triangles_) {
         Triangle &triangle = scene->getTriangles()[index];
-        min_point.x = std::min(min_point.x, triangle.getMinX());
-        min_point.y = std::min(min_point.y, triangle.getMinY());
-        min_point.z = std::min(min_point.z, triangle.getMinZ());
+        minPoint.x = std::min(minPoint.x, triangle.getMinX());
+        minPoint.y = std::min(minPoint.y, triangle.getMinY());
+        minPoint.z = std::min(minPoint.z, triangle.getMinZ());
     }
 
-    Point max_point(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+    Point maxPoint(-FLT_MAX, -FLT_MAX, -FLT_MAX);
+
     for (auto &index : triangles_) {
         Triangle &triangle = scene->getTriangles()[index];
-        max_point.x = std::max(max_point.x, triangle.getMaxX());
-        max_point.y = std::max(max_point.y, triangle.getMaxY());
-        max_point.z = std::max(max_point.z, triangle.getMaxZ());
+        maxPoint.x = std::max(maxPoint.x, triangle.getMaxX());
+        maxPoint.y = std::max(maxPoint.y, triangle.getMaxY());
+        maxPoint.z = std::max(maxPoint.z, triangle.getMaxZ());
     }
-    x = max_point.x - min_point.x;
-    y = max_point.y - min_point.y;
-    z = max_point.z - min_point.z;
-    return Box(min_point, x, y, z);
+
+    x = maxPoint.x - minPoint.x;
+    y = maxPoint.y - minPoint.y;
+    z = maxPoint.z - minPoint.z;
+
+    return Box(minPoint, x, y, z);
 }
 
-bool KdTree::split(std::vector<int> &triangles, std::vector<int> &left, std::vector<int> &right,
+bool KdTree::split(std::vector<int> &triangles,
+				   std::vector<int> &left,
+				   std::vector<int> &right,
                    int axis) {
+
     if (triangles.size() <= 1) {
         return false;
     }
+
     std::function<bool(const int &a, const int &b)> com = nullptr;
     switch (axis) {
         case 0:
@@ -183,9 +222,10 @@ bool KdTree::split(std::vector<int> &triangles, std::vector<int> &left, std::vec
     }
 
     std::sort(triangles.begin(), triangles.end(), com);
-    int mid_triangle = triangles[triangles.size() / 2];
+    int midTriangle = triangles[triangles.size() / 2];
+
     for (auto &triangle : triangles) {
-        if (com(triangle, mid_triangle)) {
+        if (com(triangle, midTriangle)) {
             left.push_back(triangle);
         } else {
             right.push_back(triangle);

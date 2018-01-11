@@ -9,7 +9,7 @@ Box::Box(Point point, float x, float y, float z) {
     this->z = z;
 }
 
-float Box::get_dist(Vector vector) {
+float Box::getDist(Vector vector) {
     return 0;
 }
 
@@ -25,7 +25,7 @@ Point Box::getMax() const {
     return p;
 }
 
-bool Box::is_intersecting(Vector vector) {
+bool Box::isIntersecting(Vector vector) {
     Point pMin = getMin();
     Point pMax = getMax();
 

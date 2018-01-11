@@ -1,9 +1,9 @@
-﻿#pragma once
+﻿#ifndef RAY_TRACER_KDTREE_H
+#define RAY_TRACER_KDTREE_H
 
 #include <iostream>
 #include <vector>
 #include <functional>
-
 #include "Box.h"
 #include "Node.h"
 #include "Stack.h"
@@ -12,22 +12,25 @@
 
 struct KdTree {
     Scene *scene = nullptr;
+
     Node *nodes = nullptr;
-    int numberOfNodes = 0;
-    int numberOfLights = 0;
-    Light *lights = nullptr;
+	int numberOfNodes = 0;
+
+	Light *lights = nullptr;
+	int numberOfLights = 0;
+    
     Color Ia;
 
     explicit KdTree(Scene *scene);
 
-    int get_triangle(Vector &vector, int ingnoredIndex);
-    // get triangle which have collison with vector // if there isn't any triangle return -1
+	// get triangle which have collison with vector // if there isn't any triangle return -1
+    int getNearestTriangle(Vector &vector, int ingnoredIndex);
 
-    int build_tree(std::vector<int> triangles, int parent, int axis, int depth);
+    int buildTree(std::vector<int> triangles, int parent, int axis, int depth);
 
     Color trace(Vector vector, int depth);
 
-    Box get_bounding_box(std::vector<int> &triangles_);
+    Box getBoundingBox(std::vector<int> &triangles);
 
     /// Comparators
 
@@ -55,3 +58,4 @@ struct KdTree {
 
     ~KdTree();
 };
+#endif //RAY_TRACER_KDTREE_H

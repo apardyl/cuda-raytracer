@@ -2,7 +2,7 @@
 
 Stack::Stack() = default;
 
-void Stack::add_element(int x) {
+void Stack::addElement(int x) {
     tab[size++] = x;
 }
 

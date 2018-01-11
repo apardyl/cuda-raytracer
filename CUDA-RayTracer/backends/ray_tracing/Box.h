@@ -1,4 +1,5 @@
-﻿#pragma once
+﻿#ifndef RAY_TRACER_BOX_H
+#define RAY_TRACER_BOX_H
 
 #include <algorithm>
 #include "scene/Point.h"
@@ -6,19 +7,22 @@
 
 struct Box {
     Point point;
+
+	// width, length, height
     float x, y, z;
 
     Box();
 
     Box(Point point, float x, float y, float z);
 
-    float get_dist(Vector vector); // not implemented
+    float getDist(Vector vector); // not implemented
 
     Point getMin() const;
 
     Point getMax() const;
 
-    bool is_intersecting(Vector vector);
+    bool isIntersecting(Vector vector);
 
     Box &operator=(const Box &other);
 };
+#endif //RAY_TRACER_BOX_H
