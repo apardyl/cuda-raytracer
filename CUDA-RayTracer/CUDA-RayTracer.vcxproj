@@ -105,6 +105,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="backends\Image.cpp" />
     <ClCompile Include="backends\post_processing\Exposure.cpp" />
     <ClCompile Include="backends\post_processing\SRGBEncode.cpp" />
+    <ClCompile Include="backends\post_processing\SuperSampler.cpp" />
     <ClCompile Include="backends\ray_tracing\Box.cpp" />
     <ClCompile Include="backends\ray_tracing\Camera.cpp" />
     <ClCompile Include="backends\ray_tracing\KdTree.cpp" />
@@ -149,6 +150,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="backends\post_processing\Exposure.h" />
     <ClInclude Include="backends\post_processing\PostBackend.h" />
     <ClInclude Include="backends\post_processing\SRGBEncode.h" />
+    <ClInclude Include="backends\post_processing\SuperSampler.h" />
     <ClInclude Include="backends\ray_tracing\Box.h" />
     <ClInclude Include="backends\ray_tracing\Camera.h" />
     <ClInclude Include="backends\ray_tracing\KdTree.h" />

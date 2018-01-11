@@ -34,7 +34,7 @@ private:
 
     std::vector<std::function<Frontend *()>> createFrontendList() const;
 
-    void renderImage(Backend* backend, FrontendController& frontendController);
+    void renderImage(Backend* backend, FrontendController& frontendController) const;
 
 public:
 

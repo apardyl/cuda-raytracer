@@ -10,6 +10,8 @@ struct Image {
 
     Color *pixelData = nullptr;
 
+    Image(unsigned int width, unsigned int height);
+
     Image(unsigned int width, unsigned int height, Color *pixelData);
 
     Image(Image const &image);

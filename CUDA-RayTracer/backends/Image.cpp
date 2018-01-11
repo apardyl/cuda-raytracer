@@ -1,12 +1,13 @@
 #include <cstring>
 #include "Image.h"
 
+Image::Image(unsigned width, unsigned height) : width(width), height(height) {
+    this->pixelData = new Color[sizeof(Color) * width * height];
+}
+
 Image::Image(unsigned int width, unsigned int height, Color *pixelData)
-    : width(width), height(height) {
-    const size_t numBytes =
-        sizeof(Color) * width * height;
-    this->pixelData = new Color[numBytes];
-    memcpy(this->pixelData, pixelData, numBytes);
+    : Image(width, height) {
+    memcpy(this->pixelData, pixelData, sizeof(Color) * width * height);
 }
 
 Image::~Image() {

@@ -17,6 +17,8 @@ struct Color {
 
     Color operator/(const float &div) const;
 
+    Color operator+(Color b) const;
+
     Color pow(float f) const;
 };
 

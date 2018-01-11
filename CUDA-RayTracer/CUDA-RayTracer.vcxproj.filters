@@ -159,6 +159,9 @@
     <ClCompile Include="backends\post_processing\SRGBEncode.cpp">
       <Filter>backends\post_processing</Filter>
     </ClCompile>
+    <ClCompile Include="backends\post_processing\SuperSampler.cpp">
+      <Filter>backends\post_processing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="backends\Backend.h">
@@ -294,6 +297,9 @@
       <Filter>backends\post_processing</Filter>
     </ClInclude>
     <ClInclude Include="backends\post_processing\PostBackend.h">
+      <Filter>backends\post_processing</Filter>
+    </ClInclude>
+    <ClInclude Include="backends\post_processing\SuperSampler.h">
       <Filter>backends\post_processing</Filter>
     </ClInclude>
   </ItemGroup>

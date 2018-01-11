@@ -36,6 +36,10 @@ Color Color::operator/(const float &div) const {
     return res;
 }
 
+Color Color::operator+(Color b) const {
+    return b += *this;
+}
+
 Color Color::pow(float f) const {
     return {powf(red, f), powf(green, f), powf(blue, f)};
 }

@@ -18,6 +18,7 @@
 #include "backends/Bitmap.h"
 #include "backends/post_processing/Exposure.h"
 #include "backends/post_processing/SRGBEncode.h"
+#include "backends/post_processing/SuperSampler.h"
 
 using namespace std::string_literals;
 
@@ -238,5 +239,6 @@ void Application::renderImage(Backend *backend, FrontendController &frontendCont
     std::unique_ptr<Image> image = std::make_unique<Image>(backend->render());
     image = Exposure().process(std::move(image)); // TODO: Add console switch.
     image = SRGBEncode().process(std::move(image));
+    //image = SuperSampler().process(std::move(image)); TODO: Add console switch.
     frontendController.setImage(Bitmap(*image));
 }
