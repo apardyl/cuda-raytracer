@@ -35,7 +35,7 @@ Vector Camera::getPrimaryVector(int x, int y) const {
     float xCoord = (-width / 2) + pixelWidth * (0.5 + x);
     float yCoord = (-height / 2) + pixelHeight * (0.5 + y);
 
-    Vector vector = Vector(Point(0, 0, 0), Point(yCoord, xCoord, -1))
+    Vector vector = Vector(Point(0, 0, 0), Point(xCoord, yCoord, -1))
             .rotateX(rotation.x)
             .rotateY(rotation.y)
             .rotateZ(rotation.z);
