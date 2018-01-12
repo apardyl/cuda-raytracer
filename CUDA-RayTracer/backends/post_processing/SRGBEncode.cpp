@@ -1,4 +1,5 @@
 ﻿#include "SRGBEncode.h"
+#include <cmath>
 
 float SRGBEncode::encodeSrgb(float f) {
     if (f <= 0.0032308) {

@@ -14,9 +14,6 @@
 #else
 #define CUDA_ENABLED false
 #endif
-
-#define CUDA_ENABLED true
-
 #else
 
 // Set manualy if __has_include is not supported
