@@ -11,14 +11,12 @@
 #include "frontends/sdl/SDLFrontend.h"
 #include "frontends/gtk/GTKFrontend.h"
 #include "frontends/image/ImageFrontend.h"
-#include "scene/SceneLoader.h"
 #include "scene/scene_loaders/IOException.h"
-#include "scene/scene_loaders/ParseError.h"
-#include "scene/scene_loaders/UnknownFormatException.h"
 #include "backends/Bitmap.h"
 #include "backends/post_processing/Exposure.h"
 #include "backends/post_processing/SRGBEncode.h"
 #include "backends/post_processing/SuperSampler.h"
+#include "scene/scene_loaders/SceneLoader.h"
 
 using namespace std::string_literals;
 
@@ -168,8 +166,7 @@ void Application::run() {
 
     if (options.sceneLoaderEnabled) {
         try {
-            std::unique_ptr<Scene> scene =
-                std::make_unique<Scene>(SceneLoader::loadFromFile(options.sceneFilename));
+            std::unique_ptr<Scene> scene = SceneLoader::loadFromFile(options.sceneFilename);
             backend->setScene(std::move(scene));
         } catch(const std::runtime_error& exception) {
             std::cerr << "[ERROR] " << exception.what() << std::endl;

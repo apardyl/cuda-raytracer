@@ -129,11 +129,11 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="scene\Material.cpp" />
     <ClCompile Include="scene\Point.cpp" />
     <ClCompile Include="scene\Scene.cpp" />
-    <ClCompile Include="scene\SceneLoader.cpp" />
     <ClCompile Include="scene\scene_loaders\IOException.cpp" />
-    <ClCompile Include="scene\scene_loaders\MtlParser.cpp" />
-    <ClCompile Include="scene\scene_loaders\ObjLoader.cpp" />
+    <ClCompile Include="scene\scene_loaders\obj_loader\MtlParser.cpp" />
+    <ClCompile Include="scene\scene_loaders\obj_loader\ObjLoader.cpp" />
     <ClCompile Include="scene\scene_loaders\ParseError.cpp" />
+    <ClCompile Include="scene\scene_loaders\SceneLoader.cpp" />
     <ClCompile Include="scene\scene_loaders\UnknownFormatException.cpp" />
     <ClCompile Include="scene\Triangle.cpp" />
     <ClCompile Include="scene\Vector.cpp" />
@@ -177,11 +177,11 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="scene\Models.h" />
     <ClInclude Include="scene\Point.h" />
     <ClInclude Include="scene\Scene.h" />
-    <ClInclude Include="scene\SceneLoader.h" />
     <ClInclude Include="scene\scene_loaders\IOException.h" />
-    <ClInclude Include="scene\scene_loaders\MtlParser.h" />
-    <ClInclude Include="scene\scene_loaders\ObjLoader.h" />
+    <ClInclude Include="scene\scene_loaders\obj_loader\MtlParser.h" />
+    <ClInclude Include="scene\scene_loaders\obj_loader\ObjLoader.h" />
     <ClInclude Include="scene\scene_loaders\ParseError.h" />
+    <ClInclude Include="scene\scene_loaders\SceneLoader.h" />
     <ClInclude Include="scene\scene_loaders\UnknownFormatException.h" />
     <ClInclude Include="scene\Triangle.h" />
     <ClInclude Include="scene\Vector.h" />
@@ -242,6 +242,8 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <Import Project="..\packages\boost_wserialization-vc140.1.66.0.0\build\native\boost_wserialization-vc140.targets" Condition="Exists('..\packages\boost_wserialization-vc140.1.66.0.0\build\native\boost_wserialization-vc140.targets')" />
     <Import Project="..\packages\boost_zlib-vc140.1.66.0.0\build\native\boost_zlib-vc140.targets" Condition="Exists('..\packages\boost_zlib-vc140.1.66.0.0\build\native\boost_zlib-vc140.targets')" />
     <Import Project="..\packages\boost-vc140.1.66.0.0\build\native\boost-vc140.targets" Condition="Exists('..\packages\boost-vc140.1.66.0.0\build\native\boost-vc140.targets')" />
+    <Import Project="..\packages\assimp.v140.redist.3.2\build\native\assimp.v140.redist.targets" Condition="Exists('..\packages\assimp.v140.redist.3.2\build\native\assimp.v140.redist.targets')" />
+    <Import Project="..\packages\assimp.v140.3.2\build\native\assimp.v140.targets" Condition="Exists('..\packages\assimp.v140.3.2\build\native\assimp.v140.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
@@ -295,5 +297,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <Error Condition="!Exists('..\packages\boost_wserialization-vc140.1.66.0.0\build\native\boost_wserialization-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_wserialization-vc140.1.66.0.0\build\native\boost_wserialization-vc140.targets'))" />
     <Error Condition="!Exists('..\packages\boost_zlib-vc140.1.66.0.0\build\native\boost_zlib-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost_zlib-vc140.1.66.0.0\build\native\boost_zlib-vc140.targets'))" />
     <Error Condition="!Exists('..\packages\boost-vc140.1.66.0.0\build\native\boost-vc140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost-vc140.1.66.0.0\build\native\boost-vc140.targets'))" />
+    <Error Condition="!Exists('..\packages\assimp.v140.redist.3.2\build\native\assimp.v140.redist.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\assimp.v140.redist.3.2\build\native\assimp.v140.redist.targets'))" />
+    <Error Condition="!Exists('..\packages\assimp.v140.3.2\build\native\assimp.v140.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\assimp.v140.3.2\build\native\assimp.v140.targets'))" />
   </Target>
 </Project>

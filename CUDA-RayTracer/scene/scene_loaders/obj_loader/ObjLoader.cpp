@@ -1,16 +1,18 @@
 ﻿#include "ObjLoader.h"
 #include <boost/algorithm/string/predicate.hpp>
-#include "IOException.h"
 #include <fstream>
 #include <vector>
-#include "ParseError.h"
 #include <boost/filesystem.hpp>
 #include <sstream>
+#include "scene/Scene.h"
+#include "scene/scene_loaders/IOException.h"
+#include "scene/scene_loaders/ParseError.h"
+#include "MtlParser.h"
 
 using std::string;
 using std::vector;
 
-Scene ObjLoader::load(const string &fileName) {
+std::unique_ptr<Scene> ObjLoader::load(const string &fileName) {
     std::ifstream obj(fileName);
     if (!obj.is_open()) {
         throw IOException("Unable to open " + fileName);
@@ -84,5 +86,5 @@ Scene ObjLoader::load(const string &fileName) {
         i++;
     }
 
-    return scene;
+    return std::make_unique<Scene>(std::move(scene));
 }

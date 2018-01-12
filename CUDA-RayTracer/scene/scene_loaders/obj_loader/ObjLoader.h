@@ -1,12 +1,12 @@
 ﻿#ifndef RAY_TRACER_OBJLOADER_H
 #define RAY_TRACER_OBJLOADER_H
 
-#include "scene/SceneLoader.h"
-#include "MtlParser.h"
+#include "scene/scene_loaders/SceneLoader.h"
+#include "scene/Scene.h"
 
 class ObjLoader : public SceneLoader {
 public:
-    Scene load(const std::string &filename) override;
+    std::unique_ptr<Scene> load(const std::string &filename) override;
 };
 
 #endif // RAY_TRACER_OBJLOADER_H

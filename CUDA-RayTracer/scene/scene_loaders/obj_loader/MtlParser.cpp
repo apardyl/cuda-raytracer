@@ -1,9 +1,9 @@
 #include "MtlParser.h"
 #include <boost/algorithm/string/predicate.hpp>
-#include "UnknownFormatException.h"
 #include <fstream>
 #include <string>
-#include "IOException.h"
+#include "scene/scene_loaders/UnknownFormatException.h"
+#include "scene/scene_loaders/IOException.h"
 
 using std::string;
 
