@@ -105,7 +105,13 @@ Color KdTree::trace(Vector vector, int depth) {
             break;
         }
 
-        vectors[num] = scene->getTriangles()[triangleIndex].getReflectedVector(vectors[num - 1]);
+        Triangle &triangle = scene->getTriangles()[triangleIndex];
+        float dissolve = scene->getMaterial(triangle.materialCode).dissolve;
+        if (dissolve < .99f) {
+            vectors[num] = refract(vector, triangle.getNormal(), 1.5);
+        } else {
+            vectors[num] = triangle.getReflectedVector(vectors[num - 1]);
+        }
         vectors[num].normalize();
         triangles[num] = triangleIndex;
     }
@@ -139,35 +145,64 @@ Color KdTree::trace(Vector vector, int depth) {
 
             int index = getNearestTriangle(toLight, triangles[i]);
 
-            if (index != -1 && (scene->getTriangles()[index].getDist(toLight) <
-                                lights[light].point.getDist(reflectionPoint))) { 
-                continue;
+//            if (index != -1 && (scene->getTriangles()[index].getDist(toLight) <
+//                                lights[light].point.getDist(reflectionPoint))) {
+//                continue;
+//            }
+
+            if (material.dissolve >= .99f) {
+                Vector fromLight(lights[light].point, reflectionPoint);
+                Vector fromLightReflected = scene->getTriangles()[triangles[i]].getReflectedVector(
+                        fromLight);
+                fromLightReflected.normalize();
+
+                triangleIlumination +=
+                        lights[light].Id * std::max(0.f, normal.dot(toLight)) * material.diffuse;
+                triangleIlumination +=
+                        lights[light].Is * powf(std::max(0.f, toViewer.dot(fromLightReflected)),
+                                                material.specularExponent) * material.specular;
             }
-
-            Vector fromLight(lights[light].point, reflectionPoint);
-            Vector fromLightReflected = scene->getTriangles()[triangles[i]].getReflectedVector(
-					fromLight);
-            fromLightReflected.normalize();
-
-            triangleIlumination +=
-                    lights[light].Id * std::max(0.f, normal.dot(toLight)) * material.diffuse;
-            triangleIlumination +=
-                    lights[light].Is * powf(std::max(0.f, toViewer.dot(fromLightReflected)),
-                                            material.specularExponent) * material.specular;
         }
 
 		// add radience from traced vector
-        if (i < num - 1) {
-            triangleIlumination +=
-                    res * powf(std::max(0.f, toViewer.dot(normal)), material.specularExponent) *
-                    material.specular;
-        }
+        if (material.dissolve >= .99f) {
+            if (i < num - 1) {
+                triangleIlumination +=
+                        res * powf(std::max(0.f, toViewer.dot(normal)), material.specularExponent) *
+                        material.specular;
+            }
 
-        res = triangleIlumination;
+            res = triangleIlumination;
+        } else {
+        }
     }
     delete[] vectors;
     delete[] triangles;
     return res;
+}
+
+Vector KdTree::refract(const Vector &vector, const Vector &normal, float ior) const {
+    float dot = vector.dot(normal);
+    float eta1 = 1;
+    float eta2 = ior;
+    Vector localNormal = normal;
+
+    if (dot < 0) {
+        // Ray entering the object
+        dot *= -1;
+    } else {
+        // Ray going out of the object
+        localNormal = normal.mul(-1);
+        std::swap(eta1, eta2);
+    }
+
+    float eta = eta1 / eta2;
+    float k = (1 - eta * eta) * (1 - dot * dot);
+    if (k < 0) {
+        // Total internal reflection
+        return Vector(Point(0, 0, 0), 0, 0, 0);
+    }
+    return vector.mul(dot).add(localNormal.mul(eta * dot - sqrtf(k)));
 }
 
 Box KdTree::getBoundingBox(std::vector<int> &triangles_) {
@@ -243,4 +278,3 @@ KdTree::~KdTree() {
     delete[] nodes;
     delete[] lights;
 }
-

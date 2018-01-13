@@ -28,6 +28,8 @@ struct KdTree {
 
     int buildTree(std::vector<int> triangles, int parent, int axis, int depth);
 
+    Vector refract(const Vector &vector, const Vector &normal, float ior) const;
+
     Color trace(Vector vector, int depth);
 
     Box getBoundingBox(std::vector<int> &triangles);
