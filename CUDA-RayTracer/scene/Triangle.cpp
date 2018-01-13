@@ -56,10 +56,8 @@ float Triangle::getDist(Vector vector) const {
 
 Vector Triangle::getReflectedVector(Vector vector) const {
     vector.normalize();
-    Vector aB(x, y);
-    const Vector aC(x, z);
-    Vector normal = aB.crossProduct(aC).normalize();
-    Vector res = vector.add(normal.mul((-2)*vector.dot(normal)));
+    Vector normal = getNormal().normalize();
+    Vector res = vector.add(normal.mul((-2) * vector.dot(normal)));
     res.startPoint = intersect(vector).point;
     return res.normalize();
 }
