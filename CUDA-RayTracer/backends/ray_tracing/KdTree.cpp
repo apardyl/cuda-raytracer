@@ -114,7 +114,7 @@ Color KdTree::trace(Vector vector, int depth, int ignoredTriangle) {
 
     Material material = scene->getMaterial((scene->getTriangles()[triangleIndex]).materialCode);
 
-    Vector toViewer = reflectionVector.mul(-1);
+    Vector toViewer = vector.mul(-1);
     Color refractionColor(0, 0, 0);
     Color reflectionColor = Ia * material.ambient;
     float refractivity = 0;
