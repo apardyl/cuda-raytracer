@@ -4,7 +4,7 @@
 #include <cfloat>
 
 Triangle::Triangle(const Point a, const Point b, const Point c)
-    : x(a), y(b), z(c) {
+        : x(a), y(b), z(c) {
 }
 
 Triangle::Triangle(Point a, Point b, Point c, int materialCode)
@@ -24,16 +24,23 @@ Intersection Triangle::intersect(Vector vector) const {
     Vector aB(x, y);
     const Vector aC(x, z);
     Vector normal = aB.crossProduct(aC);
-    const Vector origin(Point(0, 0, 0), vector.startPoint.x, vector.startPoint.y,
-                        vector.startPoint.z);
-    const Vector a(Point(0, 0, 0), x.x, x.y, x.z);
-    if (fabs(normal.dot(vector)) < FLT_EPSILON) // if triangle is parallel to vector return -1
+    if (fabsf(normal.dot(vector)) < FLT_EPSILON) {
+        // Triangle is parallel to vector
         return Intersection::NO_INTERSECTION;
+    }
+
+    const Vector origin(
+            Point(0, 0, 0),
+            vector.startPoint.x, vector.startPoint.y, vector.startPoint.z);
+    const Vector a(Point(0, 0, 0), x.x, x.y, x.z);
     const float d = -normal.dot(a);
     const float distToPlane = -(normal.dot(origin) + d) / (normal.dot(vector));
-    if (distToPlane < 0) // vector is directed in opposite direction
+    if (distToPlane < 0) {
+        // Vector is directed in opposite direction
         return Intersection::NO_INTERSECTION;
-    // check if intersection point is inside the triangle
+    }
+
+    // Check if intersection point is inside the triangle
     const Point p(vector.startPoint.translate(vector.mul(distToPlane)));
     Vector edgeAB(x, y);
     Vector edgeBC(y, z);
@@ -47,6 +54,7 @@ Intersection Triangle::intersect(Vector vector) const {
     if (onLeftAB && onLeftBC && onLeftCA) {
         return Intersection(p, distToPlane);
     }
+
     return Intersection::NO_INTERSECTION;
 }
 

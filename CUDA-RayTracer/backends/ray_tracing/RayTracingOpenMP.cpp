@@ -1,9 +1,9 @@
 #include "RayTracingOpenMP.h"
-#include "Camera.h"
-#include "Resolution.h"
-#include "KdTree.h"
-#include <cmath>
+
 #include <boost/math/constants/constants.hpp>
+
+#include "Camera.h"
+#include "KdTree.h"
 
 namespace math = boost::math::constants;
 

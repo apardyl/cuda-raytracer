@@ -10,7 +10,7 @@ struct Node {
 	int right;
 	int myIndex;
     int *triangles = nullptr;
-    int nomNumOfTriangles = 0;
+    size_t nomNumOfTriangles = 0;
 
     Box boundingBox;
     Scene *scene = nullptr;
