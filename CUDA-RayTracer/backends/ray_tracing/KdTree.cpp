@@ -41,7 +41,6 @@ int KdTree::getNearestTriangle(Vector &vector, int ignoredIndex) {
                     }
                 }
             } else {
-
                 if (nodes[cur].left != -1) {
                     stack.addElement(nodes[cur].left);
                 }
@@ -52,6 +51,7 @@ int KdTree::getNearestTriangle(Vector &vector, int ignoredIndex) {
             }
         }
     }
+
     return ans;
 }
 
@@ -212,7 +212,7 @@ Vector KdTree::refract(const Vector &vector, const Vector &normal, float ior) co
     float k = (1 - eta * eta) * (1 - dot * dot);
     if (k < 0) {
         // Total internal reflection
-        return Vector(Point(0, 0, 0), 0, 0, 0);
+        return Vector::ZERO;
     }
     return vector.mul(dot).add(localNormal.mul(eta * dot - sqrtf(k)));
 }
@@ -227,7 +227,8 @@ float KdTree::fresnel(const Vector &vector, const Vector &normal, float ior) con
     }
 
     float sin2 = eta1 / eta2 * sqrtf(std::max(0.f, 1 - cos1 * cos1));
-    if (sin2 >= 1.f){
+    if (sin2 >= 1.f) {
+        // Total internal reflection
         return 1;
     }
 
@@ -268,10 +269,9 @@ Box KdTree::getBoundingBox(std::vector<int> &triangles_) {
 }
 
 bool KdTree::split(std::vector<int> &triangles,
-				   std::vector<int> &left,
-				   std::vector<int> &right,
+                   std::vector<int> &left,
+                   std::vector<int> &right,
                    int axis) {
-
     if (triangles.size() <= 1) {
         return false;
     }
