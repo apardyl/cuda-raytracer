@@ -40,7 +40,7 @@ void AssimpWrapper::loadMaterials() {
         materials[i].transparent = getColor(material, AI_MATKEY_COLOR_TRANSPARENT, Color(1, 1, 1));
         materials[i].specularExponent = getFloat(material, AI_MATKEY_SHININESS) / 4;
         materials[i].dissolve = getFloat(material, AI_MATKEY_OPACITY);
-        materials[i].refractiveIndex = getFloat(material, AI_MATKEY_REFLECTIVITY);
+        materials[i].refractiveIndex = getFloat(material, AI_MATKEY_REFRACTI);
     }
 }
 
