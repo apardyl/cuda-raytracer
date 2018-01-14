@@ -101,30 +101,20 @@ Color KdTree::trace(Vector vector, int depth, int ignoredTriangle) {
     }
 
     Triangle &triangle = scene->getTriangles()[triangleIndex];
-    float dissolve = scene->getMaterial(triangle.materialCode).dissolve;
-    Vector newVector;
-    if (dissolve < .99f) {
-        // todo read ior from material
-        newVector = refract(vector, triangle.getNormal(), 1.5);
-    } else {
-        newVector = triangle.getReflectedVector(vector);
-    }
-    newVector.normalize();
+    Vector reflectionVector = triangle.getReflectedVector(vector);
+    reflectionVector.normalize();
 
-    Point reflectionPoint = newVector.startPoint;
+    Point reflectionPoint = reflectionVector.startPoint;
 
     Vector normal = scene->getTriangles()[triangleIndex].getNormal();
-    normal.normalize();
 
-    if (normal.isObtuse(newVector)) {
+    if (normal.isObtuse(reflectionVector)) {
         normal = normal.mul(-1);
     }
 
-    Vector toViewer = vector.mul(-1);
-    toViewer.normalize();
-
     Material material = scene->getMaterial((scene->getTriangles()[triangleIndex]).materialCode);
 
+    Vector toViewer = reflectionVector.mul(-1);
     Color color = Ia * material.ambient;
 
     for (int light = 0; light < numberOfLights; ++light) {
@@ -138,37 +128,47 @@ Color KdTree::trace(Vector vector, int depth, int ignoredTriangle) {
 
         int index = getNearestTriangle(toLight, triangleIndex);
 
-//            if (index != -1 && (scene->getTriangles()[index].getDist(toLight) <
-//                                lights[light].point.getDist(reflectionPoint))) {
-//                continue;
-//            }
+//        if (index != -1 && (scene->getTriangles()[index].getDist(toLight) <
+//                            lights[light].point.getDist(reflectionPoint))) {
+//            continue;
+//        }
 
-        if (material.dissolve >= .99f) {
-            Vector fromLight(lights[light].point, reflectionPoint);
-            Vector fromLightReflected = scene->getTriangles()[triangleIndex].getReflectedVector(
-                    fromLight);
-            fromLightReflected.normalize();
+        Vector fromLight(lights[light].point, reflectionPoint);
+        Vector fromLightReflected = scene->getTriangles()[triangleIndex].getReflectedVector(
+                fromLight);
+        fromLightReflected.normalize();
 
-            color += lights[light].Id * std::max(0.f, normal.dot(toLight)) * material.diffuse;
-            color +=
-                    lights[light].Is *
-                    powf(std::max(0.f,
-                                  toViewer.dot(fromLightReflected)), material.specularExponent) *
-                    material.specular;
-        }
+        color += lights[light].Id * std::max(0.f, normal.dot(toLight)) * material.diffuse;
+        color +=
+                lights[light].Is *
+                powf(std::max(0.f,
+                              toViewer.dot(fromLightReflected)), material.specularExponent) *
+                material.specular;
     }
 
     // Add radiance from traced vector
-    if (material.dissolve >= .99f) {
+    Color reflectionColor, refractionColor;
+    if (material.dissolve > 0) {
         color +=
-                trace(newVector, depth + 1, triangleIndex) *
+                trace(reflectionVector, depth + 1, triangleIndex) *
                 powf(std::max(0.f, toViewer.dot(normal)), material.specularExponent) *
                 material.specular;
-    } else {
-        color = trace(newVector, depth + 1, triangleIndex);
+    }
+    if (material.dissolve < 1) {
+        // todo get ior from the material
+        refractionColor = trace(
+                refract(vector, triangle.getNormal(), 1.5), depth + 1, triangleIndex);
     }
 
-    return color;
+    if (material.dissolve >= 0.99f) {
+        return color;
+    } else if (material.dissolve <= 0.01f) {
+        return refractionColor;
+    }
+
+    // todo get ior from the material
+    float reflectivity = fresnel(vector, normal, 1.5);
+    return color * reflectivity + refractionColor * (1 - reflectivity);
 }
 
 Vector KdTree::refract(const Vector &vector, const Vector &normal, float ior) const {
@@ -193,6 +193,27 @@ Vector KdTree::refract(const Vector &vector, const Vector &normal, float ior) co
         return Vector(Point(0, 0, 0), 0, 0, 0);
     }
     return vector.mul(dot).add(localNormal.mul(eta * dot - sqrtf(k)));
+}
+
+float KdTree::fresnel(const Vector &vector, const Vector &normal, float ior) const {
+    float cos1 = vector.dot(normal);
+    float eta1 = 1;
+    float eta2 = ior;
+
+    if (cos1 > 0) {
+        std::swap(eta1, eta2);
+    }
+
+    float sin2 = eta1 / eta2 * sqrtf(std::max(0.f, 1 - cos1 * cos1));
+    if (sin2 >= 1.f){
+        return 1;
+    }
+
+    float cos2 = sqrtf(1 - sin2 * sin2);
+    cos1 = fabsf(cos1);
+    float reflectS = (eta1 * cos1 - eta2 * cos2) / (eta1 * cos1 + eta2 * cos2);
+    float reflectP = (eta1 * cos2 - eta2 * cos1) / (eta1 * cos2 + eta2 * cos1);
+    return (reflectS * reflectS + reflectP * reflectP) / 2;
 }
 
 Box KdTree::getBoundingBox(std::vector<int> &triangles_) {
