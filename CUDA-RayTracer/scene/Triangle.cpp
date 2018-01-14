@@ -62,7 +62,7 @@ float Triangle::getDist(Vector vector) const {
     return intersect(vector).distance;
 }
 
-Vector Triangle::getReflectedVector(Vector vector) const {
+Vector Triangle::getReflectedVector(Vector vector) {
     vector.normalize();
     Vector normal = getNormal();
     Vector res = vector.add(normal.mul((-2) * vector.dot(normal)));
@@ -70,10 +70,13 @@ Vector Triangle::getReflectedVector(Vector vector) const {
     return res.normalize();
 }
 
-Vector Triangle::getNormal() const {
-    Vector aB(x, y);
-    const Vector aC(x, z);
-    return aB.crossProduct(aC).normalize();
+Vector Triangle::getNormal() {
+    if (normalVector.x == 0 && normalVector.y == 0 && normalVector.z == 0) {
+        Vector aB(x, y);
+        const Vector aC(x, z);
+        normalVector = aB.crossProduct(aC).normalize();
+    }
+    return normalVector;
 }
 
 float Triangle::getMinX() const {

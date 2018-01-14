@@ -16,11 +16,13 @@ public:
 
     static const Vector ZERO;
 
-    Vector() = default;
+    Vector();
 
     Vector(const Point &a, const Point &b);
 
     Vector(const Point &startPoint, float x, float y, float z);
+
+    Vector& operator=(const Vector& v) = default;
 
     Vector add(const Vector &a) const;
 

@@ -129,6 +129,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="scene\Material.cpp" />
     <ClCompile Include="scene\Point.cpp" />
     <ClCompile Include="scene\Scene.cpp" />
+    <ClCompile Include="scene\scene_loaders\assimp_wrapper\AssimpWrapper.cpp" />
     <ClCompile Include="scene\scene_loaders\IOException.cpp" />
     <ClCompile Include="scene\scene_loaders\obj_loader\MtlParser.cpp" />
     <ClCompile Include="scene\scene_loaders\obj_loader\ObjLoader.cpp" />
@@ -177,6 +178,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="scene\Models.h" />
     <ClInclude Include="scene\Point.h" />
     <ClInclude Include="scene\Scene.h" />
+    <ClInclude Include="scene\scene_loaders\assimp_wrapper\AssimpWrapper.h" />
     <ClInclude Include="scene\scene_loaders\IOException.h" />
     <ClInclude Include="scene\scene_loaders\obj_loader\MtlParser.h" />
     <ClInclude Include="scene\scene_loaders\obj_loader\ObjLoader.h" />

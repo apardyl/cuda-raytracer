@@ -9,6 +9,7 @@
 struct Triangle {
     Point x, y, z;
     int materialCode;
+    Vector normalVector;
 
     Triangle() = default;
 
@@ -22,9 +23,9 @@ struct Triangle {
 
     float getDist(Vector vector) const;
 
-    Vector getReflectedVector(Vector vector) const;
+    Vector getReflectedVector(Vector vector);
 
-    Vector getNormal() const;
+    Vector getNormal();
 
     float getMinX() const;
 

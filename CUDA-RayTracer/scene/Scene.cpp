@@ -1,6 +1,11 @@
 ﻿#include "Scene.h"
 #include "utility"
 
+Scene::Scene(int materialsCount, Material *materials, int trianglesCount, Triangle *triangles) :
+    materials(materials), triangles(triangles), materialsCount(materialsCount),
+    trianglesCount(trianglesCount) {
+}
+
 Scene::Scene(int materialsCount, int trianglesCount) : materialsCount(materialsCount),
                                                        trianglesCount(trianglesCount) {
     materials = new Material[materialsCount];
@@ -22,7 +27,7 @@ Scene::Scene(Scene &&scene) noexcept: materialsCount(scene.materialsCount),
     std::swap(triangles, scene.triangles);
 }
 
-Material *Scene::getMaterials() const {
+Material* Scene::getMaterials() const {
     return materials;
 }
 
@@ -34,7 +39,7 @@ const Material& Scene::getMaterial(int id) const {
     }
 }
 
-Triangle *Scene::getTriangles() const {
+Triangle* Scene::getTriangles() const {
     return triangles;
 }
 

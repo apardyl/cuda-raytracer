@@ -43,6 +43,9 @@
     <Filter Include="scene\scene_loaders\obj_loader">
       <UniqueIdentifier>{1524a8a5-7cff-4227-933c-d790c8f7bb63}</UniqueIdentifier>
     </Filter>
+    <Filter Include="scene\scene_loaders\assimp_wrapper">
+      <UniqueIdentifier>{b72bd64a-c69a-45a0-8f0b-7a7afcc95d1e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="backends\Backend.cpp">
@@ -155,6 +158,9 @@
     </ClCompile>
     <ClCompile Include="backends\post_processing\SuperSampler.cpp">
       <Filter>backends\post_processing</Filter>
+    </ClCompile>
+    <ClCompile Include="scene\scene_loaders\assimp_wrapper\AssimpWrapper.cpp">
+      <Filter>scene\scene_loaders\assimp_wrapper</Filter>
     </ClCompile>
     <ClCompile Include="scene\scene_loaders\obj_loader\MtlParser.cpp">
       <Filter>scene\scene_loaders\obj_loader</Filter>
@@ -304,6 +310,9 @@
     </ClInclude>
     <ClInclude Include="scene\scene_loaders\SceneLoader.h">
       <Filter>scene\scene_loaders</Filter>
+    </ClInclude>
+    <ClInclude Include="scene\scene_loaders\assimp_wrapper\AssimpWrapper.h">
+      <Filter>scene\scene_loaders\assimp_wrapper</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
