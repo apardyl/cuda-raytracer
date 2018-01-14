@@ -33,6 +33,11 @@ endif (OPENMP_FOUND)
 find_package(Threads)
 target_link_libraries(ray_tracer ${CMAKE_THREAD_LIBS_INIT})
 
+# AssImp
+find_package(AssImp REQUIRED)
+include_directories(${ASSIMP_INCLUDE_DIRS})
+target_link_libraries(ray_tracer ${ASSIMP_LIBRARIES})
+
 # SDL2
 find_package(SDL2 REQUIRED)
 include_directories(${SDL2_INCLUDE_DIRS})
