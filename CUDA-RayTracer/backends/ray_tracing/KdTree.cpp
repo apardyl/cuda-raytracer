@@ -115,60 +115,82 @@ Color KdTree::trace(Vector vector, int depth, int ignoredTriangle) {
     Material material = scene->getMaterial((scene->getTriangles()[triangleIndex]).materialCode);
 
     Vector toViewer = reflectionVector.mul(-1);
-    Color color = Ia * material.ambient;
+    Color refractionColor(0, 0, 0);
+    Color reflectionColor = Ia * material.ambient;
+    float refractivity = 0;
 
-    for (int light = 0; light < numberOfLights; ++light) {
-        Vector toLight = Vector(reflectionPoint, lights[light].point);
-        toLight.normalize();
+    if (material.dissolve > 0.01f) {
+        for (int light = 0; light < numberOfLights; ++light) {
+            Vector toLight = Vector(reflectionPoint, lights[light].point);
+            toLight.normalize();
 
-        // check if light is blocked out
-        if (normal.isObtuse(toLight)) {
-            continue;
+            // Check if the light is blocked out
+            if (normal.isObtuse(toLight)) {
+                continue;
+            }
+
+            // Cast shadow ray, take refraction into account (simplified version)
+            float intensity = 1;
+            float dist = 0;
+            float lightDistance = lights[light].point.getDist(reflectionPoint);
+            int lightTriangleIndex = triangleIndex;
+            while (intensity > 0.01f) {
+                lightTriangleIndex = getNearestTriangle(toLight, lightTriangleIndex);
+
+                if (lightTriangleIndex == -1) {
+                    break;
+                }
+                const Intersection &intersection =
+                        scene->getTriangles()[lightTriangleIndex].intersect(toLight);
+                dist += intersection.distance;
+                if (dist >= lightDistance) {
+                    break;
+                }
+
+                toLight.startPoint = intersection.point;
+                intensity *= (1 - scene->getMaterial(triangle.materialCode).dissolve);
+            }
+            if (intensity <= 0.01f) {
+                continue;
+            }
+
+            // Calculate reflection color
+            Vector fromLight(lights[light].point, reflectionPoint);
+            Vector fromLightReflected = scene->getTriangles()[triangleIndex].getReflectedVector(
+                    fromLight);
+            fromLightReflected.normalize();
+
+            reflectionColor +=
+                    lights[light].Id * intensity *
+                    std::max(0.f, normal.dot(toLight)) * material.diffuse;
+            reflectionColor +=
+                    lights[light].Is * intensity *
+                    powf(std::max(0.f, toViewer.dot(fromLightReflected)),
+                         material.specularExponent) *
+                    material.specular;
         }
 
-        int index = getNearestTriangle(toLight, triangleIndex);
-
-//        if (index != -1 && (scene->getTriangles()[index].getDist(toLight) <
-//                            lights[light].point.getDist(reflectionPoint))) {
-//            continue;
-//        }
-
-        Vector fromLight(lights[light].point, reflectionPoint);
-        Vector fromLightReflected = scene->getTriangles()[triangleIndex].getReflectedVector(
-                fromLight);
-        fromLightReflected.normalize();
-
-        color += lights[light].Id * std::max(0.f, normal.dot(toLight)) * material.diffuse;
-        color +=
-                lights[light].Is *
-                powf(std::max(0.f,
-                              toViewer.dot(fromLightReflected)), material.specularExponent) *
-                material.specular;
-    }
-
-    // Add radiance from traced vector
-    Color reflectionColor, refractionColor;
-    if (material.dissolve > 0) {
-        color +=
+        reflectionColor +=
                 trace(reflectionVector, depth + 1, triangleIndex) *
                 powf(std::max(0.f, toViewer.dot(normal)), material.specularExponent) *
                 material.specular;
     }
-    if (material.dissolve < 1) {
+
+    if (material.dissolve < 0.99f) {
         // todo get ior from the material
         refractionColor = trace(
                 refract(vector, triangle.getNormal(), 1.5), depth + 1, triangleIndex);
+        float reflectivity = fresnel(vector, normal, 1.5);
+        refractivity = (1 - reflectivity) * (1 - material.dissolve);
     }
 
     if (material.dissolve >= 0.99f) {
-        return color;
+        return reflectionColor;
     } else if (material.dissolve <= 0.01f) {
         return refractionColor;
     }
 
-    // todo get ior from the material
-    float reflectivity = fresnel(vector, normal, 1.5);
-    return color * reflectivity + refractionColor * (1 - reflectivity);
+    return reflectionColor * (1 - refractivity) + refractionColor * refractivity;
 }
 
 Vector KdTree::refract(const Vector &vector, const Vector &normal, float ior) const {
