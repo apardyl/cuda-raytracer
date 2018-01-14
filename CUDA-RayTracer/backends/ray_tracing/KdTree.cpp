@@ -177,10 +177,11 @@ Color KdTree::trace(Vector vector, int depth, int ignoredTriangle) {
     }
 
     if (material.dissolve < 0.99f) {
-        // todo get ior from the material
-        refractionColor = trace(
-                refract(vector, triangle.getNormal(), 1.5), depth + 1, triangleIndex);
-        float reflectivity = fresnel(vector, normal, 1.5);
+        float ior = material.refractiveIndex;
+        refractionColor =
+                trace(refract(vector, triangle.getNormal(), ior), depth + 1, triangleIndex) *
+                material.transparent;
+        float reflectivity = fresnel(vector, normal, ior);
         refractivity = (1 - reflectivity) * (1 - material.dissolve);
     }
 
