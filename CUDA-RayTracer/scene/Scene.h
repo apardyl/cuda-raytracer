@@ -12,7 +12,9 @@ public:
     const int materialsCount;
     const int trianglesCount;
 
-    Scene(int trianglesCount, int shapesCount);
+    Scene(int materialsCount, Material * materials, int trianglesCount, Triangle * triangles);
+
+    Scene(int materialsCount, int trianglesCount);
 
     Scene(const Scene &scene);
 

@@ -6,6 +6,9 @@
 #include <cmath>
 #endif
 
+Vector::Vector() : x(0), y(0), z(0) {
+}
+
 Vector::Vector(const Point &a, const Point &b) : startPoint(a) {
     x = b.x - a.x;
     y = b.y - a.y;
