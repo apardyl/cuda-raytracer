@@ -30,7 +30,7 @@ struct KdTree {
 
     Vector refract(const Vector &vector, const Vector &normal, float ior) const;
 
-    Color trace(Vector vector, int depth);
+    Color trace(Vector vector, int depth, int ignoredTriangle = -1);
 
     Box getBoundingBox(std::vector<int> &triangles);
 

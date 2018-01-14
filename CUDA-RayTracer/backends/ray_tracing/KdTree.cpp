@@ -88,97 +88,87 @@ int KdTree::buildTree(std::vector<int> triangles, int parent, int axis, int dept
     return nodeIndex;
 }
 
-Color KdTree::trace(Vector vector, int depth) {
-    auto *vectors = new Vector[depth + 1];
-    auto *triangles = new int[depth + 1];
+const Color BACKGROUND_COLOR(0, 0, 0);
 
-    vector.normalize();
-    vectors[0] = vector;
-    triangles[0] = -1; // there is no triangle for primary vector
-    
-	int num = 1;
-    for (; num <= depth; ++num) {
-        vector = vectors[num - 1];
-        int triangleIndex = getNearestTriangle(vector, triangles[num-1]);
-
-        if (triangleIndex == -1 || depth == num) {
-            break;
-        }
-
-        Triangle &triangle = scene->getTriangles()[triangleIndex];
-        float dissolve = scene->getMaterial(triangle.materialCode).dissolve;
-        if (dissolve < .99f) {
-            vectors[num] = refract(vector, triangle.getNormal(), 1.5);
-        } else {
-            vectors[num] = triangle.getReflectedVector(vectors[num - 1]);
-        }
-        vectors[num].normalize();
-        triangles[num] = triangleIndex;
+Color KdTree::trace(Vector vector, int depth, int ignoredTriangle) {
+    if (depth > 20) {
+        return BACKGROUND_COLOR;
     }
 
-    Color res(0, 0, 0);
-    for (int i = num - 1; i >= 1; i--) {
-        Point reflectionPoint = vectors[i].startPoint;
+    int triangleIndex = getNearestTriangle(vector, ignoredTriangle);
+    if (triangleIndex == -1) {
+        return BACKGROUND_COLOR;
+    }
 
-        Vector normal = scene->getTriangles()[triangles[i]].getNormal();
-        normal.normalize();
+    Triangle &triangle = scene->getTriangles()[triangleIndex];
+    float dissolve = scene->getMaterial(triangle.materialCode).dissolve;
+    Vector newVector;
+    if (dissolve < .99f) {
+        // todo read ior from material
+        newVector = refract(vector, triangle.getNormal(), 1.5);
+    } else {
+        newVector = triangle.getReflectedVector(vector);
+    }
+    newVector.normalize();
 
-        if (normal.isObtuse(vectors[i])) {
-            normal = normal.mul(-1);
+    Point reflectionPoint = newVector.startPoint;
+
+    Vector normal = scene->getTriangles()[triangleIndex].getNormal();
+    normal.normalize();
+
+    if (normal.isObtuse(newVector)) {
+        normal = normal.mul(-1);
+    }
+
+    Vector toViewer = vector.mul(-1);
+    toViewer.normalize();
+
+    Material material = scene->getMaterial((scene->getTriangles()[triangleIndex]).materialCode);
+
+    Color color = Ia * material.ambient;
+
+    for (int light = 0; light < numberOfLights; ++light) {
+        Vector toLight = Vector(reflectionPoint, lights[light].point);
+        toLight.normalize();
+
+        // check if light is blocked out
+        if (normal.isObtuse(toLight)) {
+            continue;
         }
 
-        Vector toViewer = vectors[i - 1].mul(-1);
-        toViewer.normalize();
-
-        Material material = scene->getMaterial((scene->getTriangles()[triangles[i]]).materialCode);
-
-        Color triangleIlumination = Ia * material.ambient;
-
-        for (int light = 0; light < numberOfLights; ++light) {
-            Vector toLight = Vector(reflectionPoint, lights[light].point);
-            toLight.normalize();
-
-            // check if light is block out
-            if (normal.isObtuse(toLight)) {
-                continue;
-            }
-
-            int index = getNearestTriangle(toLight, triangles[i]);
+        int index = getNearestTriangle(toLight, triangleIndex);
 
 //            if (index != -1 && (scene->getTriangles()[index].getDist(toLight) <
 //                                lights[light].point.getDist(reflectionPoint))) {
 //                continue;
 //            }
 
-            if (material.dissolve >= .99f) {
-                Vector fromLight(lights[light].point, reflectionPoint);
-                Vector fromLightReflected = scene->getTriangles()[triangles[i]].getReflectedVector(
-                        fromLight);
-                fromLightReflected.normalize();
-
-                triangleIlumination +=
-                        lights[light].Id * std::max(0.f, normal.dot(toLight)) * material.diffuse;
-                triangleIlumination +=
-                        lights[light].Is * powf(std::max(0.f, toViewer.dot(fromLightReflected)),
-                                                material.specularExponent) * material.specular;
-            }
-        }
-
-		// add radience from traced vector
         if (material.dissolve >= .99f) {
-            if (i < num - 1) {
-                triangleIlumination +=
-                        res * powf(std::max(0.f, toViewer.dot(normal)), material.specularExponent) *
-                        material.specular;
-            }
+            Vector fromLight(lights[light].point, reflectionPoint);
+            Vector fromLightReflected = scene->getTriangles()[triangleIndex].getReflectedVector(
+                    fromLight);
+            fromLightReflected.normalize();
 
-            res = triangleIlumination;
-        } else {
+            color += lights[light].Id * std::max(0.f, normal.dot(toLight)) * material.diffuse;
+            color +=
+                    lights[light].Is *
+                    powf(std::max(0.f,
+                                  toViewer.dot(fromLightReflected)), material.specularExponent) *
+                    material.specular;
         }
     }
-    delete[] vectors;
-    delete[] triangles;
-    return res;
+
+    // Add radiance from traced vector
+    if (material.dissolve >= .99f) {
+        color +=
+                trace(newVector, depth + 1, triangleIndex) *
+                powf(std::max(0.f, toViewer.dot(normal)), material.specularExponent) *
+                material.specular;
+    } else {
+        color = trace(newVector, depth + 1, triangleIndex);
+    }
+
+    return color;
 }
 
 Vector KdTree::refract(const Vector &vector, const Vector &normal, float ior) const {

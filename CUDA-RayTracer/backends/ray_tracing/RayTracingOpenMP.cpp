@@ -23,7 +23,7 @@ Image RayTracingOpenMP::render() {
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             Vector vector = camera.getPrimaryVector(x, y);
-            Color color = kdTree.trace(vector, 20);
+            Color color = kdTree.trace(vector, 0);
             camera.update(x, y, color);
         }
     }
