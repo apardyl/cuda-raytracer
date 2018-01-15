@@ -110,10 +110,6 @@ Color KdTree::trace(Vector vector, int depth, int ignoredTriangle) {
 
     Vector normal = scene->getTriangles()[triangleIndex].getNormal();
 
-    if (normal.isObtuse(reflectionVector)) {
-        normal = normal.mul(-1);
-    }
-
     Material material = scene->getMaterial((scene->getTriangles()[triangleIndex]).materialCode);
 
     Vector toViewer = vector.mul(-1);
