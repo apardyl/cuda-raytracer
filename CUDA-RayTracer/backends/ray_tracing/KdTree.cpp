@@ -215,7 +215,7 @@ Vector KdTree::refract(const Vector &vector, const Vector &normal, float ior) co
         // Total internal reflection
         return Vector::ZERO;
     }
-    return vector.mul(dot).add(localNormal.mul(eta * dot - sqrtf(k)));
+    return vector.mul(eta).add(localNormal.mul(eta * dot - sqrtf(k)));
 }
 
 float KdTree::fresnel(const Vector &vector, const Vector &normal, float ior) const {
