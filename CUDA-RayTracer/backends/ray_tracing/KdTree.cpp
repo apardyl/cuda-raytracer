@@ -90,8 +90,10 @@ int KdTree::buildTree(std::vector<int> triangles, int parent, int axis, int dept
 
 const Color BACKGROUND_COLOR(0, 0, 0);
 
+const int MAX_DEPTH = 20;
+
 Color KdTree::trace(Vector vector, int depth, int ignoredTriangle) {
-    if (depth > 20) {
+    if (depth > MAX_DEPTH) {
         return BACKGROUND_COLOR;
     }
 
@@ -134,7 +136,7 @@ Color KdTree::trace(Vector vector, int depth, int ignoredTriangle) {
             float dist = 0;
             float lightDistance = lights[light].point.getDist(reflectionPoint);
             int lightTriangleIndex = triangleIndex;
-            while (intensity > 0.01f) {
+            for (int lightDepth = depth; lightDepth < MAX_DEPTH && intensity > 0.01f; ++lightDepth) {
                 lightTriangleIndex = getNearestTriangle(toLight, lightTriangleIndex);
 
                 if (lightTriangleIndex == -1) {
