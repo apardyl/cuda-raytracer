@@ -6,7 +6,7 @@
 
 struct Light {
 	Point point;
-	Color Is, Id;
+	Color specular, diffuse;
 
 	Light();
 

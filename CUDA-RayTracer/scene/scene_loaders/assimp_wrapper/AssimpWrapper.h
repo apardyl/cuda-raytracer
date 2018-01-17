@@ -3,7 +3,6 @@
 #include "scene/scene_loaders/SceneLoader.h"
 #include "scene/Scene.h"
 #include <assimp/scene.h>
-#include "scene/Light.h"
 
 class AssimpWrapper : SceneLoader {
 private:
@@ -12,6 +11,8 @@ private:
     unsigned materialsCount = 0;
     Triangle *triangles = nullptr;
     unsigned triangleCount = 0;
+    Light *lights = nullptr;
+    unsigned lightsCount = 0;
 
     static Color getColor(const aiMaterial *material, const char *pKey,
                           unsigned int type, unsigned int idx, Color defaulColor = Color());

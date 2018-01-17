@@ -5,13 +5,21 @@
 #include "scene/Scene.h"
 #include "scene/scene_loaders/ParseError.h"
 
+Color convertAiColor(const aiColor3D& color) {
+    return { color.r, color.g, color.b };
+}
+
+Point convertAiVector3D(const aiVector3D& v) {
+    return { v.x, v.y, v.z };
+}
+
 Color AssimpWrapper::getColor(const aiMaterial *material, const char *pKey, unsigned type,
                               unsigned idx, Color defaulColor) {
     aiColor3D color3(0.f, 0.f, 0.f);
     if (material->Get(pKey, type, idx, color3)) {
         return defaulColor;
     }
-    return {color3.r, color3.g, color3.b};
+    return convertAiColor(color3);
 }
 
 float AssimpWrapper::getFloat(const aiMaterial *material, const char *pKey, unsigned type,
@@ -72,6 +80,17 @@ void AssimpWrapper::loadTriangles() {
     }
 }
 
+void AssimpWrapper::loadLights() {
+    lights = new Light[loadedScene->mNumLights];
+    lightsCount = loadedScene->mNumLights;
+    for (int i = 0; i < lightsCount; i++) {
+        aiLight * light = loadedScene->mLights[i];
+        lights[i].point = convertAiVector3D(light->mPosition);
+        lights[i].diffuse = convertAiColor(light->mColorDiffuse);
+        lights[i].specular = convertAiColor(light->mColorSpecular);
+    }
+}
+
 std::unique_ptr<Scene> AssimpWrapper::load(const std::string &filename) {
     Assimp::Importer importer;
 
@@ -85,5 +104,5 @@ std::unique_ptr<Scene> AssimpWrapper::load(const std::string &filename) {
     loadMaterials();
     loadTriangles();
 
-    return std::make_unique<Scene>(Scene(materialsCount, materials, triangleCount, triangles));
+    return std::make_unique<Scene>(Scene(materialsCount, materials, triangleCount, triangles, lightsCount, lights));
 }

@@ -150,9 +150,9 @@ Color KdTree::trace(Vector vector, int depth) {
             fromLightReflected.normalize();
 
             triangleIlumination +=
-                    lights[light].Id * std::max(0.f, normal.dot(toLight)) * material.diffuse;
+                    lights[light].diffuse * std::max(0.f, normal.dot(toLight)) * material.diffuse;
             triangleIlumination +=
-                    lights[light].Is * powf(std::max(0.f, toViewer.dot(fromLightReflected)),
+                    lights[light].specular * powf(std::max(0.f, toViewer.dot(fromLightReflected)),
                                             material.specularExponent) * material.specular;
         }
 

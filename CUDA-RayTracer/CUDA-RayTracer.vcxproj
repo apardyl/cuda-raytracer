@@ -131,8 +131,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="scene\Scene.cpp" />
     <ClCompile Include="scene\scene_loaders\assimp_wrapper\AssimpWrapper.cpp" />
     <ClCompile Include="scene\scene_loaders\IOException.cpp" />
-    <ClCompile Include="scene\scene_loaders\obj_loader\MtlParser.cpp" />
-    <ClCompile Include="scene\scene_loaders\obj_loader\ObjLoader.cpp" />
     <ClCompile Include="scene\scene_loaders\ParseError.cpp" />
     <ClCompile Include="scene\scene_loaders\SceneLoader.cpp" />
     <ClCompile Include="scene\scene_loaders\UnknownFormatException.cpp" />
@@ -180,8 +178,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="scene\Scene.h" />
     <ClInclude Include="scene\scene_loaders\assimp_wrapper\AssimpWrapper.h" />
     <ClInclude Include="scene\scene_loaders\IOException.h" />
-    <ClInclude Include="scene\scene_loaders\obj_loader\MtlParser.h" />
-    <ClInclude Include="scene\scene_loaders\obj_loader\ObjLoader.h" />
     <ClInclude Include="scene\scene_loaders\ParseError.h" />
     <ClInclude Include="scene\scene_loaders\SceneLoader.h" />
     <ClInclude Include="scene\scene_loaders\UnknownFormatException.h" />
