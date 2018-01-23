@@ -5,10 +5,8 @@
 #include "scene/Scene.h"
 
 struct Node {
-    int parent;
     int left;
     int right;
-    int myIndex;
     int *triangles = nullptr;
     size_t nomNumOfTriangles = 0;
 
@@ -17,7 +15,7 @@ struct Node {
 
     Node();
 
-    Node(int parent, int my_index, int *triangles, Box bounding_box, Scene *scene);
+    Node(int *triangles, Box bounding_box, Scene *scene);
 
     // If there is no such triangle return -1
     int getNearestTriangle(Vector &vector, int ignoredIndex);

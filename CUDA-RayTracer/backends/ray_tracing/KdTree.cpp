@@ -57,7 +57,7 @@ int KdTree::buildTree(std::vector<int> triangles, int parent, int axis, int dept
     int nodeIndex = numberOfNodes++;
     int nextAxis = (axis + 1) % 3;
 
-    Node temp(parent, nodeIndex, nullptr, getBoundingBox(triangles), scene);
+    Node temp(nullptr, getBoundingBox(triangles), scene);
     nodes[nodeIndex] = temp;
     Node &cur = nodes[nodeIndex];
 
