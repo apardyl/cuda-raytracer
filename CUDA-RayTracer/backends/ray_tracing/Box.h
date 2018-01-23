@@ -2,20 +2,19 @@
 #define RAY_TRACER_BOX_H
 
 #include <algorithm>
+
 #include "scene/Point.h"
 #include "scene/Vector.h"
 
-struct Box {
+class Box {
+private:
     Point point;
+    float width, length, height;
 
-    // width, length, height
-    float x, y, z;
-
+public:
     Box();
 
     Box(Point point, float x, float y, float z);
-
-    float getDist(Vector vector); // not implemented
 
     Point getMin() const;
 

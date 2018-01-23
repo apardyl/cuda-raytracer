@@ -4,13 +4,9 @@ Box::Box() = default;
 
 Box::Box(Point point, float x, float y, float z) {
     this->point = point;
-    this->x = x;
-    this->y = y;
-    this->z = z;
-}
-
-float Box::getDist(Vector vector) {
-    return 0;
+    this->width = x;
+    this->length = y;
+    this->height = z;
 }
 
 Point Box::getMin() const {
@@ -19,9 +15,9 @@ Point Box::getMin() const {
 
 Point Box::getMax() const {
     Point p;
-    p.x = point.x + x;
-    p.y = point.y + y;
-    p.z = point.z + z;
+    p.x = point.x + width;
+    p.y = point.y + length;
+    p.z = point.z + height;
     return p;
 }
 
@@ -79,9 +75,9 @@ bool Box::isIntersecting(Vector vector) {
 
 Box &Box::operator=(const Box &other) {
     if (this != &other) {
-        this->x = other.x;
-        this->y = other.y;
-        this->z = other.z;
+        this->width = other.width;
+        this->length = other.length;
+        this->height = other.height;
         this->point = other.point;
     }
     return *this;
