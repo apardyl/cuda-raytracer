@@ -4,7 +4,10 @@
 #include "Box.h"
 #include "scene/Scene.h"
 
-struct Node {
+class KdTree;
+
+class Node {
+private:
     int left;
     int right;
     int *triangles = nullptr;
@@ -13,6 +16,8 @@ struct Node {
     Box boundingBox;
     Scene *scene = nullptr;
 
+    friend KdTree;
+public:
     Node();
 
     Node(int *triangles, Box bounding_box, Scene *scene);
