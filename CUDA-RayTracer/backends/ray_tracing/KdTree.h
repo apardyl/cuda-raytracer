@@ -16,23 +16,12 @@ struct KdTree {
     Node *nodes = nullptr;
 	int numberOfNodes = 0;
 
-	Light *lights = nullptr;
-	int numberOfLights = 0;
-    
-    Color Ia;
-
     explicit KdTree(Scene *scene);
 
 	// get triangle which have collison with vector // if there isn't any triangle return -1
     int getNearestTriangle(Vector &vector, int ingnoredIndex);
 
     int buildTree(std::vector<int> triangles, int parent, int axis, int depth);
-
-    Vector refract(const Vector &vector, const Vector &normal, float ior) const;
-
-    float fresnel(const Vector &vector, const Vector &normal, float ior) const;
-
-    Color trace(Vector vector, int depth, int ignoredTriangle = -1);
 
     Box getBoundingBox(std::vector<int> &triangles);
 

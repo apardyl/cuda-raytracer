@@ -7,27 +7,35 @@
 
 namespace math = boost::math::constants;
 
-RayTracingOpenMP::RayTracingOpenMP() = default;
+const Color BACKGROUND_COLOR(0, 0, 0);
+
+const int MAX_DEPTH = 5;
+
+RayTracingOpenMP::RayTracingOpenMP() {
+    lights = new Light[20];
+    Ia = Color(0.2, 0.2, 0.2);
+}
 
 RayTracingOpenMP::~RayTracingOpenMP() {
     delete[] data;
 }
 
 Image RayTracingOpenMP::render() {
-    KdTree kdTree(scene.get());
     Light light(Point(0, 0, -1), Color(1, 1, 1), Color(1, 1, 1));
-    kdTree.registerLight(light);
+    lights[0] = light;
+    numberOfLights = 1;
+
     Resolution resolution = Resolution(width, height);
     Camera camera(Point(0, 0, -1), Point(0, math::pi<float>(), 0),
                   math::pi<float>() / 2, resolution, 1);
     for (int y = 0; y < height; ++y) {
         for (int x = 0; x < width; ++x) {
             Vector vector = camera.getPrimaryVector(x, y);
-            Color color = kdTree.trace(vector, 0);
+            Color color = trace(vector, 0);
             camera.update(x, y, color);
         }
     }
-    // return Image
+
     data = new Color[width * height];
     for (int y = 0; y < resolution.height; ++y) {
         for (int x = 0; x < resolution.width; ++x) {
@@ -37,6 +45,158 @@ Image RayTracingOpenMP::render() {
     return Image(resolution.width, resolution.height, data);
 }
 
-void RayTracingOpenMP::setSoftShadows(bool var) {
-    // not implemented
+Color RayTracingOpenMP::trace(Vector vector, int depth, int ignoredTriangle) {
+    if (depth > MAX_DEPTH) {
+        return BACKGROUND_COLOR;
+    }
+
+    int triangleIndex = kdTree->getNearestTriangle(vector, ignoredTriangle);
+    if (triangleIndex == -1) {
+        return BACKGROUND_COLOR;
+    }
+
+    Triangle &triangle = scene->getTriangles()[triangleIndex];
+    Vector reflectionVector = triangle.getReflectedVector(vector);
+    reflectionVector.normalize();
+
+    Point reflectionPoint = reflectionVector.startPoint;
+
+    Vector normal = scene->getTriangles()[triangleIndex].getNormal();
+
+    Material material = scene->getMaterial((scene->getTriangles()[triangleIndex]).materialCode);
+
+    Vector toViewer = vector.mul(-1);
+    Color refractionColor(0, 0, 0);
+    Color reflectionColor = Ia * material.ambient;
+    float refractivity = 0;
+
+    if (material.dissolve > 0.01f) {
+        for (int light = 0; light < numberOfLights; ++light) {
+            Vector toLight = Vector(reflectionPoint, lights[light].point);
+            toLight.normalize();
+
+            // Check if the light is blocked out
+            if (normal.isObtuse(toLight)) {
+                continue;
+            }
+
+            // Cast shadow ray, take refraction into account (simplified version)
+            float intensity = 1;
+            float dist = 0;
+            float lightDistance = lights[light].point.getDist(reflectionPoint);
+            int lightTriangleIndex = triangleIndex;
+            for (int lightDepth = depth;
+                 lightDepth < MAX_DEPTH && intensity > 0.01f; ++lightDepth) {
+                lightTriangleIndex = kdTree->getNearestTriangle(toLight, lightTriangleIndex);
+
+                if (lightTriangleIndex == -1) {
+                    break;
+                }
+                const Intersection &intersection =
+                        scene->getTriangles()[lightTriangleIndex].intersect(toLight);
+                dist += intersection.distance;
+                if (dist >= lightDistance) {
+                    break;
+                }
+
+                toLight.startPoint = intersection.point;
+                intensity *= (1 - scene->getMaterial(triangle.materialCode).dissolve);
+            }
+            if (intensity <= 0.01f) {
+                continue;
+            }
+
+            // Calculate reflection color
+            Vector fromLight(lights[light].point, reflectionPoint);
+            Vector fromLightReflected = scene->getTriangles()[triangleIndex].getReflectedVector(
+                    fromLight);
+            fromLightReflected.normalize();
+
+            reflectionColor +=
+                    lights[light].diffuse * intensity *
+                    std::max(0.f, normal.dot(toLight)) * material.diffuse;
+            reflectionColor +=
+                    lights[light].specular * intensity *
+                    powf(std::max(0.f, toViewer.dot(fromLightReflected)),
+                         material.specularExponent) * material.specular;
+        }
+
+        reflectionColor +=
+                trace(reflectionVector, depth + 1, triangleIndex) *
+                powf(std::max(0.f, toViewer.dot(normal)), material.specularExponent) *
+                material.specular;
+    }
+
+    if (material.dissolve < 0.99f) {
+        float ior = material.refractiveIndex;
+        Vector refractionVector = refract(vector, triangle.getNormal(), ior);
+        refractionVector.startPoint = reflectionPoint;
+        refractionColor =
+                trace(refractionVector, depth + 1, triangleIndex) *
+                material.transparent;
+        float reflectivity = fresnel(vector, normal, ior);
+        refractivity = (1 - reflectivity) * (1 - material.dissolve);
+    }
+
+    if (material.dissolve >= 0.99f) {
+        return reflectionColor;
+    } else if (material.dissolve <= 0.01f) {
+        return refractionColor;
+    }
+
+    return reflectionColor * (1 - refractivity) + refractionColor * refractivity;
+}
+
+Vector RayTracingOpenMP::refract(const Vector &vector, const Vector &normal, float ior) const {
+    float dot = vector.dot(normal);
+    float eta1 = 1;
+    float eta2 = ior;
+    Vector localNormal = normal;
+
+    if (dot < 0) {
+        // Ray entering the object
+        dot *= -1;
+    } else {
+        // Ray going out of the object
+        localNormal = normal.mul(-1);
+        std::swap(eta1, eta2);
+    }
+
+    float eta = eta1 / eta2;
+    float k = 1 - eta * eta * (1 - dot * dot);
+    if (k < 0) {
+        // Total internal reflection
+        return Vector::ZERO;
+    }
+
+    Vector returnVector = vector.mul(eta).add(localNormal.mul(eta * dot - sqrtf(k)));
+    returnVector.normalize();
+    return returnVector;
+}
+
+float RayTracingOpenMP::fresnel(const Vector &vector, const Vector &normal, float ior) const {
+    float cos1 = vector.dot(normal);
+    float eta1 = 1;
+    float eta2 = ior;
+
+    if (cos1 > 0) {
+        std::swap(eta1, eta2);
+    }
+
+    float sin2 = eta1 / eta2 * sqrtf(std::max(0.f, 1 - cos1 * cos1));
+    if (sin2 >= 1.f) {
+        // Total internal reflection
+        return 1;
+    }
+
+    float cos2 = sqrtf(1 - sin2 * sin2);
+    cos1 = fabsf(cos1);
+    float reflectS = (eta1 * cos1 - eta2 * cos2) / (eta1 * cos1 + eta2 * cos2);
+    float reflectP = (eta1 * cos2 - eta2 * cos1) / (eta1 * cos2 + eta2 * cos1);
+    return (reflectS * reflectS + reflectP * reflectP) / 2;
+}
+
+void RayTracingOpenMP::setScene(std::unique_ptr<Scene> scene) {
+    Backend::setScene(std::move(scene));
+    kdTree = std::make_unique<KdTree>(this->scene.get());
 }
