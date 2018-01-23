@@ -4,6 +4,6 @@ Light::Light() = default;
 
 Light::Light(Point point, Color Is, Color Id) {
 	this->point = point;
-	this->Is = Is;
-	this->Id = Id;
+	this->specular = Is;
+	this->diffuse = Id;
 }
