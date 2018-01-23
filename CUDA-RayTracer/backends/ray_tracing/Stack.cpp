@@ -13,3 +13,7 @@ int Stack::top() {
 void Stack::pop() {
     size--;
 }
+
+bool Stack::isEmpty() {
+    return size == 0;
+}

@@ -22,7 +22,7 @@ int KdTree::getNearestTriangle(Vector &vector, int ignoredIndex) {
     Stack stack;
     stack.addElement(0);
 
-    while (stack.size > 0) {
+    while (!stack.isEmpty()) {
         int cur = stack.top();
         stack.pop();
 
