@@ -19,8 +19,9 @@ int Node::getNearestTriangle(Vector &vector, int ignoredIndex) {
 
     if (left == -1 && right == -1) {
         for (int i = 0; i < nomNumOfTriangles; ++i) {
-			if(this->triangles[i] == ignoredIndex)
-				continue;
+            if (this->triangles[i] == ignoredIndex) {
+                continue;
+            }
 
             float dist = scene->getTriangles()[this->triangles[i]].getDist(vector);
 

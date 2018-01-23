@@ -8,7 +8,7 @@
 struct Box {
     Point point;
 
-	// width, length, height
+    // width, length, height
     float x, y, z;
 
     Box();
@@ -25,4 +25,5 @@ struct Box {
 
     Box &operator=(const Box &other);
 };
+
 #endif //RAY_TRACER_BOX_H

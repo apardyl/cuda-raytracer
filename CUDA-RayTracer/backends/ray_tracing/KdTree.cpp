@@ -63,7 +63,7 @@ int KdTree::buildTree(std::vector<int> triangles, int parent, int axis, int dept
 
     std::vector<int> left, right;
 
-	// if it's leaf
+    // if it's leaf
     if (triangles.size() < 10 || depth > 15 || !split(triangles, left, right, axis)) {
         cur.nomNumOfTriangles = triangles.size();
         cur.triangles = new int[triangles.size()];
@@ -89,7 +89,7 @@ int KdTree::buildTree(std::vector<int> triangles, int parent, int axis, int dept
 Box KdTree::getBoundingBox(std::vector<int> &triangles_) {
     Point minPoint(FLT_MAX, FLT_MAX, FLT_MAX);
 
-	// width, length, height
+    // width, length, height
     float x = 0, y = 0, z = 0;
 
     for (auto &index : triangles_) {

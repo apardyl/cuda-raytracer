@@ -14,11 +14,11 @@ struct KdTree {
     Scene *scene = nullptr;
 
     Node *nodes = nullptr;
-	int numberOfNodes = 0;
+    int numberOfNodes = 0;
 
     explicit KdTree(Scene *scene);
 
-	// get triangle which have collison with vector // if there isn't any triangle return -1
+    // get triangle which have collison with vector // if there isn't any triangle return -1
     int getNearestTriangle(Vector &vector, int ingnoredIndex);
 
     int buildTree(std::vector<int> triangles, int parent, int axis, int depth);
@@ -51,4 +51,5 @@ struct KdTree {
 
     ~KdTree();
 };
+
 #endif //RAY_TRACER_KDTREE_H

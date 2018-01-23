@@ -22,6 +22,7 @@ private:
     float fresnel(const Vector &vector, const Vector &normal, float ior) const;
 
     Color trace(Vector vector, int depth, int ignoredTriangle = -1);
+
 public:
     RayTracingOpenMP();
 

@@ -13,4 +13,5 @@ struct Stack {
 
     void pop();
 };
+
 #endif //RAY_TRACER_STACK_H
