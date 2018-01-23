@@ -90,7 +90,7 @@ int KdTree::buildTree(std::vector<int> triangles, int parent, int axis, int dept
 
 const Color BACKGROUND_COLOR(0, 0, 0);
 
-const int MAX_DEPTH = 20;
+const int MAX_DEPTH = 5;
 
 Color KdTree::trace(Vector vector, int depth, int ignoredTriangle) {
     if (depth > MAX_DEPTH) {
@@ -176,8 +176,10 @@ Color KdTree::trace(Vector vector, int depth, int ignoredTriangle) {
 
     if (material.dissolve < 0.99f) {
         float ior = material.refractiveIndex;
+        Vector refractionVector = refract(vector, triangle.getNormal(), ior);
+        refractionVector.startPoint = reflectionPoint;
         refractionColor =
-                trace(refract(vector, triangle.getNormal(), ior), depth + 1, triangleIndex) *
+                trace(refractionVector, depth + 1, triangleIndex) *
                 material.transparent;
         float reflectivity = fresnel(vector, normal, ior);
         refractivity = (1 - reflectivity) * (1 - material.dissolve);
@@ -208,12 +210,15 @@ Vector KdTree::refract(const Vector &vector, const Vector &normal, float ior) co
     }
 
     float eta = eta1 / eta2;
-    float k = (1 - eta * eta) * (1 - dot * dot);
+    float k = 1 - eta * eta * (1 - dot * dot);
     if (k < 0) {
         // Total internal reflection
         return Vector::ZERO;
     }
-    return vector.mul(eta).add(localNormal.mul(eta * dot - sqrtf(k)));
+
+    Vector returnVector = vector.mul(eta).add(localNormal.mul(eta * dot - sqrtf(k)));
+    returnVector.normalize();
+    return returnVector;
 }
 
 float KdTree::fresnel(const Vector &vector, const Vector &normal, float ior) const {
