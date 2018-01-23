@@ -4,6 +4,7 @@
 #include <assimp/postprocess.h>
 #include "scene/Scene.h"
 #include "scene/scene_loaders/ParseError.h"
+#include <unordered_map>
 
 Color convertAiColor(const aiColor3D& color) {
     return { color.r, color.g, color.b };
@@ -83,11 +84,29 @@ void AssimpWrapper::loadTriangles() {
 void AssimpWrapper::loadLights() {
     lights = new Light[loadedScene->mNumLights];
     lightsCount = loadedScene->mNumLights;
+    std::unordered_map<std::string, int> nameToId;
     for (int i = 0; i < lightsCount; i++) {
         aiLight * light = loadedScene->mLights[i];
-        lights[i].point = convertAiVector3D(light->mPosition);
-        lights[i].diffuse = convertAiColor(light->mColorDiffuse);
-        lights[i].specular = convertAiColor(light->mColorSpecular);
+        if(light->mType == aiLightSource_POINT) {
+            lights[i].point = convertAiVector3D(light->mPosition);
+            lights[i].diffuse = convertAiColor(light->mColorDiffuse);
+            lights[i].specular = convertAiColor(light->mColorSpecular);
+            nameToId[light->mName.C_Str()] = i;
+        }
+    }
+    int posToFind = loadedScene->mNumLights;
+    for(int i = 0; i < loadedScene->mRootNode->mNumChildren; i++) {
+        aiNode * node = loadedScene->mRootNode->mChildren[i];
+        if (nameToId.count(node->mName.C_Str()) == 1) {
+            aiQuaterniont<float> ignored;
+            aiVector3t<float> pos;
+            node->mTransformation.DecomposeNoScaling(ignored, pos);
+            lights[nameToId[node->mName.C_Str()]].point = convertAiVector3D(pos);
+            posToFind--;
+        }
+    }
+    if (posToFind != 0) {
+        throw ParseError("Unable to find coordinats for light");
     }
 }
 
@@ -97,12 +116,19 @@ std::unique_ptr<Scene> AssimpWrapper::load(const std::string &filename) {
     loadedScene = importer.ReadFile(filename,
                                     aiProcess_Triangulate |
                                     aiProcess_JoinIdenticalVertices);
-
     if (loadedScene == nullptr) {
         throw ParseError(importer.GetErrorString());
     }
+    if (!loadedScene->HasMaterials()) {
+        throw ParseError("No materials in file");
+    } else if(!loadedScene->HasMeshes()) {
+        throw ParseError("No meshes in file");
+    } else if(!loadedScene->HasLights()) {
+        throw ParseError("No lights in file");
+    }
     loadMaterials();
     loadTriangles();
+    loadLights();
 
     return std::make_unique<Scene>(Scene(materialsCount, materials, triangleCount, triangles, lightsCount, lights));
 }

@@ -15,8 +15,9 @@ RayTracingOpenMP::~RayTracingOpenMP() {
 
 Image RayTracingOpenMP::render() {
     KdTree kdTree(scene.get());
-    Light light(Point(0, 0, -1), Color(1, 1, 1), Color(1, 1, 1));
-    kdTree.registerLight(light);
+    for (int i = 0; i < scene->lightsCount; i++) {
+        kdTree.registerLight(scene->getLights()[i]);
+    }
     Resolution resolution = Resolution(width, height);
     Camera camera(Point(0, 0, -1), Point(0, math::pi<float>(), 0),
                   math::pi<float>() / 2, resolution, 1);
