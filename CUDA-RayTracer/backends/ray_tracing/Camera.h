@@ -3,7 +3,6 @@
 
 #include "Camera.h"
 #include "Resolution.h"
-#include "Random.h"
 #include "scene/Point.h"
 #include "scene/Color.h"
 
@@ -20,7 +19,6 @@ private:
     Resolution resolution;
     int numOfSamples = 1024;
     std::unique_ptr<Color[]> activePixelSensor;
-    Random random;
 
     Color &getActivePixelSensor(int x, int y) const;
 

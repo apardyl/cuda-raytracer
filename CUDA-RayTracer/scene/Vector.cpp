@@ -6,6 +6,8 @@
 #include <cmath>
 #endif
 
+const Vector Vector::ZERO(Point(0, 0, 0), 0, 0, 0);
+
 Vector::Vector() : x(0), y(0), z(0) {
 }
 

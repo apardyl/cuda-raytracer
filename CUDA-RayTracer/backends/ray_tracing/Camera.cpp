@@ -55,7 +55,7 @@ Vector Camera::getPrimaryVector(int x, int y) const {
                     .rotateY(rotation.y)
                     .rotateZ(rotation.z);
     vector.startPoint = location;
-    return vector;
+    return vector.normalize();
 }
 
 void Camera::update(int x, int y, const Color &color) {

@@ -34,8 +34,9 @@ Point AssimpWrapper::getPoint(const aiMesh *mesh, unsigned idx) {
 }
 
 Vector AssimpWrapper::getNormal(const aiMesh *mesh, unsigned idx) {
-    return Vector(Point(0.f, 0.f, 0.f), mesh->mNormals[idx].x, mesh->mNormals->y,
-                  mesh->mNormals->z).normalize();
+    return Vector(Point(0.f, 0.f, 0.f),
+                  mesh->mNormals[idx].x, mesh->mNormals[idx].y, mesh->mNormals[idx].z)
+            .normalize();
 }
 
 void AssimpWrapper::readGraph(aiNode *root) {
@@ -56,7 +57,7 @@ void AssimpWrapper::loadMaterials() {
         materials[i].transparent = getColor(material, AI_MATKEY_COLOR_TRANSPARENT, Color(1, 1, 1));
         materials[i].specularExponent = getFloat(material, AI_MATKEY_SHININESS) / 4;
         materials[i].dissolve = getFloat(material, AI_MATKEY_OPACITY);
-        materials[i].refractiveIndex = getFloat(material, AI_MATKEY_REFLECTIVITY);
+        materials[i].refractiveIndex = getFloat(material, AI_MATKEY_REFRACTI);
     }
 }
 
@@ -78,12 +79,13 @@ void AssimpWrapper::loadTriangles() {
             triangles[k].y = getPoint(mesh, face->mIndices[1]);
             triangles[k].z = getPoint(mesh, face->mIndices[2]);
             triangles[k].materialCode = mesh->mMaterialIndex;
-            //if (mesh->HasNormals()) {
-            //    triangles[k].normalVector = triangles[k]
-            //                                .normalVector.add(getNormal(mesh, face->mIndices[0])).
-            //                                add(getNormal(mesh, face->mIndices[1])).add(
-            //                                    getNormal(mesh, face->mIndices[2])).mul(0.3);
-            //}
+            if (mesh->HasNormals()) {
+                triangles[k].normalVector =
+                        Vector::ZERO
+                                .add(getNormal(mesh, face->mIndices[0]))
+                                .add(getNormal(mesh, face->mIndices[1]))
+                                .add(getNormal(mesh, face->mIndices[2])).normalize();
+            }
             k++;
         }
     }

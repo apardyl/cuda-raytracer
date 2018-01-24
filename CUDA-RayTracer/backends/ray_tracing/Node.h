@@ -4,25 +4,30 @@
 #include "Box.h"
 #include "scene/Scene.h"
 
-struct Node {
-	int parent;
-	int left; 
-	int right;
-	int myIndex;
+class KdTree;
+
+class Node {
+private:
+    int left;
+    int right;
     int *triangles = nullptr;
-    int nomNumOfTriangles = 0;
+    size_t nomNumOfTriangles = 0;
 
     Box boundingBox;
     Scene *scene = nullptr;
 
+    friend KdTree;
+public:
     Node();
 
-    Node(int parent, int my_index, int *triangles, Box bounding_box, Scene *scene);
+    Node(int *triangles, Box bounding_box, Scene *scene);
 
-    int getNearestTriangle(Vector &vector, int ignoredIndex); // if there is no such triangle return -1
+    // If there is no such triangle return -1
+    int getNearestTriangle(Vector &vector, int ignoredIndex);
 
     bool isLeaf();
 
     ~Node();
 };
+
 #endif //RAY_TRACER_NODE_H

@@ -110,7 +110,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClCompile Include="backends\ray_tracing\Camera.cpp" />
     <ClCompile Include="backends\ray_tracing\KdTree.cpp" />
     <ClCompile Include="backends\ray_tracing\Node.cpp" />
-    <ClCompile Include="backends\ray_tracing\Random.cpp" />
     <ClCompile Include="backends\ray_tracing\RayTracingOpenMP.cpp" />
     <ClCompile Include="backends\ray_tracing\Resolution.cpp" />
     <ClCompile Include="backends\ray_tracing\Stack.cpp" />
@@ -154,7 +153,6 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="backends\ray_tracing\Camera.h" />
     <ClInclude Include="backends\ray_tracing\KdTree.h" />
     <ClInclude Include="backends\ray_tracing\Node.h" />
-    <ClInclude Include="backends\ray_tracing\Random.h" />
     <ClInclude Include="backends\ray_tracing\RayTracingOpenMP.h" />
     <ClInclude Include="backends\random_cuda\RandomCudaBackend.h" />
     <ClInclude Include="backends\ray_tracing\Resolution.h" />

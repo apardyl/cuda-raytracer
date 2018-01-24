@@ -17,6 +17,7 @@ public:
     virtual Image render() = 0;
 
     virtual void setResolution(unsigned width, unsigned height);
+
     virtual void setScene(std::unique_ptr<Scene> scene);
 };
 

@@ -3,12 +3,23 @@
 
 #include "Point.h"
 
-struct Vector {
+class Vector {
+private:
+    void performRotation(float angle,
+                         float &axis1, float &axis2,
+                         float axis1Mult1, float axis1Mult2,
+                         float axis2Mult1, float axis2Mult2) const;
+
+public:
     Point startPoint;
     float x, y, z;
 
+    static const Vector ZERO;
+
     Vector();
+
     Vector(const Point &a, const Point &b);
+
     Vector(const Point &startPoint, float x, float y, float z);
 
     Vector& operator=(const Vector& v) = default;
@@ -29,19 +40,13 @@ struct Vector {
 
     float len() const;
 
-    Vector& normalize();
+    Vector &normalize();
 
-	void translateStartedPoint(float eps);
+    void translateStartedPoint(float eps);
 
-	float getAngle(Vector vector);
+    float getAngle(Vector vector);
 
-	bool isObtuse(Vector vector);
-
-private:
-    void performRotation(float angle,
-                         float &axis1, float &axis2,
-                         float axis1Mult1, float axis1Mult2,
-                         float axis2Mult1, float axis2Mult2) const;
+    bool isObtuse(Vector vector);
 };
 
 #endif // RAY_TRACER_VECTOR_H

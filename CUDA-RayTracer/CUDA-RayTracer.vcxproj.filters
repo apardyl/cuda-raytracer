@@ -141,9 +141,6 @@
     <ClCompile Include="backends\ray_tracing\Camera.cpp">
       <Filter>backends\ray_tracing</Filter>
     </ClCompile>
-    <ClCompile Include="backends\ray_tracing\Random.cpp">
-      <Filter>backends\ray_tracing</Filter>
-    </ClCompile>
     <ClCompile Include="backends\ray_tracing\Resolution.cpp">
       <Filter>backends\ray_tracing</Filter>
     </ClCompile>
@@ -273,9 +270,6 @@
       <Filter>application</Filter>
     </ClInclude>
     <ClInclude Include="backends\ray_tracing\Camera.h">
-      <Filter>backends\ray_tracing</Filter>
-    </ClInclude>
-    <ClInclude Include="backends\ray_tracing\Random.h">
       <Filter>backends\ray_tracing</Filter>
     </ClInclude>
     <ClInclude Include="backends\ray_tracing\Resolution.h">
