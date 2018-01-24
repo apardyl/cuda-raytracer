@@ -12,3 +12,6 @@ packages/
 *.png
 *.obj
 *.mtl
+*.blend
+*.blend1
+*.3ds
