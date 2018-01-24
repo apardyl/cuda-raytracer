@@ -10,6 +10,11 @@
  */
 class RayTracingOpenMP : public Backend {
 private:
+    static constexpr int MAX_DEPTH = 10;
+    static constexpr float MINIMUM_WEIGHT = 0.001f;
+    static constexpr float FULLY_OPAQUE_RATIO = 0.99f;
+    static constexpr float FULLY_TRANSPARENT_RATIO = 0.01f;
+
     Color *data = nullptr;
     Light *lights = nullptr;
     int numberOfLights = 0;
@@ -21,7 +26,7 @@ private:
 
     float fresnel(const Vector &vector, const Vector &normal, float ior) const;
 
-    Color trace(Vector vector, int depth, int ignoredTriangle = -1);
+    Color trace(Vector vector, int depth, int ignoredTriangle = -1, float weight = 1.f);
 
 public:
     RayTracingOpenMP();

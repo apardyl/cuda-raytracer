@@ -9,8 +9,6 @@ namespace math = boost::math::constants;
 
 const Color BACKGROUND_COLOR(0, 0, 0);
 
-const int MAX_DEPTH = 5;
-
 RayTracingOpenMP::RayTracingOpenMP() {
     lights = new Light[20];
     Ia = Color(0.2, 0.2, 0.2);
@@ -45,8 +43,8 @@ Image RayTracingOpenMP::render() {
     return Image(resolution.width, resolution.height, data);
 }
 
-Color RayTracingOpenMP::trace(Vector vector, int depth, int ignoredTriangle) {
-    if (depth > MAX_DEPTH) {
+Color RayTracingOpenMP::trace(Vector vector, int depth, int ignoredTriangle, float weight) {
+    if (depth > MAX_DEPTH || weight < MINIMUM_WEIGHT) {
         return BACKGROUND_COLOR;
     }
 
@@ -70,7 +68,19 @@ Color RayTracingOpenMP::trace(Vector vector, int depth, int ignoredTriangle) {
     Color reflectionColor = Ia * material.ambient;
     float refractivity = 0;
 
-    if (material.dissolve > 0.01f) {
+    if (material.dissolve < FULLY_OPAQUE_RATIO) {
+        float ior = material.refractiveIndex;
+        float reflectivity = fresnel(vector, normal, ior);
+        refractivity = (1 - reflectivity) * (1 - material.dissolve);
+        Vector refractionVector = refract(vector, triangle.getNormal(), ior);
+
+        refractionVector.startPoint = reflectionPoint;
+        refractionColor =
+                trace(refractionVector, depth + 1, triangleIndex, weight * refractivity) *
+                material.transparent;
+    }
+
+    if (material.dissolve > FULLY_TRANSPARENT_RATIO) {
         for (int light = 0; light < numberOfLights; ++light) {
             Vector toLight = Vector(reflectionPoint, lights[light].point);
             toLight.normalize();
@@ -122,25 +132,14 @@ Color RayTracingOpenMP::trace(Vector vector, int depth, int ignoredTriangle) {
         }
 
         reflectionColor +=
-                trace(reflectionVector, depth + 1, triangleIndex) *
+                trace(reflectionVector, depth + 1, triangleIndex, weight * (1 - refractivity)) *
                 powf(std::max(0.f, toViewer.dot(normal)), material.specularExponent) *
                 material.specular;
     }
 
-    if (material.dissolve < 0.99f) {
-        float ior = material.refractiveIndex;
-        Vector refractionVector = refract(vector, triangle.getNormal(), ior);
-        refractionVector.startPoint = reflectionPoint;
-        refractionColor =
-                trace(refractionVector, depth + 1, triangleIndex) *
-                material.transparent;
-        float reflectivity = fresnel(vector, normal, ior);
-        refractivity = (1 - reflectivity) * (1 - material.dissolve);
-    }
-
-    if (material.dissolve >= 0.99f) {
+    if (material.dissolve >= FULLY_OPAQUE_RATIO) {
         return reflectionColor;
-    } else if (material.dissolve <= 0.01f) {
+    } else if (material.dissolve <= FULLY_TRANSPARENT_RATIO) {
         return refractionColor;
     }
 
