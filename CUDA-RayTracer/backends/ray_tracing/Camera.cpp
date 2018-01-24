@@ -6,14 +6,14 @@
 
 Camera::Camera(Point location, Point rotation, float horizontalFOV, const Resolution &resolution,
                int numOfSamples) :
-        location(location),
-        rotation(rotation),
-        horizontalFOV(horizontalFOV),
-        width(2 * std::sin(horizontalFOV / 2)),
-        height(width * resolution.height / resolution.width),
-        resolution(resolution),
-        numOfSamples(numOfSamples),
-        activePixelSensor(std::make_unique<Color[]>(resolution.width * resolution.height)) {
+    location(location),
+    rotation(rotation),
+    horizontalFOV(horizontalFOV),
+    width(2 * std::sin(horizontalFOV / 2)),
+    height(width * resolution.height / resolution.width),
+    resolution(resolution),
+    numOfSamples(numOfSamples),
+    activePixelSensor(std::make_unique<Color[]>(resolution.width * resolution.height)) {
     for (int y = 0; y < resolution.height; ++y) {
         for (int x = 0; x < resolution.width; ++x) {
             getActivePixelSensor(x, y) = Color(0, 0, 0);
@@ -21,11 +21,26 @@ Camera::Camera(Point location, Point rotation, float horizontalFOV, const Resolu
     }
 }
 
-Color &Camera::getActivePixelSensor(int x, int y) const {
+Camera::Camera(const CameraPosition &position, const Resolution &resolution, int numOfSamples)
+    : location(position.location), rotation(position.rotation),
+      horizontalFOV(position.horizontalFOV), width(2 * std::sin(horizontalFOV / 2)),
+      height(width * resolution.height / resolution.width),
+      resolution(resolution),
+      numOfSamples(numOfSamples),
+      activePixelSensor(std::make_unique<Color[]>(resolution.width * resolution.height)) {
+    for (int y = 0; y < resolution.height; ++y) {
+        for (int x = 0; x < resolution.width; ++x) {
+            getActivePixelSensor(x, y) = Color(0, 0, 0);
+        }
+    }
+}
+
+Color& Camera::getActivePixelSensor(int x, int y) const {
     return activePixelSensor[resolution.width * y + x];
 }
 
-Vector Camera::getRandomVector(int x, int y) const { // not implemented
+Vector Camera::getRandomVector(int x, int y) const {
+    // not implemented
     return Vector(Point(0, 0, 0), 0, 0, 0);
 }
 
@@ -36,9 +51,9 @@ Vector Camera::getPrimaryVector(int x, int y) const {
     float yCoord = (-height / 2) + pixelHeight * (0.5 + y);
 
     Vector vector = Vector(Point(0, 0, 0), Point(xCoord, yCoord, -1))
-            .rotateX(rotation.x)
-            .rotateY(rotation.y)
-            .rotateZ(rotation.z);
+                    .rotateX(rotation.x)
+                    .rotateY(rotation.y)
+                    .rotateZ(rotation.z);
     vector.startPoint = location;
     return vector;
 }
@@ -48,5 +63,5 @@ void Camera::update(int x, int y, const Color &color) {
 }
 
 Color Camera::getPixelColor(int x, int y) const {
-    return getActivePixelSensor(x, y) / (float) numOfSamples;
+    return getActivePixelSensor(x, y) / (float)numOfSamples;
 }

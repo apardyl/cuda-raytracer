@@ -299,6 +299,9 @@
     <ClInclude Include="scene\scene_loaders\assimp_wrapper\AssimpWrapper.h">
       <Filter>scene\scene_loaders\assimp_wrapper</Filter>
     </ClInclude>
+    <ClInclude Include="scene\CameraPosition.h">
+      <Filter>scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

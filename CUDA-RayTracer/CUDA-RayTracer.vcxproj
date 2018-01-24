@@ -169,6 +169,7 @@ copy "$(CudaToolkitBinDir)\cudart*.dll" "$(OutDir)"</Command>
     <ClInclude Include="frontends\image\ImageFrontend.h" />
     <ClInclude Include="frontends\sdl\SDLError.h" />
     <ClInclude Include="frontends\sdl\SDLFrontend.h" />
+    <ClInclude Include="scene\CameraPosition.h" />
     <ClInclude Include="scene\Color.h" />
     <ClInclude Include="scene\Intersection.h" />
     <ClInclude Include="scene\Light.h" />

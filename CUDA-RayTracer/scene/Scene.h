@@ -4,6 +4,7 @@
 #include "Material.h"
 #include "Triangle.h"
 #include "Light.h"
+#include "CameraPosition.h"
 
 class Scene {
 private:
@@ -14,9 +15,10 @@ public:
     const int materialsCount;
     const int trianglesCount;
     const int lightsCount;
+    const CameraPosition camera;
 
     Scene(int materialsCount, Material * materials, int trianglesCount, 
-          Triangle * triangles, int lightsCount, Light * lights);
+          Triangle * triangles, int lightsCount, Light * lights, const CameraPosition& camera);
 
     Scene(const Scene &scene);
 

@@ -8,6 +8,7 @@
 #include "scene/Color.h"
 
 #include <memory>
+#include "scene/CameraPosition.h"
 
 class Camera {
 private:
@@ -34,6 +35,8 @@ public:
      */
     Camera(Point location, Point rotation, float horizontalFOV, const Resolution &resolution,
            int numOfSamples);
+
+    Camera(const CameraPosition& position, const Resolution& resolution, int numOfSamples);
 
     Vector getRandomVector(int x, int y) const;
 

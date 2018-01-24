@@ -6,12 +6,12 @@
 #include "scene/scene_loaders/ParseError.h"
 #include <unordered_map>
 
-Color convertAiColor(const aiColor3D& color) {
-    return { color.r, color.g, color.b };
+Color convertAiColor(const aiColor3D &color) {
+    return {color.r, color.g, color.b};
 }
 
-Point convertAiVector3D(const aiVector3D& v) {
-    return { v.x, v.y, v.z };
+Point convertAiVector3D(const aiVector3D &v) {
+    return {v.x, v.y, v.z};
 }
 
 Color AssimpWrapper::getColor(const aiMaterial *material, const char *pKey, unsigned type,
@@ -38,6 +38,13 @@ Vector AssimpWrapper::getNormal(const aiMesh *mesh, unsigned idx) {
                   mesh->mNormals->z).normalize();
 }
 
+void AssimpWrapper::readGraph(aiNode *root) {
+    nodes[root->mName.C_Str()] = root;
+    for (int i = 0; i < root->mNumChildren; i++) {
+        readGraph(root->mChildren[i]);
+    }
+}
+
 void AssimpWrapper::loadMaterials() {
     materials = new Material[loadedScene->mNumMaterials];
     materialsCount = loadedScene->mNumMaterials;
@@ -61,6 +68,7 @@ void AssimpWrapper::loadTriangles() {
     triangles = new Triangle[triangleCount];
     for (int i = 0, k = 0; i < loadedScene->mNumMeshes; i++) {
         aiMesh *mesh = loadedScene->mMeshes[i];
+
         for (int j = 0; j < loadedScene->mMeshes[i]->mNumFaces; j++) {
             aiFace *face = &mesh->mFaces[j];
             if (face->mNumIndices != 3) {
@@ -84,30 +92,42 @@ void AssimpWrapper::loadTriangles() {
 void AssimpWrapper::loadLights() {
     lights = new Light[loadedScene->mNumLights];
     lightsCount = loadedScene->mNumLights;
-    std::unordered_map<std::string, int> nameToId;
     for (int i = 0; i < lightsCount; i++) {
-        aiLight * light = loadedScene->mLights[i];
-        if(light->mType == aiLightSource_POINT) {
+        aiLight *light = loadedScene->mLights[i];
+        if (light->mType == aiLightSource_POINT) {
             lights[i].point = convertAiVector3D(light->mPosition);
             lights[i].diffuse = convertAiColor(light->mColorDiffuse);
             lights[i].specular = convertAiColor(light->mColorSpecular);
-            nameToId[light->mName.C_Str()] = i;
-        }
-    }
-    int posToFind = loadedScene->mNumLights;
-    for(int i = 0; i < loadedScene->mRootNode->mNumChildren; i++) {
-        aiNode * node = loadedScene->mRootNode->mChildren[i];
-        if (nameToId.count(node->mName.C_Str()) == 1) {
+            if (nodes.count(light->mName.C_Str()) != 1) {
+                throw ParseError("No node for object");
+            }
             aiQuaterniont<float> ignored;
             aiVector3t<float> pos;
-            node->mTransformation.DecomposeNoScaling(ignored, pos);
-            lights[nameToId[node->mName.C_Str()]].point = convertAiVector3D(pos);
-            posToFind--;
+            nodes[light->mName.C_Str()]->mTransformation.DecomposeNoScaling(ignored, pos);
+            lights[i].point = convertAiVector3D(pos);
         }
     }
-    if (posToFind != 0) {
-        throw ParseError("Unable to find coordinats for light");
+}
+
+void AssimpWrapper::loadCamera() {
+    aiCamera *cam = loadedScene->mCameras[0];
+    if (nodes.count(cam->mName.C_Str()) != 1) {
+        throw ParseError("No node for object");
     }
+    aiNode *camNode = nodes[cam->mName.C_Str()];
+    aiQuaterniont<float> rotation;
+    aiVector3t<float> pos;
+    camNode->mTransformation.DecomposeNoScaling(rotation, pos);
+    camera.location = convertAiVector3D(pos);
+    camera.horizontalFOV = cam->mHorizontalFOV;
+
+    camera.rotation.z = atan2(2 * (rotation.x * rotation.y + rotation.w * rotation.z),
+                              rotation.w * rotation.w + rotation.x * rotation.x - rotation.y *
+                              rotation.y - rotation.z * rotation.z);
+    camera.rotation.x = atan2(2 * (rotation.y * rotation.z + rotation.w * rotation.x),
+                              rotation.w * rotation.w - rotation.x * rotation.x - rotation.y *
+                              rotation.y + rotation.z * rotation.z);
+    camera.rotation.y = asin(-2 * (rotation.x * rotation.z - rotation.w * rotation.y));
 }
 
 std::unique_ptr<Scene> AssimpWrapper::load(const std::string &filename) {
@@ -121,14 +141,20 @@ std::unique_ptr<Scene> AssimpWrapper::load(const std::string &filename) {
     }
     if (!loadedScene->HasMaterials()) {
         throw ParseError("No materials in file");
-    } else if(!loadedScene->HasMeshes()) {
+    } else if (!loadedScene->HasMeshes()) {
         throw ParseError("No meshes in file");
-    } else if(!loadedScene->HasLights()) {
+    } else if (!loadedScene->HasLights()) {
         throw ParseError("No lights in file");
+    } else if (!loadedScene->HasCameras()) {
+        throw ParseError("No cameras in file");
     }
+
+    readGraph(loadedScene->mRootNode);
     loadMaterials();
     loadTriangles();
     loadLights();
+    loadCamera();
 
-    return std::make_unique<Scene>(Scene(materialsCount, materials, triangleCount, triangles, lightsCount, lights));
+    return std::make_unique<Scene>(Scene(materialsCount, materials, triangleCount, triangles,
+                                         lightsCount, lights, camera));
 }
